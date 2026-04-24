@@ -14,7 +14,7 @@ NfcAdapter nfc = NfcAdapter(pn532spi);
 void setup() {
   Serial.begin(115200);
 
-  nfc.begin(true /* verbose */);
+  nfc.begin(/*verbose=*/true);
 }
 
 void loop() {
