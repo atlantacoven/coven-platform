@@ -1,0 +1,67 @@
+{{ define "main" }}
+{{ $data := .Site.Data.contact }}
+<div class="py-12 px-4 mx-auto max-w-4xl sm:px-6 lg:px-8">
+  {{ partial "breadcrumb.html" . }}
+
+  <!-- Page header -->
+  <div class="mb-10">
+    <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title }}</h1>
+    <p class="text-muted">{{ .Description | default "Get in touch with The Coven." }}</p>
+  </div>
+
+  <!-- Intro -->
+  {{ with $data.intro }}
+  <div class="p-5 mb-10 rounded-xl border coven-callout">
+    <p class="text-sm leading-relaxed text-muted">{{ . | safeHTML }}</p>
+  </div>
+  {{ end }}
+
+  <!-- Channels -->
+  {{ with $data.channels }}
+  <section class="mb-10">
+    <h2 class="mb-4 text-xl font-bold text-white">How to Reach Us</h2>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {{ range . }}
+      {{ $color := default "accent" .color }}
+      <div class="flex flex-col p-5 rounded-xl border coven-card">
+        <div class="mb-3 text-xs font-bold tracking-widest uppercase" style="color: var(--coven-{{ $color }});">{{ .tagline }}</div>
+        <h3 class="mb-2 text-lg font-semibold text-white">{{ .name }}</h3>
+        <p class="mb-4 text-sm text-muted flex-1">{{ .body | safeHTML }}</p>
+
+        {{ if .qr_placeholder }}
+        <div class="flex flex-col items-center gap-2 my-3 p-4 rounded-lg coven-surface border border-coven">
+          <div class="flex items-center justify-center w-32 h-32 rounded-md text-xs font-mono text-muted text-center" style="background: repeating-conic-gradient(var(--coven-bg) 0% 25%, var(--coven-surface) 0% 50%) 50% / 16px 16px;">
+            <span class="px-2 py-1 rounded bg-coven-surface-alpha">QR&nbsp;CODE</span>
+          </div>
+          <p class="text-xs text-muted text-center">Signal QR code coming soon</p>
+        </div>
+        {{ end }}
+
+        <div class="mt-auto pt-3 text-xs text-muted border-t-coven">{{ .response }}</div>
+      </div>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Membership pointer -->
+  {{ with $data.membership }}
+  <section class="mb-10">
+    <div class="p-5 rounded-xl border coven-card">
+      <h3 class="mb-2 font-semibold text-white">{{ .heading }}</h3>
+      <p class="text-sm text-muted">{{ .body | safeHTML }}</p>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Privacy note -->
+  {{ with $data.privacy_note }}
+  <div class="p-4 rounded-lg border text-sm text-center border-coven text-muted">{{ . | safeHTML }}</div>
+  {{ end }}
+
+  {{ with .Content }}
+    <div class="mt-10 prose-coven">{{ . }}</div>
+  {{ end }}
+
+</div>
+{{ end }}

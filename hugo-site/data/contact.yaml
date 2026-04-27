@@ -1,0 +1,39 @@
+intro: >
+  We welcome inquiries from members of the queer community interested in joining,
+  collaborating on projects, or learning more about The Coven. Pick whichever channel
+  fits your timeline.
+
+channels:
+  - kind: signal
+    name: Signal Group
+    tagline: For a quick reply
+    body: >
+      Join our Signal group to chat directly with founders. This is the fastest way
+      to reach us — most messages get a response within a day.
+    response: Usually within 24 hours
+    color: cyan
+    qr_placeholder: true
+
+  - kind: email
+    name: Email
+    tagline: For longer questions or anything formal
+    body: >
+      Drop us a line at <a class="text-cyan underline underline-offset-2" href="mailto:hello@thecoven.space">hello@thecoven.space</a>.
+      Good for membership applications, press inquiries, partnership ideas, or anything
+      that needs a written record.
+    response: We aim to reply within 3–5 business days
+    color: warm
+
+membership:
+  heading: Interested in membership?
+  body: >
+    Please review our <a class="text-cyan underline underline-offset-2" href="/charter/">Covenant</a>
+    first to understand our mission and structure, then email us with a brief introduction
+    about yourself and your creative interests.
+
+privacy_note: >
+  As a space founded for LGBTQ+ safety and community, we prioritize the privacy
+  of our members. The exact address is shared after a tour is booked or
+  membership is confirmed — see the
+  <a class="text-cyan underline underline-offset-2" href="/tour/">Tour page</a>
+  to schedule a visit.

@@ -1,0 +1,52 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="{{ .Params.description | default .Site.Params.description }}">
+<meta name="author" content="{{ .Site.Params.author }}">
+
+<title>{{ if eq .Title .Site.Title }}{{ .Site.Params.tagline }} - {{ .Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<meta property="og:title" content="{{ .Title }}">
+<meta property="og:description" content="{{ .Params.description | default .Site.Params.description }}">
+<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ .Title }}">
+<meta name="twitter:description" content="{{ .Params.description | default .Site.Params.description }}">
+
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{ $style := resources.Get "css/style.css" | resources.Fingerprint }}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<style type="text/tailwindcss">
+  @theme {
+    --color-coven0-50: #ffffff;
+    --color-coven0-100: var(--coven-text);
+    --color-coven0-500: var(--coven-yellow);
+    --color-coven0-600: var(--coven-warm);
+    --color-coven0-700: var(--coven-accent);
+    --color-coven0-800: var(--coven-surface);
+    --color-coven0-900: var(--coven-bg);
+    --color-coven-50: #ffffff;
+    --color-coven-100: var(--coven-text);
+    --color-coven-500: var(--coven-yellow);
+    --color-coven-600: var(--coven-warm);
+    --color-coven-700: var(--coven-accent);
+    --color-coven-800: var(--coven-surface);
+    --color-coven-900: var(--coven-bg);
+  }
+</style>
+
+{{ $js := resources.Get "js/script.js" | resources.Fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+
+{{ if .Params.headScripts }}
+{{ range .Params.headScripts }}
+<script src="{{ . }}" defer></script>
+{{ end }}
+{{ end }}

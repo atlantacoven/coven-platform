@@ -1,0 +1,56 @@
+{{ define "main" }}
+<div class="py-12 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+  {{ if not .IsHome }}
+  {{ partial "breadcrumb.html" . }}
+  {{ end }}
+
+  <article class="max-w-4xl">
+    {{ if .Params.difficulty }}
+    {{ $d := lower .Params.difficulty }}
+    {{ $dc := cond (in (slice "beginner" "easy") $d) "cyan" (cond (in (slice "intermediate" "medium") $d) "warm" (cond (in (slice "advanced" "hard") $d) "accent" "yellow")) }}
+    <div class="flex gap-3 mb-4">
+      <span class="py-1 px-3 text-sm font-medium rounded-full bg-{{ $dc }}-10 text-{{ $dc }}">{{ .Params.difficulty }}</span>
+      {{ range .Params.tags }}
+      <span class="py-1 px-3 text-sm text-gray-400 rounded-full bg-white/5">{{ . }}</span>
+      {{ end }}
+    </div>
+    {{ end }}
+
+    <h1 class="mb-4 text-4xl font-bold text-white">{{ .Title }}</h1>
+
+    {{ if .Date }}
+    <div class="flex gap-4 items-center mb-8 text-sm text-gray-400">
+      <span class="flex gap-1 items-center">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        {{ .Date | time.Format "January 2, 2006" }}
+      </span>
+      {{ if .Params.author }}
+      <span class="flex gap-1 items-center">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        {{ .Params.author }}
+      </span>
+      {{ end }}
+      <span class="flex gap-1 items-center">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        {{ .ReadingTime }} min read
+      </span>
+    </div>
+    {{ end }}
+
+    {{ if .Params.equipment }}
+    <div class="p-4 mb-8 rounded-xl border coven-surface border-coven">
+      <h3 class="mb-2 text-sm font-semibold text-white">Equipment Used</h3>
+      <div class="flex flex-wrap gap-2">
+        {{ range .Params.equipment }}
+        <a href="/learning/equipment/{{ . | urlize }}/" class="py-1 px-3 text-sm text-gray-300 rounded-full transition-all hover:text-white bg-white/5 hover:bg-white/10">{{ . }}</a>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+
+    <div class="prose-coven">
+      {{ .Content }}
+    </div>
+  </article>
+</div>
+{{ end }}

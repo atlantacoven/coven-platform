@@ -1,0 +1,68 @@
+{{ define "main" }}
+{{ $data := .Site.Data.tour }}
+{{ $images := resources.Match "images/gallery/space/*" }}
+<div class="py-12 px-4 mx-auto max-w-5xl sm:px-6 lg:px-8">
+  {{ partial "breadcrumb.html" . }}
+
+  <!-- Page header -->
+  <div class="mb-10">
+    <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title }}</h1>
+    <p class="text-muted">{{ .Description }}</p>
+  </div>
+
+  <!-- Intro callout -->
+  {{ with $data.intro }}
+  <div class="p-5 mb-10 rounded-xl border coven-callout">
+    <p class="text-sm leading-relaxed text-muted">{{ . | safeHTML }}</p>
+  </div>
+  {{ end }}
+
+  <!-- How to book -->
+  {{ with $data.how_to }}
+  <section class="mb-10">
+    <h2 class="mb-4 text-xl font-bold text-white">How to Book a Tour</h2>
+    <div class="space-y-3">
+      {{ range $i, $step := . }}
+      {{ $variant := add (mod $i 4) 1 }}
+      <div class="flex gap-4 p-5 rounded-xl border coven-card">
+        <div class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold text-white coven-step coven-gradient-{{ $variant }}">{{ add $i 1 }}</div>
+        <div>
+          <div class="mb-1 font-semibold text-white">{{ $step.title }}</div>
+          <p class="text-sm text-muted">{{ $step.desc | safeHTML }}</p>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  {{ with .Content }}
+    <div class="mb-10 prose-coven">{{ . }}</div>
+  {{ end }}
+
+  <!-- Gallery -->
+  {{ if $images }}
+  <section class="mb-10">
+    <h2 class="mb-4 text-xl font-bold text-white">The Space</h2>
+    <p class="mb-5 text-sm text-muted">A look around our workshop and shared areas.</p>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {{ range $images }}
+      {{ $thumb := .Resize "600x400 q80 webp" }}
+      {{ $full := .Resize "1600x q85 webp" }}
+      <a href="{{ $full.RelPermalink }}" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl border border-coven group">
+        <img
+          src="{{ $thumb.RelPermalink }}"
+          width="{{ $thumb.Width }}"
+          height="{{ $thumb.Height }}"
+          alt="The Coven workshop"
+          loading="lazy"
+          class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+        >
+      </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+</div>
+{{ end }}

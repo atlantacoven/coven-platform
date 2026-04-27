@@ -1,0 +1,85 @@
+# Code of Conduct content. Rendered by layouts/code-of-conduct/list.html
+#
+# Top-level keys:
+#   intro           - paragraph shown in the highlighted intro card
+#   expectations    - list of cards (icon, title, points)
+#   unacceptable    - list of strings shown as ✕ items
+#   reporting       - list of numbered steps
+#   closing         - list of {title, body} cards (Retaliation, Living Doc, etc.)
+#
+# `icon` keys map to inline SVGs in the layout (icons partial).
+
+intro: >-
+  The Coven, as a queer and trans-centered space, wishes to uphold a culture
+  of respect, consent, care and mutual support. The following behaviors are
+  the minimal expectations of those participating in the space.
+
+expectations:
+  - title: Respect All Identities
+    icon: users
+    points:
+      - Respect all identities, pronouns, names, and boundaries
+      - Use correct pronouns and names as shared by individuals
+      - Honor personal boundaries and consent in all interactions
+
+  - title: Practice Active Consent
+    icon: heart
+    points:
+      - Obtain explicit consent before touching others, their equipment, or projects
+      - Respect "no" or any hesitation as a complete answer
+      - Understand that consent can be withdrawn at any time
+
+  - title: Maintain a Safe Space
+    icon: shield
+    points:
+      - Avoid discriminatory, harassing, or demeaning behavior
+      - Take responsibility for harm, regardless of intent
+      - Maintain a clean and organized space
+      - Report safety concerns immediately to founders
+
+  - title: Address Conflicts Constructively
+    icon: chat
+    points:
+      - Address conflicts in good faith and seek consensus
+      - Approach disagreements with a willingness to listen
+      - Support mediation and restorative approaches
+
+  - title: Support Mutual Aid
+    icon: hands
+    wide: true
+    points:
+      - Share knowledge and skills freely within the community
+      - Help fellow members when they're learning or struggling
+      - Contribute to the collective wellbeing of the space
+      - Recognize that we grow stronger through cooperation
+
+unacceptable:
+  - Transphobia, homophobia, racism, sexism, or ableism
+  - Non-consensual touching or invasion of personal space
+  - Harassment, intimidation, or threats of any kind
+  - Deliberate destruction or misuse of equipment
+  - Ignoring financial commitments or access agreements
+  - Creating an unsafe or hostile environment
+  - Undermining The Coven's mission as a trans-focused space
+  - Repeatedly disregarding founder guidance or policies
+  - Bringing unauthorized guests or violating guest policies
+  - Substance use that impairs judgment or creates safety concerns
+
+reporting:
+  - If safe to do so, address the behavior directly using "I" statements
+  - Contact a founder privately to report the incident
+  - "Document what happened: time, location, witnesses, and specific behaviors"
+  - Founders will follow the Disruptive Member Policy review process
+  - All reports are taken seriously and handled with discretion
+
+closing:
+  - title: Retaliation Prohibition
+    body: >-
+      Retaliation against anyone who reports a Code of Conduct violation in
+      good faith is strictly prohibited and will be treated as a separate
+      violation.
+  - title: A Living Document
+    body: >-
+      This Code of Conduct may be updated as our community grows. Founders
+      will review and update this policy periodically with input from members
+      when appropriate.

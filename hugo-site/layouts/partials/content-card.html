@@ -1,0 +1,33 @@
+{{/*
+  Compact content card used in section listings and homepage previews.
+  Call with the page as context: {{ partial "content-card.html" . }}
+*/}}
+{{ $palette := slice "accent" "cyan" "warm" "yellow" }}
+{{ $hasMeta := or .Params.tags .Params.difficulty }}
+{{ $excerpt := "" }}
+{{ with .Description }}
+  {{ $excerpt = . }}
+{{ else }}
+  {{ $excerpt = .Summary | plainify }}
+{{ end }}
+{{ $excerpt = $excerpt | truncate 140 }}
+<article class="flex flex-col gap-2 p-4 rounded-lg border transition-all border-white/10 group hover:border-white/20 coven-card-bare h-full min-h-[170px]">
+  {{ if $hasMeta }}
+  <div class="flex flex-wrap gap-1.5 min-h-[1.5rem]">
+    {{ if .Params.tags }}{{ range $i, $tag := first 2 .Params.tags }}
+    {{ $c := index $palette (mod $i 4) }}
+    <span class="py-0.5 px-2 text-xs rounded-full bg-{{ $c }}-10 text-{{ $c }}">{{ $tag }}</span>
+    {{ end }}{{ end }}
+    {{ if .Params.difficulty }}
+    {{ $d := lower .Params.difficulty }}
+    {{ $dc := cond (in (slice "beginner" "easy") $d) "cyan" (cond (in (slice "intermediate" "medium") $d) "warm" (cond (in (slice "advanced" "hard") $d) "accent" "yellow")) }}
+    <span class="py-0.5 px-2 text-xs rounded-full bg-{{ $dc }}-10 text-{{ $dc }}">{{ .Params.difficulty }}</span>
+    {{ end }}
+  </div>
+  {{ end }}
+  <h3 class="font-semibold text-white transition-colors group-hover:opacity-80">
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  </h3>
+  <p class="text-sm text-gray-400 line-clamp-3 flex-1">{{ $excerpt }}</p>
+  <a href="{{ .RelPermalink }}" class="mt-1 text-sm font-medium transition-colors text-accent">Read more →</a>
+</article>
