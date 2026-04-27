@@ -2,7 +2,7 @@
 
 > Learn. Make. Share. Grow together.
 
-The community platform for **[The Coven](https://thecoven.space)** — a collaborative makerspace for the queer community, founded by trans creators and focused on mutual support, skill-sharing, and creative projects in music, cosplay, video, and electronics.
+The community platform for **[The Coven](https://atlantacoven.org)** — a collaborative makerspace for the queer community, founded by trans creators and focused on mutual support, skill-sharing, and creative projects in music, cosplay, video, and electronics.
 
 
 ## Repository Layout
@@ -15,7 +15,7 @@ The community platform for **[The Coven](https://thecoven.space)** — a collabo
 
 ## The Hugo Site
 
-The site lives in [hugo-site/](hugo-site/) and is deployed to **https://thecoven.space**.
+The site lives in [hugo-site/](hugo-site/) and is deployed to **https://atlantacoven.org**.
 
 ### Prerequisites
 
@@ -61,7 +61,7 @@ The current public site is the first piece of a larger system. See [plan.md](pla
 
 ## Contributing
 
-The Coven is a community space — contributions, corrections, and suggestions are welcome. Open an issue or pull request, or reach out via [hello@thecoven.space](mailto:hello@thecoven.space).
+The Coven is a community space — contributions, corrections, and suggestions are welcome. Open an issue or pull request, or reach out via [hello@atlantacoven.org](mailto:hello@atlantacoven.org).
 
 ## License
 
