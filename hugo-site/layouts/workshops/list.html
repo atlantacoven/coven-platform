@@ -1,0 +1,86 @@
+{{ define "main" }}
+{{ $data := .Site.Data.workshops }}
+<div class="py-12 px-4 mx-auto max-w-4xl sm:px-6 lg:px-8">
+  {{ partial "breadcrumb.html" . }}
+
+  <div class="mb-12">
+    <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title | default "Workshops & Events" }}</h1>
+    <p class="text-muted">{{ .Description | default "Classes, skill-shares, and community gatherings at The Coven." }}</p>
+  </div>
+
+  <!-- Types -->
+  {{ with $data.types }}
+  <section class="mb-10">
+    <h2 class="mb-4 text-xl font-bold text-white">Types of Gatherings</h2>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {{ range . }}
+      {{ $color := printf "var(--coven-%s)" (default "accent" .color) }}
+      <div class="p-5 rounded-xl border coven-card">
+        <div class="flex gap-3 items-center mb-4">
+          <div class="flex items-center justify-center w-10 h-10 rounded-lg text-xl flex-shrink-0 coven-surface">{{ .icon }}</div>
+          <h3 class="font-semibold text-white">{{ .title }}</h3>
+        </div>
+        <ul class="space-y-1.5">
+          {{ range .items }}
+          <li class="flex gap-2 text-sm text-muted"><span style="color: {{ $color }};">›</span> {{ . }}</li>
+          {{ end }}
+        </ul>
+      </div>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Accessibility -->
+  {{ with $data.accessibility }}
+  <section class="mb-10">
+    <h2 class="mb-4 text-xl font-bold text-white">Accessibility & Safety</h2>
+    <div class="p-5 rounded-xl border mb-4 coven-card">
+      {{ with .intro }}
+      <p class="text-sm leading-relaxed mb-4 text-muted">{{ . | safeHTML }}</p>
+      {{ end }}
+      {{ with .audiences }}
+      <div class="grid gap-2 sm:grid-cols-2 text-sm">
+        {{ range . }}
+        <div class="flex gap-2 p-3 rounded-lg coven-surface">
+          <span class="text-accent">›</span>
+          <div>
+            <div class="font-medium text-white text-xs">{{ .label }}</div>
+            <div class="text-xs" style="color: var(--coven-muted);">{{ .desc }}</div>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  {{ with .Content }}
+    <div class="mb-10 prose-coven">{{ . }}</div>
+  {{ end }}
+
+  <!-- Upcoming events -->
+  <section>
+    <h2 class="mb-4 text-xl font-bold text-white">Upcoming</h2>
+    {{ $pages := .Pages }}
+    {{ if $pages }}
+    <div class="space-y-3">
+      {{ range $pages }}
+        {{ partial "content-card.html" . }}
+      {{ end }}
+    </div>
+    {{ else }}
+      {{ with $data.empty_state }}
+      <div class="p-8 rounded-xl border text-center coven-card">
+        <div class="text-3xl mb-3">{{ .icon }}</div>
+        <p class="font-medium text-white mb-1">{{ .title }}</p>
+        <p class="text-sm mb-4 text-muted">{{ .body }}</p>
+        <a href="{{ .cta_url }}" class="inline-flex gap-2 items-center py-2 px-5 text-sm font-semibold text-white rounded-full coven-gradient">{{ .cta_label }}</a>
+      </div>
+      {{ end }}
+    {{ end }}
+  </section>
+
+</div>
+{{ end }}

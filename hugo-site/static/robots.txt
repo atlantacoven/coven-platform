@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Humans.txt
+# See https://humanstxt.org/
+# Contact: maddie@madelyn.sh
+
+# Sitemap
+Sitemap: https://madelyn.sh/sitemap.xml

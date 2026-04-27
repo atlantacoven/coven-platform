@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+
+# Temporary files
+*.tmp
+
+# Local Notes
+plan.md
+
+# Stop AI stuff from creeping in
+.github/copilot-instructions.md
+.github/hooks/
