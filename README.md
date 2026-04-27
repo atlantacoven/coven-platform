@@ -16,7 +16,13 @@ message=NdefRecord tnf=1 type=55 payload=00636F76656E3A2F2F746865636F76656E2E737
 message=NdefRecord tnf=4 type=616E64726F69642E636F6D3A706B67 payload=73706163652E746865636F76656E2E616E64726F6964 id= payload-ascii=space.thecoven.android
 ```
 
-
+```
+SELECT(aid) -> OK[9000]+key
+if valid:
+  proprietary cla:FA + 9000 (door unlocked)
+else
+  proprietary cla:FA + 66XX (door not unlocked)
+```
 
 
 ```
