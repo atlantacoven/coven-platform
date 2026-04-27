@@ -10,8 +10,8 @@ The community platform for **[The Coven](https://thecoven.space)** — a collabo
 | Path | Description |
 | --- | --- |
 | [hugo-site/](hugo-site/) | Public website built with [Hugo](https://gohugo.io) — tutorials, docs, project gallery, and landing pages. |
+| [member-site/](member-site/) | The logged in website for members |
 | [scripts/](scripts/) | Helper scripts. |
-| [LICENSE](LICENSE) | MIT License. |
 
 ## The Hugo Site
 
