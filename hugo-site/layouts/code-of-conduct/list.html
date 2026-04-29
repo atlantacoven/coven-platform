@@ -4,48 +4,63 @@
     {{ partial "breadcrumb.html" . }}
 
 
-    <!-- Page header -->
-    <div class="mb-12">
-      <h1 class="mb-3 text-4xl font-bold text-white">Code of Conduct</h1>
-      <p class="text-muted">
+    <div class="mb-10">
+      <div class="mb-3">
+        <span class="zine-stamp stamp-blood stamp-tilt-l zine-stamp-lg">House Rules</span>
+      </div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        Code of Conduct
+      </h1>
+      <p class="text-muted mt-4 max-w-3xl font-typewriter text-base">
         {{ .Description | default "Our commitment to creating a safe, respectful, and affirming space for all members." }}
       </p>
     </div>
 
-    <!-- Intro -->
     {{ with $data.intro }}
-      <div class="coven-card mb-10 rounded-xl border p-6">
-        <p class="text-muted text-lg leading-relaxed">{{ . }}</p>
+      <div class="rough-border-thick tilt-n1 bg-paper-2 mb-10 p-6">
+        <p class="text-ink font-serif text-lg leading-relaxed">{{ . }}</p>
       </div>
     {{ end }}
 
 
-    <!-- Expectations -->
+    <!-- Expectations — vertical numbered manifesto -->
     {{ with $data.expectations }}
-      {{ $palette := slice "accent" "cyan" "warm" "yellow" }}
-      <section class="mb-10">
-        <h2 class="mb-6 text-2xl font-bold text-white">Our Expectations</h2>
-        <div class="grid gap-4 sm:grid-cols-2">
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">
+          Our Expectations
+        </h2>
+        <div class="space-y-6">
           {{ range $i, $e := . }}
-            {{ $c := index $palette (mod $i 4) }}
-            <div class="coven-card{{ if $e.wide }}sm:col-span-2{{ end }} rounded-xl border p-5">
-              <div class="mb-3 flex items-center gap-3">
-                <div
-                  class="bg-{{ $c }}-10 text-{{ $c }} flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg">
-                  {{ partial "icon.html" $e.icon }}
+            {{ $stamps := slice "pink" "spot-cyan" "acid" "ink" }}
+            {{ $sc := index $stamps (mod $i 4) }}
+            {{ $tilt := index (slice "tilt-n1" "tilt-1" "tilt-n2" "tilt-2") (mod $i 4) }}
+            <div
+              class="{{ $tilt }} bg-paper-2 rough-border-{{ if eq $sc "spot-cyan" }}
+                cyan
+              {{ else if eq $sc "ink" }}
+              {{ else }}
+                {{ $sc }}
+              {{ end }} relative p-5">
+              <div class="flex items-start gap-4">
+                <span class="zine-letter-stamp text-{{ $sc }}">{{ printf "%02d" (add $i 1) }}</span>
+                <div class="flex-1">
+                  <h3 class="text-ink font-display text-xl tracking-wide uppercase">
+                    {{ $e.title }}
+                  </h3>
+                  <ul
+                    class="{{ if $e.wide }}
+                      grid gap-1.5 sm:grid-cols-2
+                    {{ else }}
+                      space-y-1.5
+                    {{ end }} text-muted mt-3 font-typewriter text-sm">
+                    {{ range $e.points }}
+                      <li class="flex gap-2">
+                        <span class="text-{{ $sc }}">›</span> <span>{{ . }}</span>
+                      </li>
+                    {{ end }}
+                  </ul>
                 </div>
-                <h3 class="font-semibold text-white">{{ $e.title }}</h3>
               </div>
-              <ul
-                class="{{ if $e.wide }}
-                  grid gap-1.5 sm:grid-cols-2
-                {{ else }}
-                  space-y-1.5
-                {{ end }}text-sm text-muted">
-                {{ range $e.points }}
-                  <li class="flex gap-2"><span class="text-{{ $c }}">›</span> {{ . }}</li>
-                {{ end }}
-              </ul>
             </div>
           {{ end }}
         </div>
@@ -55,18 +70,19 @@
 
     <!-- Unacceptable behaviors -->
     {{ with $data.unacceptable }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-2xl font-bold text-white">Unacceptable Behaviors</h2>
-        <p class="text-muted mb-4 text-sm">
-          The following behaviors are considered violations and may result in warnings, suspension,
-          or removal:
+      <section class="mb-12">
+        <h2 class="text-blood mb-3 font-display text-3xl tracking-wide uppercase">
+          VOID · Forbidden
+        </h2>
+        <p class="text-muted mb-5 font-typewriter text-sm">
+          The following behaviors are violations and may result in warnings, suspension, or removal:
         </p>
-        <div
-          class="coven-card-bare rounded-xl border p-5"
-          style="border-color: rgba(255,121,198,0.3);">
-          <ul class="text-muted grid gap-2 text-sm sm:grid-cols-2">
+        <div class="rough-border-blood bg-paper-2 p-5">
+          <ul class="text-ink grid gap-2 font-typewriter text-sm sm:grid-cols-2">
             {{ range . }}
-              <li class="flex gap-2"><span style="color: #f38ba8;">✕</span> {{ . }}</li>
+              <li class="flex gap-2">
+                <span class="text-blood font-display">✘</span> <span>{{ . }}</span>
+              </li>
             {{ end }}
           </ul>
         </div>
@@ -76,18 +92,21 @@
 
     <!-- Reporting -->
     {{ with $data.reporting }}
-      {{ $palette := slice "accent" "cyan" "warm" "yellow" }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-2xl font-bold text-white">Reporting Violations</h2>
+      <section class="mb-12">
+        <h2 class="text-ink mb-5 font-display text-3xl tracking-wide uppercase">
+          Reporting Violations
+        </h2>
         <div class="space-y-3">
           {{ range $i, $step := . }}
-            {{ $c := index $palette (mod $i 4) }}
-            <div class="coven-card flex gap-4 rounded-lg border p-4">
-              <div
-                class="bg-{{ $c }}-10 text-{{ $c }} flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold">
-                {{ add $i 1 }}
-              </div>
-              <p class="text-muted text-sm">{{ $step }}</p>
+            {{ $stamps := slice "pink" "spot-cyan" "acid" "ink" }}
+            {{ $sc := index $stamps (mod $i 4) }}
+            <div class="zine-card-bare flex gap-4">
+              <span
+                class="zine-letter-stamp text-{{ $sc }}"
+                style="width:2.4rem;height:2.4rem;font-size:1.2rem;"
+                >{{ add $i 1 }}</span
+              >
+              <p class="text-ink flex-1 font-typewriter text-sm leading-relaxed">{{ $step }}</p>
             </div>
           {{ end }}
         </div>
@@ -95,13 +114,16 @@
     {{ end }}
 
 
-    <!-- Closing notes -->
+    <!-- Closing -->
     {{ with $data.closing }}
-      <div class="grid gap-4 sm:grid-cols-2">
-        {{ range . }}
-          <div class="coven-card rounded-xl border p-5">
-            <h3 class="mb-2 font-semibold text-white">{{ .title }}</h3>
-            <p class="text-muted text-sm">{{ .body }}</p>
+      <div class="grid gap-5 sm:grid-cols-2">
+        {{ range $i, $c := . }}
+          {{ $tilt := index (slice "tilt-n1" "tilt-1") (mod $i 2) }}
+          <div class="zine-card-bare {{ $tilt }}">
+            <h3 class="text-pink mb-2 font-display text-base tracking-wide uppercase">
+              {{ $c.title }}
+            </h3>
+            <p class="text-muted font-typewriter text-sm">{{ $c.body }}</p>
           </div>
         {{ end }}
       </div>
@@ -110,6 +132,5 @@
     {{ with .Content }}
       <div class="prose-coven mt-10">{{ . }}</div>
     {{ end }}
-
   </div>
 {{ end }}

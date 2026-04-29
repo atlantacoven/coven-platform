@@ -4,89 +4,100 @@
     {{ partial "breadcrumb.html" . }}
 
 
-    <div class="mb-12">
-      <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title | default "Join The Coven" }}</h1>
-      <p class="text-muted">
+    <div class="mb-10">
+      <div class="mb-3">
+        <span class="zine-stamp stamp-pink stamp-tilt-l zine-stamp-lg">Now Accepting Members</span>
+      </div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        {{ .Title | default "Join The Coven" }}
+      </h1>
+      <p class="text-muted mt-4 max-w-2xl font-typewriter text-base">
         {{ .Description | default "A trans-focused creative space built on mutual support and shared craft." }}
       </p>
     </div>
 
-    <!-- Intro callout -->
     {{ with $data.intro }}
-      <div class="coven-callout mb-8 rounded-xl border p-5">
-        <p class="text-muted text-sm leading-relaxed">{{ . | safeHTML }}</p>
+      <div class="rough-border-thick tilt-n1 bg-paper-2 mb-10 p-6">
+        <p class="text-ink font-serif text-lg leading-relaxed">{{ . | safeHTML }}</p>
       </div>
     {{ end }}
 
 
     <!-- Tiers -->
     {{ with $data.tiers }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-xl font-bold text-white">Membership Structure</h2>
-        <div class="sm:grid-cols-{{ len . }} grid gap-4">
-          {{ range . }}
-            {{ $c := printf "var(--coven-%s)" (default "accent" .color) }}
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">
+          Membership Structure
+        </h2>
+        <div class="grid gap-6" style="grid-template-columns: repeat({{ len . }}, minmax(0, 1fr));">
+          {{ range $i, $t := . }}
+            {{ $color := default "accent" $t.color }}
+            {{ $sc := "pink" }}
+            {{ if eq $color "accent" }}{{ $sc = "pink" }}{{ end }}
+            {{ if eq $color "warm" }}{{ $sc = "acid" }}{{ end }}
+            {{ if eq $color "cyan" }}{{ $sc = "spot-cyan" }}{{ end }}
+            {{ if eq $color "yellow" }}{{ $sc = "acid" }}{{ end }}
+            {{ $tilt := index (slice "tilt-n2" "tilt-1" "tilt-n1") (mod $i 3) }}
             <div
-              class="{{ if .badge }}relative{{ end }}p-5 coven-card-bare rounded-xl border"
-              style="{{ printf "border-color: %s;" (cond (ne .badge nil) $c "var(--coven-border)") | safeCSS }}">
-              {{ with .badge }}
-                <div
-                  class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-bold text-white shadow-lg"
-                  style="{{ printf "background: %s; box-shadow: 0 4px 12px rgba(0,0,0,0.4);" $c | safeCSS }}">
-                  {{ . }}
+              class="rough-border-{{ if eq $sc "spot-cyan" }}
+                cyan
+              {{ else }}
+                {{ $sc }}
+              {{ end }} {{ $tilt }} bg-paper-2 relative p-5">
+              {{ with $t.badge }}
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span class="zine-stamp stamp-{{ $sc }}">{{ . }}</span>
                 </div>
               {{ end }}
-              <div class="mb-2 text-sm font-bold" style="{{ printf "color: %s;" $c | safeCSS }}">
-                {{ .name }}
+              <div class="text-{{ $sc }} font-display text-sm tracking-wider uppercase">
+                {{ $t.name }}
               </div>
-              <div class="mb-4 text-3xl font-bold text-white">
-                {{ .price }}{{ with .period }}
-                  <span class="text-muted text-sm font-normal">{{ . }}</span>
+              <div class="text-ink mt-2 font-display text-3xl">
+                {{ $t.price }}{{ with $t.period }}
+                  <span class="text-muted font-typewriter text-sm"> {{ . }}</span>
                 {{ end }}
               </div>
-              <ul class="text-muted space-y-2 text-xs">
-                {{ range .points }}
-                  {{ $iconColor := $c }}
-                  {{ if .off }}{{ $iconColor = "var(--coven-border)" }}{{ end }}
-                  <li
-                    class="gap-2{{ if .muted }}pt-1 text-xs{{ end }} flex"
-                    {{ if .muted }}style="color: var(--coven-border);"{{ end }}>
-                    <span style="{{ printf "color: %s;" $iconColor | safeCSS }}">{{ .icon }}</span>
-                    {{ .text }}
+              <ul class="mt-4 space-y-2 font-typewriter text-xs">
+                {{ range $t.points }}
+                  {{ $tone := "text-ink" }}{{ if .off }}
+                    {{ $tone = "text-muted line-through" }}
+                  {{ end }}{{ if .muted }}{{ $tone = "text-muted" }}{{ end }}
+                  <li class="{{ $tone }} flex gap-2">
+                    <span class="text-{{ $sc }}">{{ .icon }}</span> <span>{{ .text }}</span>
                   </li>
                 {{ end }}
               </ul>
             </div>
           {{ end }}
         </div>
-
         {{ with $data.tiers_note }}
-          <p class="text-muted mt-3 text-xs">{{ . }}</p>
+          <p class="text-muted mt-4 font-typewriter text-xs">{{ . }}</p>
         {{ end }}
       </section>
     {{ end }}
 
 
+    <hr class="cut-line" />
+
     <!-- Steps -->
     {{ with $data.steps }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-xl font-bold text-white">How to Join</h2>
-        <div class="space-y-3">
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">How to Join</h2>
+        <div class="space-y-4">
           {{ range $i, $step := . }}
-            <div class="coven-card flex gap-4 rounded-xl border p-5">
-              <div
-                class="coven-step coven-gradient-{{ add (mod $i 4) 1 }} flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white">
-                {{ add $i 1 }}
-              </div>
-              <div>
-                <div class="mb-1 font-semibold text-white">{{ $step.title }}</div>
-                <p class="text-muted text-sm">{{ $step.desc }}</p>
+            {{ $stamps := slice "pink" "spot-cyan" "acid" "ink" }}
+            {{ $sc := index $stamps (mod $i 4) }}
+            <div class="zine-card-bare flex items-start gap-4">
+              <span class="zine-letter-stamp text-{{ $sc }}">{{ add $i 1 }}</span>
+              <div class="flex-1">
+                <h3 class="text-ink font-display text-lg tracking-wide uppercase">
+                  {{ $step.title }}
+                </h3>
+                <p class="text-muted mt-1 font-typewriter text-sm">{{ $step.desc }}</p>
                 {{ with $step.links }}
-                  <div class="mt-2 flex flex-wrap gap-3">
+                  <div class="mt-3 flex flex-wrap gap-2">
                     {{ range . }}
-                      <a href="{{ .u }}" class="text-cyan text-xs underline underline-offset-2"
-                        >{{ .t }} →</a
-                      >
+                      <a href="{{ .u }}" class="zine-stamp stamp-{{ $sc }}">{{ .t }} →</a>
                     {{ end }}
                   </div>
                 {{ end }}
@@ -98,20 +109,29 @@
     {{ end }}
 
 
-    <!-- Notes -->
+    <hr class="cut-line" />
+
+    <!-- Notes — sticker wall -->
     {{ with $data.notes }}
-      {{ $palette := slice "accent" "cyan" "warm" "yellow" }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-xl font-bold text-white">Important Notes</h2>
-        <div class="grid gap-3 sm:grid-cols-2">
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">Important Notes</h2>
+        <div class="flex flex-wrap items-start gap-4">
+          {{ $stamps := slice "pink" "spot-cyan" "acid" "ink" }}
+          {{ $tilts := slice "tilt-n2" "tilt-1" "tilt-n1" "tilt-2" "tilt-3" "tilt-n3" }}
           {{ range $i, $note := . }}
-            <div class="coven-card rounded-xl border p-4">
-              <div
-                class="mb-1 text-sm font-semibold"
-                style="color: var(--coven-{{ index $palette (mod $i 4) }});">
+            {{ $sc := index $stamps (mod $i 4) }}
+            {{ $tilt := index $tilts (mod $i 6) }}
+            <div
+              class="rough-border-{{ if eq $sc "spot-cyan" }}
+                cyan
+              {{ else if eq $sc "ink" }}
+              {{ else }}
+                {{ $sc }}
+              {{ end }} {{ $tilt }} bg-paper-2 max-w-[20rem] px-4 py-3">
+              <div class="text-{{ $sc }} font-display text-sm tracking-wider uppercase">
                 {{ $note.title }}
               </div>
-              <p class="text-muted text-xs">{{ $note.body }}</p>
+              <p class="text-muted mt-1 font-typewriter text-xs">{{ $note.body }}</p>
             </div>
           {{ end }}
         </div>
@@ -125,16 +145,11 @@
 
     <!-- CTA -->
     {{ with $data.cta }}
-      <div class="coven-card rounded-xl border p-6 text-center">
-        <p class="mb-2 font-medium text-white">{{ .heading }}</p>
-        {{ with .sub }}<p class="text-muted mb-4 text-sm">{{ . }}</p>{{ end }}
-        <a
-          href="{{ .url }}"
-          class="coven-gradient inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg"
-          >{{ .label }}</a
-        >
+      <div class="rough-border-thick tilt-n1 bg-paper-2 relative px-6 py-10 text-center">
+        <p class="text-ink font-display text-2xl tracking-wide uppercase">{{ .heading }}</p>
+        {{ with .sub }}<p class="text-muted mt-2 font-typewriter text-sm">{{ . }}</p>{{ end }}
+        <div class="mt-6"><a href="{{ .url }}" class="zine-btn zine-btn-pink">{{ .label }}</a></div>
       </div>
     {{ end }}
-
   </div>
 {{ end }}

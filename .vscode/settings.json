@@ -22,15 +22,15 @@
   // Resolve Prettier from hugo-site/node_modules so it picks up the
   // go-template + tailwindcss plugins.
   "prettier.prettierPath": "hugo-site/node_modules/prettier",
-  "prettier.configPath": "hugo-site/.prettierrc.json",
-  "prettier.ignorePath": "hugo-site/.prettierignore",
+  "prettier.configPath": "${workspaceFolder}/hugo-site/.prettierrc.json",
+  "prettier.ignorePath": "${workspaceFolder}/hugo-site/.prettierignore",
   "prettier.documentSelectors": ["**/*.html"],
 
   // ────────────────────────────────────────────────────────────────────────
   // Stylelint — lint CSS, auto-fix on save
   // ────────────────────────────────────────────────────────────────────────
   "stylelint.validate": ["css"],
-  "stylelint.configFile": "hugo-site/.stylelintrc.json",
+  "stylelint.configFile": "${workspaceFolder}/hugo-site/.stylelintrc.json",
   "css.validate": false,
   "scss.validate": false,
   "less.validate": false,
@@ -50,7 +50,7 @@
     "gotmpl": "html",
     "go-template-html": "html"
   },
-  "tailwindCSS.experimental.configFile": "hugo-site/assets/css/style.css",
+  "tailwindCSS.experimental.configFile": "${workspaceFolder}/hugo-site/assets/css/style.css",
   // Hugo template syntax confuses the default class regex; these patterns
   // reliably catch `class="..."`, `class='...'`, and conditional class blocks.
   "tailwindCSS.experimental.classRegex": [

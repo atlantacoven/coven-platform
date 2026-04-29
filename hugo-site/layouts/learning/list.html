@@ -5,16 +5,20 @@
     {{ partial "breadcrumb.html" . }}
 
 
-    <!-- Hero -->
-    <div class="mb-12">
-      <h1 class="mb-4 text-4xl font-bold text-white">{{ .Title }}</h1>
+    <div class="mb-10">
+      <div class="mb-3">
+        <span class="zine-stamp stamp-spot-cyan stamp-tilt-l">RTFM · Skill-Share</span>
+      </div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        {{ .Title }}
+      </h1>
       {{ if $isRoot }}
         {{ with $data.hero.tagline }}
-          <p class="text-muted max-w-3xl text-lg leading-relaxed">{{ . }}</p>
+          <p class="text-muted mt-4 max-w-3xl font-typewriter text-base leading-relaxed">{{ . }}</p>
         {{ end }}
       {{ else }}
         {{ with .Description }}
-          <p class="text-muted max-w-3xl text-lg leading-relaxed">{{ . }}</p>
+          <p class="text-muted mt-4 max-w-3xl font-typewriter text-base leading-relaxed">{{ . }}</p>
         {{ end }}
       {{ end }}
     </div>
@@ -23,22 +27,30 @@
       <!-- Section hubs -->
       {{ with $data.sections }}
         <section class="mb-12">
-          <div class="grid gap-4 md:grid-cols-3">
-            {{ range . }}
-              {{ $c := default "accent" .color }}
+          <div class="grid gap-6 md:grid-cols-3">
+            {{ range $i, $s := . }}
+              {{ $color := default "accent" $s.color }}
+              {{ $sc := "pink" }}
+              {{ if eq $color "accent" }}{{ $sc = "pink" }}{{ end }}
+              {{ if eq $color "warm" }}{{ $sc = "acid" }}{{ end }}
+              {{ if eq $color "cyan" }}{{ $sc = "spot-cyan" }}{{ end }}
+              {{ if eq $color "yellow" }}{{ $sc = "acid" }}{{ end }}
+              {{ $tilt := index (slice "tilt-n2" "tilt-1" "tilt-n1") (mod $i 3) }}
               <a
-                href="{{ .url }}"
-                class="group coven-card flex flex-col rounded-xl border p-5 transition-colors hover:border-white/30">
-                <div
-                  class="bg-{{ $c }}-10 text-{{ $c }} mb-4 flex h-10 w-10 items-center justify-center rounded-lg">
-                  {{ partial "icon.html" .icon }}
-                </div>
-                <h2
-                  class="mb-2 text-lg font-semibold text-white transition-colors group-hover:opacity-80">
-                  {{ .title }}
+                href="{{ $s.url }}"
+                class="rough-border-{{ if eq $sc "spot-cyan" }}
+                  cyan
+                {{ else }}
+                  {{ $sc }}
+                {{ end }} {{ $tilt }} group bg-paper-2 flex flex-col p-5 hover:translate-y-[-2px]">
+                <div class="text-{{ $sc }} mb-4">{{ partial "icon.html" $s.icon }}</div>
+                <h2 class="text-ink font-display text-xl tracking-wide uppercase">
+                  {{ $s.title }}
                 </h2>
-                <p class="text-muted flex-1 text-sm">{{ .desc }}</p>
-                <span class="text-{{ $c }} mt-3 text-sm font-medium">Browse →</span>
+                <p class="text-muted mt-2 flex-1 font-typewriter text-sm">{{ $s.desc }}</p>
+                <span class="text-{{ $sc }} mt-4 font-display text-xs tracking-wider uppercase"
+                  >Browse →</span
+                >
               </a>
             {{ end }}
           </div>
@@ -46,11 +58,15 @@
       {{ end }}
 
 
+      <hr class="cut-line" />
+
       <!-- Contributing -->
       {{ with $data.contributing }}
-        <div class="coven-callout rounded-xl border p-6">
-          <h3 class="mb-2 font-semibold text-white">{{ .heading }}</h3>
-          <p class="text-muted text-sm">{{ .body | safeHTML }}</p>
+        <div class="rough-border-thick tilt-n1 bg-paper-2 p-6">
+          <h3 class="text-pink mb-2 font-display text-lg tracking-wide uppercase">
+            {{ .heading }}
+          </h3>
+          <p class="text-ink font-typewriter text-sm leading-relaxed">{{ .body | safeHTML }}</p>
         </div>
       {{ end }}
 
@@ -60,18 +76,17 @@
 
     {{ else }}
 
-      <!-- Subsection content (intro markdown, if any) -->
       {{ with .Content }}
         <div class="prose-coven mb-10">{{ . }}</div>
       {{ end }}
 
-
-      <!-- Page list -->
       {{ with .Pages }}
         <section class="mb-12">
-          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {{ range sort . "Date" "desc" }}
-              {{ partial "content-card.html" . }}
+          <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {{ range $i, $p := sort . "Date" "desc" }}
+              <div class="{{ index (slice "tilt-n1" "tilt-1" "tilt-n2" "tilt-2") (mod $i 4) }}">
+                {{ partial "content-card.html" $p }}
+              </div>
             {{ end }}
           </div>
         </section>
@@ -80,9 +95,13 @@
       {{ end }}
 
 
-      <!-- Back to Learning -->
       <div class="mt-8">
-        <a href="/learning/" class="text-cyan text-sm font-medium">← Back to Learning</a>
+        <a
+          href="/learning/"
+          class="text-acid hover:text-pink font-marker"
+          style="display:inline-block; transform: rotate(-2deg);"
+          >↩ back to Learning</a
+        >
       </div>
     {{ end }}
   </div>

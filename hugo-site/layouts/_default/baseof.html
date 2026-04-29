@@ -3,7 +3,8 @@
   <head>
     {{ partial "head.html" . }}
   </head>
-  <body class="flex min-h-screen flex-col antialiased">
+  <body class="flex min-h-screen flex-col">
+    <div class="paper-grain" aria-hidden="true"></div>
     {{ partial "header.html" . }}
     <main id="main" class="flex-grow">
       {{ block "main" . }}{{ end }}

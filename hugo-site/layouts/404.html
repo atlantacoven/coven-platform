@@ -1,22 +1,32 @@
 {{ define "main" }}
-  <div class="mx-auto max-w-7xl px-4 py-24 text-center sm:px-6 lg:px-8">
-    <div class="text-gradient mb-6 text-8xl font-bold">404</div>
-    <h1 class="mb-4 text-3xl font-bold text-white">Page Not Found</h1>
-    <p class="mx-auto mb-8 max-w-md text-gray-400">
-      The page you are looking for might have been removed, had its name changed, or is temporarily
-      unavailable.
+  <div class="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 lg:px-8">
+    <div class="ransom mx-auto mb-8 inline-block">
+      <span
+        class="word-display text-pink"
+        style="font-size: clamp(8rem, 22vw, 14rem); line-height: 1;"
+        >4</span
+      >
+      <span
+        class="word-typewriter text-ink"
+        style="font-size: clamp(8rem, 22vw, 14rem); line-height: 1;"
+        >0</span
+      >
+      <span
+        class="word-marker text-acid"
+        style="font-size: clamp(8rem, 22vw, 14rem); line-height: 1;"
+        >4</span
+      >
+    </div>
+    <h1 class="text-ink font-display text-3xl tracking-wide uppercase">Page Not Found</h1>
+    <p class="text-muted mx-auto mt-4 max-w-md font-typewriter">
+      This page might have moved, or might never have existed. Either way — not here.
     </p>
-    <a
-      href="/"
-      class="coven-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white transition-all hover:shadow-lg">
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-      Back to Home
-    </a>
+    <div class="mt-10 flex flex-wrap justify-center gap-6">
+      <a href="/" class="zine-btn zine-btn-pink">← Back to Home</a>
+      <a href="/start-here/" class="zine-btn zine-btn-ghost">Start Here</a>
+    </div>
+    <div class="text-acid mt-10 font-marker" style="transform: rotate(-4deg);">
+      ↗ try the masthead nav
+    </div>
   </div>
 {{ end }}

@@ -1,118 +1,82 @@
-<header
-  class="bg-opacity-90 border-b-coven sticky top-0 z-50 backdrop-blur-md"
-  style="background-color: var(--coven-bg-alpha);">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between">
-      <!-- Logo -->
-      <a href="/" class="group flex items-center gap-3">
-        <div
-          class="coven-gradient flex h-10 w-10 items-center justify-center rounded-lg transition-transform group-hover:scale-105">
-          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-          </svg>
-        </div>
-        <div class="flex flex-col">
-          <span class="text-lg leading-tight font-bold text-white">The Coven</span>
-          <span class="text-accent text-xs leading-tight">Maker Space</span>
-        </div>
-      </a>
+<header class="border-b-4 border-double" style="border-color: var(--paper-ink);">
+  <div class="mx-auto max-w-7xl px-4 pt-6 pb-3 sm:px-6 lg:px-8">
+    <!-- Workshop status bar -->
+    <div
+      class="text-muted mb-3 flex flex-wrap items-center justify-between gap-2 font-typewriter text-[0.7rem] tracking-[0.2em] uppercase">
+      <span>Atlanta&nbsp;·&nbsp;{{ .Site.Params.location }}</span>
+      <span class="hidden sm:inline">A queer makerspace — by &amp; for trans creators</span>
+      <span
+        ><a href="mailto:{{ .Site.Params.email }}" class="hover:text-pink"
+          >{{ .Site.Params.email }}</a
+        ></span
+      >
+    </div>
 
-      <!-- Desktop Nav -->
-      <nav class="hidden items-center gap-1 md:flex">
-        <a
-          href="/about/"
-          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >About</a
-        >
-        <a
-          href="/join/"
-          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >Join</a
-        >
-        <a
-          href="/workshops/"
-          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >Workshops</a
-        >
-        <a
-          href="/learning/"
-          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >Learning</a
-        >
-        <a
-          href="/faq/"
-          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >FAQ</a
-        >
-        <a
-          href="/contact/"
-          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >Contact</a
-        >
-        <a
-          href="https://members.thecoven.space"
-          class="coven-gradient ml-4 rounded-full px-5 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg"
-          >Member Login</a
-        >
+    <div class="rule-thick"></div>
+
+    <!-- Masthead -->
+    <a href="/" class="block py-3 text-center hover:no-underline">
+      <h1 class="masthead-title text-[14vw] sm:text-[8rem] lg:text-[10rem]">THE&nbsp;COVEN</h1>
+    </a>
+
+    <div class="rule-double mb-4"></div>
+
+    <!-- Nav row -->
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <nav
+        aria-label="Primary"
+        class="hidden font-typewriter text-sm tracking-[0.15em] uppercase md:flex md:flex-wrap md:items-center md:gap-x-1 md:gap-y-1">
+        <a href="/about/" class="hover:bg-pink px-2 py-1 hover:text-paper-900">About</a>
+        <span class="text-muted" aria-hidden="true">›</span>
+        <a href="/join/" class="hover:bg-pink px-2 py-1 hover:text-paper-900">Join</a>
+        <span class="text-muted" aria-hidden="true">›</span>
+        <a href="/workshops/" class="hover:bg-pink px-2 py-1 hover:text-paper-900">Workshops</a>
+        <span class="text-muted" aria-hidden="true">›</span>
+        <a href="/learning/" class="hover:bg-pink px-2 py-1 hover:text-paper-900">Learning</a>
+        <span class="text-muted" aria-hidden="true">›</span>
+        <a href="/tour/" class="hover:bg-pink px-2 py-1 hover:text-paper-900">Tour</a>
+        <span class="text-muted" aria-hidden="true">›</span>
+        <a href="/faq/" class="hover:bg-pink px-2 py-1 hover:text-paper-900">FAQ</a>
+        <span class="text-muted" aria-hidden="true">›</span>
+        <a href="/contact/" class="hover:bg-pink px-2 py-1 hover:text-paper-900">Contact</a>
       </nav>
 
-      <!-- Mobile Menu Button -->
+      <a
+        href="https://members.thecoven.space"
+        class="zine-stamp stamp-pink stamp-tilt-r ml-auto hidden md:inline-block">
+        Members&nbsp;Enter&nbsp;→
+      </a>
+
+      <!-- Mobile menu toggle -->
       <button
         id="mobile-menu-btn"
-        class="rounded-md p-2 text-gray-300 hover:bg-white/10 hover:text-white md:hidden">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+        class="zine-stamp stamp-ink stamp-flat ml-auto md:hidden"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu">
+        Menu&nbsp;≡
       </button>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden pb-4 md:hidden">
-      <nav class="flex flex-col gap-1">
-        <a
-          href="/about/"
-          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >About</a
-        >
-        <a
-          href="/join/"
-          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >Join</a
-        >
-        <a
-          href="/workshops/"
-          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >Workshops</a
-        >
-        <a
-          href="/learning/"
-          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >Learning</a
-        >
-        <a
-          href="/faq/"
-          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >FAQ</a
-        >
-        <a
-          href="/contact/"
-          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-          >Contact</a
-        >
-        <a
-          href="https://members.thecoven.space"
-          class="coven-gradient mt-2 rounded-md px-4 py-3 text-center text-sm font-semibold text-white"
-          >Member Login</a
-        >
-      </nav>
-    </div>
+    <!-- Mobile menu -->
+    <nav
+      id="mobile-menu"
+      aria-label="Mobile"
+      class="hidden pt-4 pb-2 font-typewriter text-base tracking-[0.1em] uppercase md:hidden">
+      <ul class="flex flex-col gap-1">
+        <li><a href="/about/" class="hover:text-pink block py-2">› About</a></li>
+        <li><a href="/join/" class="hover:text-pink block py-2">› Join</a></li>
+        <li><a href="/workshops/" class="hover:text-pink block py-2">› Workshops</a></li>
+        <li><a href="/learning/" class="hover:text-pink block py-2">› Learning</a></li>
+        <li><a href="/tour/" class="hover:text-pink block py-2">› Tour</a></li>
+        <li><a href="/faq/" class="hover:text-pink block py-2">› FAQ</a></li>
+        <li><a href="/contact/" class="hover:text-pink block py-2">› Contact</a></li>
+        <li class="pt-2">
+          <a href="https://members.thecoven.space" class="zine-stamp stamp-pink stamp-tilt-r"
+            >Members&nbsp;Enter&nbsp;→</a
+          >
+        </li>
+      </ul>
+    </nav>
   </div>
 </header>

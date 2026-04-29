@@ -3,9 +3,14 @@
     {{ partial "breadcrumb.html" . }}
 
 
-    <div class="mb-12">
-      <h1 class="mb-3 text-4xl font-bold text-white">Frequently Asked Questions</h1>
-      <p class="text-muted">
+    <div class="mb-10">
+      <div class="mb-3">
+        <span class="zine-stamp stamp-acid stamp-tilt-l">Q&A · Asked Often</span>
+      </div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        FAQ
+      </h1>
+      <p class="text-muted mt-4 max-w-3xl font-typewriter text-base">
         {{ .Description | default "Everything you need to know about The Coven makerspace." }}
       </p>
     </div>
@@ -14,29 +19,31 @@
       <div class="faq-prose text-muted mb-10">{{ . }}</div>
     {{ end }}
 
-    {{ range hugo.Data.faq }}
-      {{ $color := default "accent" .color }}
-      <div class="mb-10">
-        <h2 class="mb-4 text-xl font-bold" style="color: var(--coven-{{ $color }});">
-          {{ .group }}
+    {{ range $gi, $g := hugo.Data.faq }}
+      {{ $color := default "accent" $g.color }}
+      {{ $sc := "pink" }}
+      {{ if eq $color "accent" }}{{ $sc = "pink" }}{{ end }}
+      {{ if eq $color "warm" }}{{ $sc = "acid" }}{{ end }}
+      {{ if eq $color "cyan" }}{{ $sc = "spot-cyan" }}{{ end }}
+      {{ if eq $color "yellow" }}{{ $sc = "acid" }}{{ end }}
+      <section class="mb-12">
+        <h2 class="text-{{ $sc }} mb-4 font-display text-2xl tracking-wide uppercase">
+          § {{ $g.group }}
         </h2>
-        <div class="space-y-2">
-          {{ range .items }}
-            {{ partial "faq-item.html" (dict "item" . "color" $color) }}
+        <div>
+          {{ range $g.items }}
+            {{ partial "faq-item.html" (dict "item" . "color" $sc) }}
           {{ end }}
         </div>
-      </div>
+      </section>
     {{ end }}
 
 
-    <!-- CTA -->
-    <div class="coven-card mt-12 rounded-xl border p-6 text-center">
-      <p class="mb-4 font-medium text-white">Still have questions?</p>
-      <a
-        href="/contact/"
-        class="coven-gradient inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg"
-        >Get in Touch</a
-      >
+    <hr class="cut-line" />
+
+    <div class="rough-border-thick tilt-n1 bg-paper-2 px-6 py-10 text-center">
+      <p class="text-ink font-display text-2xl tracking-wide uppercase">Still have questions?</p>
+      <div class="mt-6"><a href="/contact/" class="zine-btn zine-btn-pink">Get in Touch →</a></div>
     </div>
   </div>
 

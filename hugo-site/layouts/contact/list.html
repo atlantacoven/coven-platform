@@ -4,71 +4,92 @@
     {{ partial "breadcrumb.html" . }}
 
 
-    <!-- Page header -->
     <div class="mb-10">
-      <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title }}</h1>
-      <p class="text-muted">{{ .Description | default "Get in touch with The Coven." }}</p>
+      <div class="mb-3"><span class="zine-stamp stamp-pink stamp-tilt-l">Drop Us a Line</span></div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        {{ .Title }}
+      </h1>
+      <p class="text-muted mt-4 max-w-2xl font-typewriter text-base">
+        {{ .Description | default "Get in touch with The Coven." }}
+      </p>
     </div>
 
-    <!-- Intro -->
     {{ with $data.intro }}
-      <div class="coven-callout mb-10 rounded-xl border p-5">
-        <p class="text-muted text-sm leading-relaxed">{{ . | safeHTML }}</p>
+      <div class="rough-border-thick tilt-n1 bg-paper-2 mb-10 p-6">
+        <p class="text-ink font-serif text-lg leading-relaxed">{{ . | safeHTML }}</p>
       </div>
     {{ end }}
 
-
-    <!-- Channels -->
     {{ with $data.channels }}
       <section class="mb-10">
-        <h2 class="mb-4 text-xl font-bold text-white">How to Reach Us</h2>
-        <div class="grid gap-4 sm:grid-cols-2">
-          {{ range . }}
-            {{ $color := default "accent" .color }}
-            <div class="coven-card flex flex-col rounded-xl border p-5">
-              <div
-                class="mb-3 text-xs font-bold tracking-widest uppercase"
-                style="color: var(--coven-{{ $color }});">
-                {{ .tagline }}
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">How to Reach Us</h2>
+        <div class="grid gap-6 sm:grid-cols-2">
+          {{ range $i, $ch := . }}
+            {{ $color := default "accent" $ch.color }}
+            {{ $sc := "pink" }}
+            {{ if eq $color "warm" }}{{ $sc = "acid" }}{{ end }}
+            {{ if eq $color "cyan" }}{{ $sc = "spot-cyan" }}{{ end }}
+            {{ if eq $color "yellow" }}{{ $sc = "acid" }}{{ end }}
+            {{ if eq $color "accent" }}{{ $sc = "pink" }}{{ end }}
+            {{ $tilt := index (slice "tilt-n1" "tilt-1" "tilt-n2" "tilt-2") (mod $i 4) }}
+            <div
+              class="rough-border-{{ if eq $sc "spot-cyan" }}
+                cyan
+              {{ else }}
+                {{ $sc }}
+              {{ end }} {{ $tilt }} bg-paper-2 flex flex-col p-5">
+              <div class="text-{{ $sc }} font-display text-xs tracking-[0.2em] uppercase">
+                {{ $ch.tagline }}
               </div>
-              <h3 class="mb-2 text-lg font-semibold text-white">{{ .name }}</h3>
-              <p class="text-muted mb-4 flex-1 text-sm">{{ .body | safeHTML }}</p>
+              <h3 class="text-ink mt-2 font-display text-xl tracking-wide uppercase">
+                {{ $ch.name }}
+              </h3>
+              <p class="text-muted mt-2 flex-1 font-typewriter text-sm">
+                {{ $ch.body | safeHTML }}
+              </p>
 
-              {{ if .qr_placeholder }}
+              {{ if $ch.qr_placeholder }}
                 <div
-                  class="coven-surface border-coven my-3 flex flex-col items-center gap-2 rounded-lg border p-4">
+                  class="mt-4 flex flex-col items-center gap-2 border-2 border-dashed p-4"
+                  style="border-color: var(--rule);">
                   <div
-                    class="text-muted flex h-32 w-32 items-center justify-center rounded-md text-center font-mono text-xs"
-                    style="background: repeating-conic-gradient(var(--coven-bg) 0% 25%, var(--coven-surface) 0% 50%) 50% / 16px 16px;">
-                    <span class="bg-coven-surface-alpha rounded px-2 py-1">QR&nbsp;CODE</span>
+                    class="text-ink flex h-32 w-32 items-center justify-center font-typewriter text-xs"
+                    style="background: repeating-conic-gradient(var(--paper-bg) 0% 25%, var(--paper-ink) 0% 50%) 50% / 16px 16px;">
+                    <span class="bg-paper text-ink px-2 py-1">QR&nbsp;CODE</span>
                   </div>
-                  <p class="text-muted text-center text-xs">Signal QR code coming soon</p>
+                  <p class="text-muted text-center font-typewriter text-xs">
+                    Signal QR code coming soon
+                  </p>
                 </div>
               {{ end }}
 
 
-              <div class="text-muted border-t-coven mt-auto pt-3 text-xs">{{ .response }}</div>
+              <div
+                class="text-muted mt-4 border-t-2 border-dashed pt-3 font-typewriter text-xs"
+                style="border-color: var(--rule);">
+                {{ $ch.response }}
+              </div>
             </div>
           {{ end }}
         </div>
       </section>
     {{ end }}
 
-
-    <!-- Membership pointer -->
     {{ with $data.membership }}
       <section class="mb-10">
-        <div class="coven-card rounded-xl border p-5">
-          <h3 class="mb-2 font-semibold text-white">{{ .heading }}</h3>
-          <p class="text-muted text-sm">{{ .body | safeHTML }}</p>
+        <div class="zine-card-bare tilt-n1">
+          <h3 class="text-pink mb-2 font-display text-lg tracking-wide uppercase">
+            {{ .heading }}
+          </h3>
+          <p class="text-muted font-typewriter text-sm">{{ .body | safeHTML }}</p>
         </div>
       </section>
     {{ end }}
 
-
-    <!-- Privacy note -->
     {{ with $data.privacy_note }}
-      <div class="border-coven text-muted rounded-lg border p-4 text-center text-sm">
+      <div
+        class="text-muted border-t-2 border-dashed pt-5 text-center font-typewriter text-sm"
+        style="border-color: var(--rule);">
         {{ . | safeHTML }}
       </div>
     {{ end }}
@@ -76,6 +97,5 @@
     {{ with .Content }}
       <div class="prose-coven mt-10">{{ . }}</div>
     {{ end }}
-
   </div>
 {{ end }}

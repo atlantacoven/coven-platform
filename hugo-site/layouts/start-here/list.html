@@ -4,32 +4,41 @@
     {{ partial "breadcrumb.html" . }}
 
 
-    <div class="mb-12">
-      <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title }}</h1>
-      <p class="text-muted text-lg">
+    <div class="mb-10">
+      <div class="mb-3">
+        <span class="zine-stamp stamp-pink stamp-tilt-l zine-stamp-lg">New Here? Start Here</span>
+      </div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        {{ .Title }}
+      </h1>
+      <p class="text-muted mt-4 max-w-2xl font-typewriter text-base leading-relaxed">
         {{ .Description | default "New to The Coven? Here's everything you need to know to get involved." }}
       </p>
     </div>
 
-    <!-- Intro callout -->
     {{ with $data.intro }}
-      <div class="coven-callout mb-10 rounded-xl border p-5">
-        <p class="text-muted text-sm leading-relaxed">{{ . | safeHTML }}</p>
+      <div class="rough-border-thick tilt-n1 bg-paper-2 mb-10 p-6">
+        <p class="text-ink font-serif text-lg leading-relaxed">{{ . | safeHTML }}</p>
       </div>
     {{ end }}
 
 
     <!-- What we offer -->
     {{ with $data.offerings }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-xl font-bold text-white">What We Offer</h2>
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">What We Offer</h2>
         <div class="grid gap-4 sm:grid-cols-2">
-          {{ range . }}
-            <div class="coven-card flex gap-4 rounded-xl border p-4">
-              <div class="flex-shrink-0 text-xl">{{ .icon }}</div>
+          {{ range $i, $o := . }}
+            {{ $tilt := index (slice "tilt-n1" "tilt-1" "tilt-n2" "tilt-2") (mod $i 4) }}
+            <div class="zine-card-bare {{ $tilt }} flex gap-3">
+              <span class="text-pink font-display text-2xl" style="line-height:1;"
+                >{{ $o.icon }}</span
+              >
               <div>
-                <div class="text-sm font-semibold text-white">{{ .title }}</div>
-                <div class="text-muted mt-0.5 text-xs">{{ .desc }}</div>
+                <div class="text-ink font-display text-base tracking-wide uppercase">
+                  {{ $o.title }}
+                </div>
+                <div class="text-muted mt-1 font-typewriter text-xs">{{ $o.desc }}</div>
               </div>
             </div>
           {{ end }}
@@ -38,12 +47,15 @@
     {{ end }}
 
 
-    <!-- How to get involved -->
+    <hr class="cut-line" />
+
+    <!-- Paths -->
     {{ with $data.paths }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-xl font-bold text-white">How to Get Involved</h2>
-        <div class="space-y-4">
-          {{/* Render wide cards stacked, then group narrow cards into 2-col rows */}}
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">
+          How to Get Involved
+        </h2>
+        <div class="space-y-5">
           {{ $narrow := slice }}
           {{ range . }}
             {{ if .wide }}
@@ -52,45 +64,60 @@
               {{ $narrow = $narrow | append . }}
             {{ end }}
           {{ end }}
-
           {{ if $narrow }}
-            <div class="grid gap-4 sm:grid-cols-2">
-              {{ range $narrow }}
-                {{ partial "start-here-path.html" . }}
-              {{ end }}
+            <div class="grid gap-5 sm:grid-cols-2">
+              {{ range $narrow }}{{ partial "start-here-path.html" . }}{{ end }}
             </div>
           {{ end }}
-
         </div>
       </section>
     {{ end }}
 
 
+    <hr class="cut-line" />
+
     <!-- Membership table -->
     {{ with $data.table }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-xl font-bold text-white">Membership at a Glance</h2>
-        <div class="border-coven overflow-x-auto rounded-xl border">
-          <table class="w-full text-sm">
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">
+          Membership at a Glance
+        </h2>
+        <div class="rough-border bg-paper-2 overflow-x-auto">
+          <table class="w-full font-typewriter text-sm">
             <thead>
-              <tr class="coven-surface">
-                <th class="px-4 py-3 text-left font-semibold text-white">Type</th>
-                <th class="px-4 py-3 text-left font-semibold text-white">Monthly</th>
-                <th class="px-4 py-3 text-left font-semibold text-white">Access</th>
-                <th class="px-4 py-3 text-left font-semibold text-white">Storage</th>
+              <tr class="border-b-2" style="border-color: var(--paper-ink);">
+                <th
+                  class="text-pink px-4 py-3 text-left font-display text-xs tracking-[0.18em] uppercase">
+                  Type
+                </th>
+                <th
+                  class="text-acid px-4 py-3 text-left font-display text-xs tracking-[0.18em] uppercase">
+                  Monthly
+                </th>
+                <th
+                  class="text-spot-cyan px-4 py-3 text-left font-display text-xs tracking-[0.18em] uppercase">
+                  Access
+                </th>
+                <th
+                  class="text-pink px-4 py-3 text-left font-display text-xs tracking-[0.18em] uppercase">
+                  Storage
+                </th>
               </tr>
             </thead>
             <tbody>
               {{ range . }}
-                <tr class="coven-card-bare border-t-coven">
-                  <td
-                    class="px-4 py-3 font-semibold"
-                    style="color: var(--coven-{{ default "accent" .color }});">
+                {{ $color := default "accent" .color }}
+                {{ $sc := "pink" }}
+                {{ if eq $color "warm" }}{{ $sc = "acid" }}{{ end }}
+                {{ if eq $color "cyan" }}{{ $sc = "spot-cyan" }}{{ end }}
+                {{ if eq $color "yellow" }}{{ $sc = "acid" }}{{ end }}
+                <tr class="border-b border-dashed" style="border-color: var(--rule);">
+                  <td class="text-{{ $sc }} px-4 py-3 font-display tracking-wider uppercase">
                     {{ .type }}
                   </td>
-                  <td class="text-muted px-4 py-3">{{ .cost }}</td>
-                  <td class="text-muted px-4 py-3">{{ .access }}</td>
-                  <td class="text-muted px-4 py-3">{{ .storage }}</td>
+                  <td class="text-ink px-4 py-3">{{ .cost }}</td>
+                  <td class="text-ink px-4 py-3">{{ .access }}</td>
+                  <td class="text-ink px-4 py-3">{{ .storage }}</td>
                 </tr>
               {{ end }}
             </tbody>
@@ -102,13 +129,14 @@
 
     <!-- First day checklist -->
     {{ with $data.first_day }}
-      {{ $palette := slice "accent" "cyan" "warm" "yellow" }}
-      <section class="mb-10">
-        <h2 class="mb-4 text-xl font-bold text-white">Your First Day</h2>
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">Your First Day</h2>
         <div class="grid gap-3 sm:grid-cols-2">
+          {{ $stamps := slice "pink" "spot-cyan" "acid" "ink" }}
           {{ range $i, $item := . }}
-            <div class="coven-card text-muted flex gap-3 rounded-lg border p-3 text-sm">
-              <span class="text-{{ index $palette (mod $i 4) }}">☐</span> {{ $item }}
+            {{ $sc := index $stamps (mod $i 4) }}
+            <div class="zine-card-bare text-ink flex gap-3 font-typewriter text-sm">
+              <span class="text-{{ $sc }} font-display">☐</span> <span>{{ $item }}</span>
             </div>
           {{ end }}
         </div>
@@ -122,26 +150,17 @@
 
     <!-- CTA -->
     {{ with $data.cta }}
-      <div class="coven-card rounded-xl border p-6 text-center">
-        <p class="mb-4 font-medium text-white">{{ .text }}</p>
-        <div class="flex flex-wrap justify-center gap-3">
+      <div class="rough-border-thick tilt-n1 bg-paper-2 px-6 py-10 text-center">
+        <p class="text-ink font-display text-2xl tracking-wide uppercase">{{ .text }}</p>
+        <div class="mt-6 flex flex-wrap justify-center gap-6">
           {{ with .primary }}
-            <a
-              href="{{ .url }}"
-              class="coven-gradient inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold text-white"
-              >{{ .label }}</a
-            >
+            <a href="{{ .url }}" class="zine-btn zine-btn-pink">{{ .label }}</a>
           {{ end }}
           {{ with .secondary }}
-            <a
-              href="{{ .url }}"
-              class="border-coven text-muted inline-flex items-center gap-2 rounded-full border px-6 py-2 text-sm font-semibold"
-              >{{ .label }}</a
-            >
+            <a href="{{ .url }}" class="zine-btn zine-btn-ghost">{{ .label }}</a>
           {{ end }}
         </div>
       </div>
     {{ end }}
-
   </div>
 {{ end }}
