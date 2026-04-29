@@ -37,11 +37,11 @@ Browse [Printables](https://www.printables.com) or [Thingiverse](https://www.thi
 
 Open PrusaSlicer and import your STL file. Key settings for beginners:
 
-| Setting | Value | Why |
-|---------|-------|-----|
-| Layer Height | 0.2mm | Good balance of speed and quality |
-| Infill | 20% | Strong enough for most parts |
-| Supports | None | Avoid if possible for first prints |
+| Setting      | Value | Why                                |
+| ------------ | ----- | ---------------------------------- |
+| Layer Height | 0.2mm | Good balance of speed and quality  |
+| Infill       | 20%   | Strong enough for most parts       |
+| Supports     | None  | Avoid if possible for first prints |
 
 ## Step 3: Load Filament
 
@@ -60,6 +60,7 @@ Send the sliced G-code to the printer via SD card or our OctoPrint network. Watc
 ## Next Steps
 
 Once you have a few successful prints, try:
+
 - Multi-material printing with our MMU2S units
 - Designing your own models in Fusion 360 (free for hobbyists)
 - Advanced materials like PETG and ASA

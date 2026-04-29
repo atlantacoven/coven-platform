@@ -14,10 +14,10 @@ This guide covers everything you need to know in your first week as a member. Fo
 
 ## Access Levels
 
-| Level | Requirements | Access |
-|-------|-------------|--------|
-| Visitor | Day pass | General workshop |
-| Member | Monthly dues | All tools after orientation |
+| Level     | Requirements  | Access                            |
+| --------- | ------------- | --------------------------------- |
+| Visitor   | Day pass      | General workshop                  |
+| Member    | Monthly dues  | All tools after orientation       |
 | Certified | Per-tool quiz | Advanced tools (laser, CNC, etc.) |
 
 ## Tool Certifications
@@ -51,4 +51,3 @@ Not sure what to make? Try one of these to get familiar with the tools:
 - Engraved keychain (laser, ~30 minutes)
 - LED circuit (soldering, ~1 hour)
 - Simple shelf (woodshop, ~3 hours)
-

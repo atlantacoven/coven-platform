@@ -22,13 +22,13 @@ Our flagship laser cutter. Capable of cutting up to 12mm wood and 15mm acrylic.
 
 ### Materials Guide
 
-| Material | Cut | Engrave | Notes |
-|----------|-----|---------|-------|
-| Baltic Birch | Yes | Yes | Up to 12mm |
-| Acrylic | Yes | Yes | Up to 15mm |
-| Leather | Yes | Yes | Natural only |
-| Glass | No | Yes | Use rotary attachment |
-| PVC / Vinyl | No | No | Toxic fumes |
+| Material     | Cut | Engrave | Notes                 |
+| ------------ | --- | ------- | --------------------- |
+| Baltic Birch | Yes | Yes     | Up to 12mm            |
+| Acrylic      | Yes | Yes     | Up to 15mm            |
+| Leather      | Yes | Yes     | Natural only          |
+| Glass        | No  | Yes     | Use rotary attachment |
+| PVC / Vinyl  | No  | No      | Toxic fumes           |
 
 ### Booking
 

@@ -1,0 +1,81 @@
+{
+  // ────────────────────────────────────────────────────────────────────────
+  // Editor defaults
+  // ────────────────────────────────────────────────────────────────────────
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  // ────────────────────────────────────────────────────────────────────────
+  // Per-language formatters (Prettier handles HTML/CSS/MD/JSON/YAML)
+  // ────────────────────────────────────────────────────────────────────────
+  "[html]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[yaml]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  // Resolve Prettier from hugo-site/node_modules so it picks up the
+  // go-template + tailwindcss plugins.
+  "prettier.prettierPath": "hugo-site/node_modules/prettier",
+  "prettier.configPath": "${workspaceFolder}/hugo-site/.prettierrc.json",
+  "prettier.ignorePath": "${workspaceFolder}/hugo-site/.prettierignore",
+  "prettier.documentSelectors": ["**/*.html"],
+
+  // ────────────────────────────────────────────────────────────────────────
+  // Stylelint — lint CSS, auto-fix on save
+  // ────────────────────────────────────────────────────────────────────────
+  "stylelint.validate": ["css"],
+  "stylelint.configFile": "${workspaceFolder}/hugo-site/.stylelintrc.json",
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit"
+  },
+
+  // ────────────────────────────────────────────────────────────────────────
+  // Tailwind CSS IntelliSense
+  // ────────────────────────────────────────────────────────────────────────
+  // Treat Hugo templates as HTML so utilities are recognised inside `class="..."`.
+  "files.associations": {
+    "*.html": "html"
+  },
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "gotmpl": "html",
+    "go-template-html": "html"
+  },
+  "tailwindCSS.experimental.configFile": "${workspaceFolder}/hugo-site/assets/css/style.css",
+  // Hugo template syntax confuses the default class regex; these patterns
+  // reliably catch `class="..."`, `class='...'`, and conditional class blocks.
+  "tailwindCSS.experimental.classRegex": [
+    ["class\\s*=\\s*\"([^\"]*)\"", "([\\w\\-:\\[\\]\\/\\.\\(\\)%]+)"],
+    ["class\\s*=\\s*'([^']*)'", "([\\w\\-:\\[\\]\\/\\.\\(\\)%]+)"]
+  ],
+  "tailwindCSS.lint.cssConflict": "warning",
+  "tailwindCSS.lint.invalidApply": "error",
+  "tailwindCSS.lint.invalidConfigPath": "error",
+  "tailwindCSS.lint.invalidScreen": "error",
+  "tailwindCSS.lint.invalidTailwindDirective": "error",
+  "tailwindCSS.lint.invalidVariant": "error",
+  "tailwindCSS.lint.recommendedVariantOrder": "warning",
+
+  // ────────────────────────────────────────────────────────────────────────
+  // File exclusions
+  // ────────────────────────────────────────────────────────────────────────
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.hugo_build.lock": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/public": true,
+    "**/resources": true,
+    "**/package-lock.json": true
+  }
+}

@@ -1,56 +1,86 @@
 {{ define "main" }}
-<div class="py-12 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-  {{ if not .IsHome }}
-  {{ partial "breadcrumb.html" . }}
-  {{ end }}
-
-  <article class="max-w-4xl">
-    {{ if .Params.difficulty }}
-    {{ $d := lower .Params.difficulty }}
-    {{ $dc := cond (in (slice "beginner" "easy") $d) "cyan" (cond (in (slice "intermediate" "medium") $d) "warm" (cond (in (slice "advanced" "hard") $d) "accent" "yellow")) }}
-    <div class="flex gap-3 mb-4">
-      <span class="py-1 px-3 text-sm font-medium rounded-full bg-{{ $dc }}-10 text-{{ $dc }}">{{ .Params.difficulty }}</span>
-      {{ range .Params.tags }}
-      <span class="py-1 px-3 text-sm text-gray-400 rounded-full bg-white/5">{{ . }}</span>
-      {{ end }}
-    </div>
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    {{ if not .IsHome }}
+      {{ partial "breadcrumb.html" . }}
     {{ end }}
 
-    <h1 class="mb-4 text-4xl font-bold text-white">{{ .Title }}</h1>
 
-    {{ if .Date }}
-    <div class="flex gap-4 items-center mb-8 text-sm text-gray-400">
-      <span class="flex gap-1 items-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        {{ .Date | time.Format "January 2, 2006" }}
-      </span>
-      {{ if .Params.author }}
-      <span class="flex gap-1 items-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-        {{ .Params.author }}
-      </span>
+    <article class="max-w-3xl">
+      <!-- Stamp tags -->
+      {{ if or .Params.difficulty .Params.tags }}
+        <div class="mb-6 flex flex-wrap gap-3">
+          {{ if .Params.difficulty }}
+            {{ $d := lower .Params.difficulty }}
+            {{ $dc := cond (in (slice "beginner" "easy") $d) "spot-cyan" (cond (in (slice "intermediate" "medium") $d) "acid" (cond (in (slice "advanced" "hard") $d) "blood" "pink")) }}
+            <span class="zine-stamp stamp-{{ $dc }} stamp-tilt-l zine-stamp-lg"
+              >{{ .Params.difficulty }}</span
+            >
+          {{ end }}
+          {{ range $i, $t := .Params.tags }}
+            {{ $sc := index (slice "pink" "acid" "spot-cyan" "ink") (mod $i 4) }}
+            {{ $tilt := index (slice "stamp-tilt-r" "stamp-tilt-l" "stamp-flat") (mod $i 3) }}
+            <span class="zine-stamp stamp-{{ $sc }} {{ $tilt }}">{{ $t }}</span>
+          {{ end }}
+        </div>
       {{ end }}
-      <span class="flex gap-1 items-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        {{ .ReadingTime }} min read
-      </span>
-    </div>
-    {{ end }}
 
-    {{ if .Params.equipment }}
-    <div class="p-4 mb-8 rounded-xl border coven-surface border-coven">
-      <h3 class="mb-2 text-sm font-semibold text-white">Equipment Used</h3>
-      <div class="flex flex-wrap gap-2">
-        {{ range .Params.equipment }}
-        <a href="/learning/equipment/{{ . | urlize }}/" class="py-1 px-3 text-sm text-gray-300 rounded-full transition-all hover:text-white bg-white/5 hover:bg-white/10">{{ . }}</a>
-        {{ end }}
+
+      <!-- Headline -->
+      <h1 class="text-ink font-display text-4xl leading-[1.05] tracking-wide uppercase sm:text-5xl">
+        {{ .Title }}
+      </h1>
+
+      <!-- Typewriter byline -->
+      {{ if or .Date .Params.author -}}
+        <p class="text-muted mt-4 font-typewriter text-xs tracking-[0.18em] uppercase">
+          {{- if .Params.author }}By {{ .Params.author | upper }}{{ end -}}
+          {{- if and .Params.author .Date }}·{{ end -}}
+          {{- if .Date }}{{ .Date | time.Format "January 2, 2006" }}{{ end -}}
+          {{- if .ReadingTime }}· {{ .ReadingTime }} min read{{ end -}}
+        </p>
+      {{- end }}
+
+
+      <hr class="cut-line" />
+
+      <!-- Equipment used -->
+      {{ if .Params.equipment }}
+        <div class="rough-border bg-paper-2 mb-8 p-5">
+          <div class="text-acid mb-2 font-display text-xs tracking-[0.18em] uppercase">
+            § Materials Required
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {{ range .Params.equipment }}
+              <a
+                href="/learning/equipment/{{ . | urlize }}/"
+                class="zine-stamp stamp-ink hover:stamp-pink"
+                >{{ . }}</a
+              >
+            {{ end }}
+          </div>
+        </div>
+      {{ end }}
+
+
+      <!-- Body -->
+      <div class="prose-coven">
+        {{ .Content }}
       </div>
-    </div>
-    {{ end }}
 
-    <div class="prose-coven">
-      {{ .Content }}
-    </div>
-  </article>
-</div>
+      <!-- Footer marginalia -->
+      <hr class="cut-line" />
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-4">
+        <span class="page-number"
+          >{{ .Section | upper }} ·
+          {{ if .Date }}{{ .Date | time.Format "01.02.06" }}{{ end }}</span
+        >
+        <a
+          href="/"
+          class="text-acid hover:text-pink font-marker"
+          style="transform: rotate(-2deg); display: inline-block;"
+          >↩ back to the workshop</a
+        >
+      </div>
+    </article>
+  </div>
 {{ end }}

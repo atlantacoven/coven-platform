@@ -1,11 +1,16 @@
-<nav class="mb-8">
-  <ol class="flex gap-2 items-center text-sm text-gray-400">
-    <li><a href="/" class="transition-colors hover:text-white">Home</a></li>
+<nav class="mb-6" aria-label="Breadcrumb">
+  <ol
+    class="text-muted flex flex-wrap items-center gap-x-2 gap-y-1 font-typewriter text-xs tracking-[0.15em] uppercase">
+    <li><span class="text-faint">「</span></li>
+    <li><a href="/" class="hover:text-pink">home</a></li>
     {{ range .Ancestors.Reverse }}
-    <li class="text-gray-600">/</li>
-    <li><a href="{{ .RelPermalink }}" class="transition-colors hover:text-white">{{ .Title }}</a></li>
+      <li class="text-faint" aria-hidden="true">›</li>
+      <li>
+        <a href="{{ .RelPermalink }}" class="hover:text-pink">{{ .Title | lower }}</a>
+      </li>
     {{ end }}
-    <li class="text-gray-600">/</li>
-    <li class="text-gray-300" aria-current="page">{{ .Title }}</li>
+    <li class="text-faint" aria-hidden="true">›</li>
+    <li class="text-ink" aria-current="page">{{ .Title | lower }}</li>
+    <li><span class="text-faint">」</span></li>
   </ol>
 </nav>

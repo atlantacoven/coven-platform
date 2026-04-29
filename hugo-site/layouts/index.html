@@ -1,137 +1,234 @@
 {{ define "main" }}
-{{- $heroImages := resources.Match "images/hero/*" -}}
-<!-- hero section-->
-<section class="overflow-hidden relative" style="min-height: 560px;">
-  <!-- slideshow background -->
-  <div id="hero-slides" class="absolute inset-0">
-    {{ range $i, $img := $heroImages }}
-    {{- $processed := $img | resources.Fingerprint -}}
-    <div class="hero-slide absolute inset-0 transition-opacity duration-[3000ms]{{ if eq $i 0 }} opacity-100{{ else }} opacity-0{{ end }}">
-      <img src="{{ $processed.RelPermalink }}" alt="" class="object-cover w-full h-full" style="object-position: center;">
-    </div>
-    {{ end }}
-    <!-- dark overlay so text stays readable -->
-    <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(27,16,51,0.82) 0%, rgba(38,24,72,0.70) 100%);"></div>
-  </div>
-  <div class="relative py-24 px-4 mx-auto max-w-7xl sm:px-6 lg:py-32 lg:px-8">
-    <div class="grid gap-12 items-center lg:grid-cols-2">
-      <div class="text-center lg:text-left">
-        <div class="inline-flex gap-2 items-center py-2 px-4 mb-6 text-sm font-medium rounded-full coven-pill">
-          <span class="w-2 h-2 rounded-full" style="background: var(--coven-accent);"></span>
-          A Space for LGBTQ Creators — Founded 2025
+  {{- $heroImages := resources.Match "images/hero/*" -}}
+
+
+  <!-- ============================================================
+       HERO — photo-led workshop intro
+       ============================================================ -->
+  <section class="relative overflow-hidden">
+    <div
+      class="mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-12 lg:gap-10 lg:px-8 lg:py-20">
+      <!-- LEFT: headline + manifesto + CTAs -->
+      <div class="lg:col-span-7 lg:pr-4">
+        <div class="mb-5 inline-block">
+          <span class="zine-stamp stamp-pink stamp-tilt-l">Atlanta · Community Workshop</span>
         </div>
-        <h1 class="mb-6 text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
-          Make Together.<br><span class="text-gradient">Belong Completely.</span>
+
+        <h1 class="ransom mb-8 text-5xl leading-[1.05] sm:text-6xl lg:text-[5rem]">
+          <span class="word-display text-ink">A&nbsp;WORKSHOP</span>
+          <span class="word-marker word-pink">built by</span><br />
+          <span class="word-display text-ink">&amp;&nbsp;FOR</span>
+          <span
+            class="word-typewriter word-cyan italic"
+            style="text-decoration: underline; text-decoration-thickness: 4px; text-decoration-color: var(--spot-pink);"
+            >trans creators.</span
+          >
         </h1>
-        <p class="mx-auto mb-8 max-w-xl text-lg text-gray-400 lg:mx-0">A collaborative makerspace for LGBTQ creators interested in 3d printing, cosplay, video, and electronics. Built by us, for us. Prioritizing safety, empowerment, and creative freedom.</p>
-        <div class="flex flex-col gap-4 justify-center sm:flex-row lg:justify-start">
-          <a href="/start-here/" class="py-3 px-8 font-semibold text-center text-white rounded-full transition-all hover:shadow-lg coven-gradient">Start Here</a>
-          <a href="/join/" class="py-3 px-8 font-semibold text-center text-white rounded-full border transition-all bg-white/10 border-white/20 hover:bg-white/20">Become a Member</a>
-        </div>
-        <div class="flex gap-8 justify-center mt-12 lg:justify-start">
-          <div><div class="text-2xl font-bold text-white">5</div><div class="text-sm text-gray-400">Members</div></div>
-          <div><div class="text-2xl font-bold text-white">2025</div><div class="text-sm text-gray-400">Founded</div></div>
+
+        <p class="text-ink mb-8 max-w-xl font-typewriter text-base leading-relaxed sm:text-lg">
+          Shared tools, shared knowledge, shared room to mess up.
+          {{ with .Site.Params.description }}
+            <span class="text-muted mt-3 block text-sm">{{ . }}</span>
+          {{ end }}
+        </p>
+
+        <div class="flex flex-wrap items-center gap-6">
+          <a href="/start-here/" class="zine-btn zine-btn-pink tilt-n1">New Here? Start Here</a>
+          <span class="scrawl-arrow hidden sm:inline">↗</span>
+          <a href="/tour/" class="zine-btn zine-btn-ghost tilt-1">Take a Tour</a>
         </div>
       </div>
-      <div class="hidden relative lg:block">
-        <div class="absolute -inset-4 rounded-2xl opacity-20 blur-2xl coven-gradient"></div>
-        <div class="relative p-6 rounded-2xl border shadow-2xl border-white/10 coven-surface">
-          <div class="flex gap-2 items-center mb-4">
-            <div class="w-3 h-3 rounded-full" style="background: #ef4444;"></div>
-            <div class="w-3 h-3 rounded-full" style="background: #eab308;"></div>
-            <div class="w-3 h-3 rounded-full" style="background: #22c55e;"></div>
-            <span class="ml-2 font-mono text-xs text-gray-500">mission_control.py</span>
+
+      <!-- RIGHT: photo collage / slideshow -->
+      <div class="relative min-h-[420px] lg:col-span-5">
+        {{ if $heroImages }}
+          <div id="hero-slides" class="relative h-full">
+            {{ range $i, $img := $heroImages }}
+              {{- $thumb := $img.Resize "800x q82 webp" -}}
+              {{- $tilts := slice "tilt-n2" "tilt-2" "tilt-n1" "tilt-1" "tilt-3" "tilt-n3" -}}
+              {{- $tilt := index $tilts (mod $i 6) -}}
+              {{- $tape := index (slice "tape-tl" "tape-tr" "tape-bl" "tape-br") (mod $i 4) -}}
+              <div
+                class="hero-slide {{ if eq $i 0 }}
+                  opacity-100
+                {{ else }}
+                  opacity-0
+                {{ end }} absolute inset-0 flex items-center justify-center transition-opacity duration-[2000ms]">
+                <div
+                  class="polaroid {{ $tilt }} {{ $tape }} {{ if gt $i 2 }}
+                    tape-pink
+                  {{ end }} max-w-[85%]">
+                  <img
+                    src="{{ $thumb.RelPermalink }}"
+                    alt=""
+                    loading="{{ if eq $i 0 }}
+                      eager
+                    {{ else }}
+                      lazy
+                    {{ end }}" />
+                  <div
+                    class="mt-2 text-center font-marker text-sm"
+                    style="color: var(--paper-ink);">
+                    {{ index (slice "the workshop" "in progress" "made here" "good light" "after hours" "first try") (mod $i 6) }}
+                  </div>
+                </div>
+              </div>
+            {{ end }}
           </div>
-          <pre class="overflow-x-auto font-mono text-sm text-gray-300"><span style="color: #c678dd;">class</span> <span style="color: #61afef;">TheCoven</span>:
-  <span style="color: #c678dd;">def</span> <span style="color: #61afef;">__init__(self)</span>:
-    self.mission = <span style="color: #98c379;">"Trans-centric creative community"</span>
-    self.focus = [<span style="color: #98c379;">"music"</span>, <span style="color: #98c379;">"cosplay"</span>, <span style="color: #98c379;">"video"</span>, <span style="color: #98c379;">"electronics"</span>]
-    self.values = [<span style="color: #98c379;">"safety"</span>, <span style="color: #98c379;">"empowerment"</span>, <span style="color: #98c379;">"creative freedom"</span>]
+        {{ end }}
+      </div>
+    </div>
 
-  <span style="color: #c678dd;">def</span> <span style="color: #61afef;">welcome</span>(self, you):
-    <span style="color: #5c6370;"># Find your coven, create together</span>
-    <span style="color: #c678dd;">return</span> <span style="color: #98c379;">f"Welcome home, {you.name}!"</span></pre>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- Focus Areas-->
-<section class="py-20">
-  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-    <div class="mb-16 text-center">
-      <h2 class="mb-4 text-3xl font-bold text-white">Our Focus Areas</h2>
-      <p class="mx-auto max-w-2xl text-gray-400">Supporting trans creators in music, cosplay, video, and electronics. Our equipment and tools align with our community's creative interests.</p>
-    </div>
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      <div class="p-6 rounded-xl border transition-all border-white/10 group hover:border-white/20 coven-surface">
-        <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-lg transition-colors group-hover:opacity-80 bg-accent-10">
-          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
-        </div>
-        <h3 class="mb-2 text-lg font-semibold text-white">Music & Eurorack</h3>
-        <p class="text-sm text-gray-400">Electronic music creation, synthesis, and performance</p>
-      </div>
-      <div class="p-6 rounded-xl border transition-all border-white/10 group hover:border-white/20 coven-surface">
-        <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-lg bg-warm-10">
-          <svg class="w-6 h-6 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-        </div>
-        <h3 class="mb-2 text-lg font-semibold text-white">Cosplay & Manufacturing</h3>
-        <p class="text-sm text-gray-400">Costume creation, 3D printing, and fabrication</p>
-      </div>
-      <div class="p-6 rounded-xl border transition-all border-white/10 group hover:border-white/20 coven-surface">
-        <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-lg bg-cyan-10">
-          <svg class="w-6 h-6 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-        </div>
-        <h3 class="mb-2 text-lg font-semibold text-white">Analog Video</h3>
-        <p class="text-sm text-gray-400">Vintage video processing and experimental techniques</p>
-      </div>
-      <div class="p-6 rounded-xl border transition-all border-white/10 group hover:border-white/20 coven-surface">
-        <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-lg bg-yellow-10">
-          <svg class="w-6 h-6 text-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
-        </div>
-        <h3 class="mb-2 text-lg font-semibold text-white">Software & Electronics</h3>
-        <p class="text-sm text-gray-400">Coding, circuit design, hardware hacking</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <hr class="cut-line" />
+  </section>
 
-<section class="py-20 bg-coven-surface-alpha">
-  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-    <div class="mb-16 text-center">
-      <h2 class="mb-4 text-3xl font-bold text-white">Community Projects</h2>
-      <p class="mx-auto max-w-2xl text-gray-400">Projects being created by our members. Share what you're making!</p>
-    </div>
-    <div class="grid gap-6 md:grid-cols-3">
-      <div class="overflow-hidden rounded-xl border border-white/10 coven-surface">
-        <div class="flex justify-center items-center text-4xl opacity-30 aspect-video" style="background: linear-gradient(135deg, var(--coven-bg) 0%, var(--coven-surface) 100%);">🎵</div>
-        <div class="p-6"><h3 class="mb-1 font-semibold text-white">Eurorack Module Build</h3><p class="mb-3 text-sm text-gray-400">Custom oscillator and filter modules for modular synthesis</p><div class="flex gap-2 items-center"><div class="flex justify-center items-center w-6 h-6 text-xs font-bold text-white rounded-full" style="background: var(--coven-accent);">J</div><span class="text-sm text-gray-500">by Julien</span></div></div>
+  <!-- ============================================================
+       WHAT WE MAKE — vertical alternating spread
+       ============================================================ -->
+  <section class="halftone-section py-16">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div class="mb-12 flex flex-wrap items-end justify-between gap-4">
+        <h2 class="text-ink font-display text-4xl leading-none tracking-wide uppercase sm:text-5xl">
+          What We&nbsp;<span class="text-pink">Make</span>
+        </h2>
+        <p class="text-muted max-w-md font-typewriter text-sm">
+          Music, costumes, video, circuits. Tools and bench space follow what the community wants to
+          build.
+        </p>
       </div>
-      <div class="overflow-hidden rounded-xl border border-white/10 coven-surface">
-        <div class="flex justify-center items-center text-4xl opacity-30 aspect-video" style="background: linear-gradient(135deg, var(--coven-bg) 0%, var(--coven-surface) 100%);">🎭</div>
-        <div class="p-6"><h3 class="mb-1 font-semibold text-white">3D Printed Armor</h3><p class="mb-3 text-sm text-gray-400">Cosplay armor pieces designed for trans body proportions</p><div class="flex gap-2 items-center"><div class="flex justify-center items-center w-6 h-6 text-xs font-bold text-white rounded-full" style="background: var(--coven-warm);">M</div><span class="text-sm text-gray-500">by Maddie C</span></div></div>
-      </div>
-      <div class="overflow-hidden rounded-xl border border-white/10 coven-surface">
-        <div class="flex justify-center items-center text-4xl opacity-30 aspect-video" style="background: linear-gradient(135deg, var(--coven-bg) 0%, var(--coven-surface) 100%);">📼</div>
-        <div class="p-6"><h3 class="mb-1 font-semibold text-white">Analog Video Effects</h3><p class="mb-3 text-sm text-gray-400">Vintage video processing chain for music visuals</p><div class="flex gap-2 items-center"><div class="flex justify-center items-center w-6 h-6 text-xs font-bold rounded-full" style="background: var(--coven-yellow); color: var(--coven-bg);">S</div><span class="text-sm text-gray-500">by Sophie</span></div></div>
-      </div>
-    </div>
-    <div class="mt-12 text-center">
-      <a href="/projects/" class="inline-flex gap-2 items-center py-3 px-6 text-white rounded-full border transition-all bg-white/10 border-white/20 hover:bg-white/20">View All Projects <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
-    </div>
-  </div>
-</section>
 
-<section class="py-20">
-  <div class="px-4 mx-auto max-w-4xl sm:px-6 lg:px-8">
-    <div class="p-8 text-center rounded-2xl border md:p-12 border-white/10" style="background: linear-gradient(135deg, var(--coven-bg), var(--coven-surface));">
-      <h2 class="mb-4 text-3xl font-bold text-white">Ready to start making?</h2>
-      <p class="mx-auto mb-8 max-w-xl text-muted">Join our community of makers, builders, and creators. Get 24/7 access to our workshop and all the tools you need.</p>
-      <div class="flex flex-col gap-4 justify-center sm:flex-row">
-        <a href="/join/" class="py-3 px-8 font-semibold text-white rounded-full transition-all hover:shadow-lg coven-gradient">Get Membership</a>
-        <a href="/tour/" class="py-3 px-8 font-semibold text-white rounded-full border transition-all bg-white/10 border-white/20 hover:bg-white/20">Take a Tour</a>
+      <div class="space-y-12">
+        <div class="grid items-center gap-6 sm:grid-cols-12">
+          <div class="text-center sm:col-span-3">
+            <span class="zine-letter-stamp zine-letter-stamp-lg text-pink tilt-n2">M</span>
+          </div>
+          <div class="sm:col-span-9">
+            <h3 class="text-ink font-display text-2xl tracking-wide uppercase">
+              Music · Eurorack · Synthesis
+            </h3>
+            <p class="text-muted mt-1 font-typewriter text-sm">
+              Modular synthesis, performance gear, weird tape loops. Modules, mixers, DAWs, the lot.
+            </p>
+          </div>
+        </div>
+        <div class="text-center sm:text-right"><span class="scrawl-arrow tilt-1">↘</span></div>
+
+        <div class="grid items-center gap-6 sm:grid-cols-12">
+          <div class="order-2 sm:col-span-9 sm:text-right">
+            <h3 class="text-ink font-display text-2xl tracking-wide uppercase">
+              Cosplay · 3D Print · Fabrication
+            </h3>
+            <p class="text-muted mt-1 font-typewriter text-sm">
+              Costume work, prop building, FDM/resin printing, foam, vacuum forming, sewing — armor
+              that actually fits us.
+            </p>
+          </div>
+          <div class="order-1 text-center sm:order-2 sm:col-span-3">
+            <span class="zine-letter-stamp zine-letter-stamp-lg text-acid tilt-2">C</span>
+          </div>
+        </div>
+        <div class="text-center sm:text-left"><span class="scrawl-arrow tilt-n1">↙</span></div>
+
+        <div class="grid items-center gap-6 sm:grid-cols-12">
+          <div class="text-center sm:col-span-3">
+            <span class="zine-letter-stamp zine-letter-stamp-lg text-spot-cyan tilt-n1">V</span>
+          </div>
+          <div class="sm:col-span-9">
+            <h3 class="text-ink font-display text-2xl tracking-wide uppercase">
+              Analog Video · CRT · Glitch
+            </h3>
+            <p class="text-muted mt-1 font-typewriter text-sm">
+              Vintage video processors, mixers, time-base correctors, found tapes, weird sync — make
+              something that looks like 1992.
+            </p>
+          </div>
+        </div>
+        <div class="text-center sm:text-right"><span class="scrawl-arrow tilt-2">↘</span></div>
+
+        <div class="grid items-center gap-6 sm:grid-cols-12">
+          <div class="order-2 sm:col-span-9 sm:text-right">
+            <h3 class="text-ink font-display text-2xl tracking-wide uppercase">
+              Software · Circuits · Hardware Hacking
+            </h3>
+            <p class="text-muted mt-1 font-typewriter text-sm">
+              Microcontrollers, soldering, PCB design, code that talks to weird boxes. Bring a
+              laptop, leave with a thing.
+            </p>
+          </div>
+          <div class="order-1 text-center sm:order-2 sm:col-span-3">
+            <span class="zine-letter-stamp zine-letter-stamp-lg text-pink tilt-3">E</span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <hr class="cut-line" />
+
+  <!-- ============================================================
+       CURRENTLY IN THE STUDIO — pinned-photo mosaic (no card grid)
+       ============================================================ -->
+  {{- $studioImages := resources.Match "images/hero/*" -}}
+  <section class="py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div class="mb-12">
+        <span class="zine-stamp stamp-acid stamp-tilt-l">Currently in the Studio</span>
+        <h2 class="text-ink mt-3 font-display text-4xl tracking-wide uppercase sm:text-5xl">
+          Members are <span class="text-pink">making things</span>.
+        </h2>
+        <p class="text-muted mt-3 max-w-xl font-typewriter text-sm">
+          Snapshots from the last few weeks — projects in progress, new tools dialed in, classes
+          mid-stride.
+        </p>
+      </div>
+
+      {{ if $studioImages }}
+        <div class="relative grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-12 md:gap-y-14">
+          {{- $captions := slice "soldering night" "first cosplay print" "modular jam" "tape loops" "after hours" "the bench" -}}
+          {{- $cols := slice "md:col-span-5" "md:col-span-4 md:col-start-7 md:translate-y-12" "md:col-span-5 md:col-start-2 md:-translate-y-4" "md:col-span-4 md:col-start-8 md:translate-y-8" "md:col-span-5 md:col-start-1" "md:col-span-4 md:col-start-7 md:-translate-y-6" -}}
+          {{- $tilts := slice "tilt-n2" "tilt-2" "tilt-n1" "tilt-3" "tilt-1" "tilt-n3" -}}
+          {{- $tapes := slice "tape-tl" "tape-tr" "tape-bl" "tape-br" "tape-tl tape-pink" "tape-tr tape-acid" -}}
+          {{- range $i, $img := first 6 $studioImages -}}
+            {{- $thumb := $img.Resize "700x q82 webp" -}}
+            <figure
+              class="{{ index $cols (mod $i 6) }} polaroid {{ index $tilts (mod $i 6) }} {{ index $tapes (mod $i 6) }}">
+              <img src="{{ $thumb.RelPermalink }}" alt="" loading="lazy" />
+              <figcaption
+                class="mt-2 text-center font-marker text-sm"
+                style="color: var(--paper-ink);">
+                {{ index $captions (mod $i 6) }}
+              </figcaption>
+            </figure>
+          {{- end -}}
+        </div>
+      {{ end }}
+
+
+      <div class="mt-14 text-center">
+        <a href="/projects/" class="zine-btn zine-btn-ghost">See more projects →</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="cut-line" />
+
+  <!-- ============================================================
+       FINAL CTA — flyer
+       ============================================================ -->
+  <section class="py-16">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <div class="rough-border-thick tilt-n1 bg-paper-2 shadow-pink relative px-6 py-12 text-center">
+        <h2 class="text-ink font-display text-4xl leading-tight uppercase sm:text-5xl">
+          Ready to <span class="text-pink">make</span> something?
+        </h2>
+        <p class="text-muted mx-auto mt-4 max-w-lg font-typewriter text-base">
+          Pull up a chair. Bring your weird ideas, your in-progress projects, your whole self.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-6">
+          <a href="/join/" class="zine-btn zine-btn-pink">Become a Member</a>
+          <a href="/tour/" class="zine-btn zine-btn-ghost">Visit the Workshop</a>
+        </div>
+      </div>
+    </div>
+  </section>
 {{ end }}

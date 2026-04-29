@@ -1,40 +1,75 @@
-{{- /* Renders one "How to Get Involved" path card.
-       Context: a path dict with num, title, color, type, items, [footer_link] */ -}}
+{{- /* Renders one "How to Get Involved" zine path card.
+  Context: a path dict with num, title, color, type, items, [footer_link] */
+-}}
 {{- $p := . -}}
-{{- $c := printf "var(--coven-%s)" (default "accent" $p.color) -}}
-{{- $textColor := "text-white" -}}
-{{- if eq $p.color "yellow" }}{{ $textColor = "" }}{{ end -}}
-<div class="p-5 rounded-xl border coven-card">
-  <div class="flex gap-3 items-center mb-3">
-    <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold {{ $textColor }}" style="background: {{ $c }};{{ if eq $p.color "yellow" }} color: #0d0820;{{ end }}">{{ $p.num }}</div>
-    <h3 class="font-semibold text-white">{{ $p.title }}</h3>
+{{- $color := default "accent" $p.color -}}
+{{- $stamp := "pink" -}}
+{{- if eq $color "accent" }}{{ $stamp = "pink" }}{{ end -}}
+{{- if eq $color "warm" }}{{ $stamp = "acid" }}{{ end -}}
+{{- if eq $color "cyan" }}{{ $stamp = "spot-cyan" }}{{ end -}}
+{{- if eq $color "yellow" }}{{ $stamp = "acid" }}{{ end -}}
+{{- $rough := "" -}}
+{{- if eq $stamp "pink" }}{{ $rough = "rough-border-pink" }}{{ end -}}
+{{- if eq $stamp "spot-cyan" }}{{ $rough = "rough-border-cyan" }}{{ end -}}
+{{- if eq $stamp "acid" }}{{ $rough = "rough-border-acid" }}{{ end -}}
+{{- if eq $stamp "ink" }}{{ $rough = "rough-border" }}{{ end -}}
+<div class="{{ $rough }} bg-paper-2 relative p-5">
+  <div class="mb-3 flex items-center gap-3">
+    <span
+      class="zine-letter-stamp text-{{ if eq $stamp "spot-cyan" }}
+        spot-cyan
+      {{ else }}
+        {{ $stamp }}
+      {{ end }}"
+      >{{ $p.num }}</span
+    >
+    <h3 class="text-ink font-display text-lg tracking-wide uppercase">{{ $p.title }}</h3>
   </div>
 
   {{- if eq $p.type "links" }}
-  <div class="flex flex-wrap gap-2">
-    {{ range $p.items }}
-    <a href="{{ .url }}" class="flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium border transition-colors coven-surface border-coven text-cyan">{{ .label }} →</a>
-    {{ end }}
-  </div>
-
+    <div class="flex flex-wrap gap-2">
+      {{ range $p.items }}
+        <a href="{{ .url }}" class="zine-stamp stamp-{{ $stamp }} hover:bg-paper-2"
+          >{{ .label }} →</a
+        >
+      {{ end }}
+    </div>
   {{- else if eq $p.type "steps" }}
-  <ol class="space-y-1.5 text-sm text-muted">
-    {{ range $i, $step := $p.items }}
-    <li class="flex gap-2"><span style="color: {{ $c }};">{{ add $i 1 }}.</span> {{ $step | safeHTML }}</li>
-    {{ end }}
-  </ol>
-
+    <ol class="text-muted space-y-2 font-typewriter text-sm">
+      {{ range $i, $step := $p.items }}
+        <li class="flex gap-3">
+          <span
+            class="text-{{ if eq $stamp "spot-cyan" }}
+              spot-cyan
+            {{ else }}
+              {{ $stamp }}
+            {{ end }} font-display"
+            >{{ add $i 1 }}.</span
+          >
+          <span class="flex-1">{{ $step | safeHTML }}</span>
+        </li>
+      {{ end }}
+    </ol>
   {{- else if eq $p.type "list" }}
-  <ul class="space-y-1.5 text-sm text-muted">
-    {{ range $p.items }}
-    <li class="flex gap-2"><span style="color: {{ $c }};">›</span> {{ . | safeHTML }}</li>
-    {{ end }}
-  </ul>
+    <ul class="text-muted space-y-1.5 font-typewriter text-sm">
+      {{ range $p.items }}
+        <li class="flex gap-2">
+          <span class="text-{{ if eq $stamp "spot-cyan" }}spot-cyan{{ else }}{{ $stamp }}{{ end }}"
+            >›</span
+          >
+          {{ . | safeHTML }}
+        </li>
+      {{ end }}
+    </ul>
   {{- end }}
 
   {{- with $p.footer_link }}
-  <div class="mt-3">
-    <a href="{{ .url }}" class="text-xs underline underline-offset-2 text-cyan">{{ .label }}</a>
-  </div>
+    <div class="mt-4">
+      <a
+        href="{{ .url }}"
+        class="text-acid hover:text-pink font-display text-xs tracking-wider uppercase"
+        >{{ .label }} →</a
+      >
+    </div>
   {{- end }}
 </div>
