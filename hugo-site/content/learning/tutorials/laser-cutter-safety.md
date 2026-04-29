@@ -18,16 +18,17 @@ You **must** complete this safety tutorial and pass a short quiz before using th
 
 ## Hazards
 
-| Hazard | Prevention |
-|--------|-----------|
-| Eye damage | Never operate with the lid open. Always use the red-dot pointer for alignment. |
-| Fire | Never leave a cut unattended. Keep a fire extinguisher nearby. |
-| Toxic fumes | Ensure the exhaust system is running. Never cut PVC or vinyl. |
-| Burns | The material and bed can be hot after cutting. Let them cool. |
+| Hazard      | Prevention                                                                     |
+| ----------- | ------------------------------------------------------------------------------ |
+| Eye damage  | Never operate with the lid open. Always use the red-dot pointer for alignment. |
+| Fire        | Never leave a cut unattended. Keep a fire extinguisher nearby.                 |
+| Toxic fumes | Ensure the exhaust system is running. Never cut PVC or vinyl.                  |
+| Burns       | The material and bed can be hot after cutting. Let them cool.                  |
 
 ## Prohibited Materials
 
 **Never** cut or engrave:
+
 - PVC, vinyl, or ABS (releases toxic chlorine gas)
 - Polycarbonate (discolors and cracks)
 - Fiberglass or carbon fiber
@@ -46,6 +47,7 @@ You **must** complete this safety tutorial and pass a short quiz before using th
 ## Emergency Procedures
 
 If a fire starts:
+
 1. Lift the lid immediately (this stops the laser beam)
 2. Use the CO2 fire extinguisher
 3. Do not open the main exhaust (can feed oxygen to the fire)

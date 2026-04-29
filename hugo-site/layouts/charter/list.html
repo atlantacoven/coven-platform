@@ -1,122 +1,141 @@
 {{ define "main" }}
-{{ $data := .Site.Data.charter }}
-<div class="py-12 px-4 mx-auto max-w-4xl sm:px-6 lg:px-8">
-  {{ partial "breadcrumb.html" . }}
+  {{ $data := hugo.Data.charter }}
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    {{ partial "breadcrumb.html" . }}
 
-  <div class="mb-12">
-    {{ with $data.badge }}
-    <div class="inline-flex gap-2 items-center py-1.5 px-3 mb-4 text-xs font-medium rounded-full coven-pill">
-      {{ . }}
+
+    <div class="mb-12">
+      {{ with $data.badge }}
+        <div
+          class="coven-pill mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium">
+          {{ . }}
+        </div>
+      {{ end }}
+      <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title }}</h1>
+      <p class="text-muted">
+        {{ .Description | default "The governing document and founding principles of The Coven, established by its founding members." }}
+      </p>
     </div>
+
+    <!-- Preamble -->
+    {{ with $data.preamble }}
+      <div class="coven-card mb-8 rounded-xl border p-6">
+        <h2 class="mb-3 font-semibold text-white">Preamble</h2>
+        <p class="text-muted text-sm leading-relaxed">{{ . }}</p>
+      </div>
     {{ end }}
-    <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title }}</h1>
-    <p class="text-muted">{{ .Description | default "The governing document and founding principles of The Coven, established by its founding members." }}</p>
-  </div>
 
-  <!-- Preamble -->
-  {{ with $data.preamble }}
-  <div class="p-6 mb-8 rounded-xl border coven-card">
-    <h2 class="mb-3 font-semibold text-white">Preamble</h2>
-    <p class="text-sm leading-relaxed text-muted">{{ . }}</p>
-  </div>
-  {{ end }}
 
-  <!-- Founding Members -->
-  {{ with $data.founders }}
-  <section class="mb-8">
-    <h2 class="mb-4 text-xl font-bold text-white">1. Founding Members</h2>
-    <div class="flex flex-wrap gap-3">
-      {{ range $i, $name := . }}
-      {{ $variant := add (mod $i 4) 1 }}
-      <div class="flex gap-2 items-center py-2 px-4 rounded-full border coven-card">
-        <div class="flex justify-center items-center w-7 h-7 text-xs font-bold text-white rounded-full coven-step coven-gradient-{{ $variant }}">{{ substr $name 0 1 }}</div>
-        <span class="font-medium text-white">{{ $name }}</span>
-      </div>
-      {{ end }}
-    </div>
-  </section>
-  {{ end }}
-
-  <!-- Mission -->
-  {{ with $data.mission }}
-  <section class="mb-8">
-    <h2 class="mb-4 text-xl font-bold text-white">2. Mission</h2>
-    <div class="p-5 rounded-xl border coven-card">
-      <p class="text-sm leading-relaxed text-muted">{{ . }}</p>
-    </div>
-  </section>
-  {{ end }}
-
-  <!-- Organizational Structure -->
-  {{ with $data.tiers }}
-  <section class="mb-8">
-    <h2 class="mb-4 text-xl font-bold text-white">3. Organizational Structure</h2>
-    <div class="grid gap-4 sm:grid-cols-{{ len . }}">
-      {{ range . }}
-      {{ $c := printf "var(--coven-%s)" (default "accent" .color) }}
-      <div class="p-5 rounded-xl border coven-card">
-        <div class="mb-3 text-sm font-bold" style="color: {{ $c }};">{{ .name }}</div>
-        <div class="mb-3 text-2xl font-bold text-white">{{ .price }}{{ with .period }}<span class="text-sm font-normal text-gray-400">{{ . }}</span>{{ end }}</div>
-        <ul class="space-y-1.5 text-xs text-muted">
-          {{ range .points }}
-          <li class="flex gap-1.5"><span style="color: {{ $c }};">›</span> {{ . | safeHTML }}</li>
+    <!-- Founding Members -->
+    {{ with $data.founders }}
+      <section class="mb-8">
+        <h2 class="mb-4 text-xl font-bold text-white">1. Founding Members</h2>
+        <div class="flex flex-wrap gap-3">
+          {{ range $i, $name := . }}
+            {{ $variant := add (mod $i 4) 1 }}
+            <div class="coven-card flex items-center gap-2 rounded-full border px-4 py-2">
+              <div
+                class="coven-step coven-gradient-{{ $variant }} flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white">
+                {{ substr $name 0 1 }}
+              </div>
+              <span class="font-medium text-white">{{ $name }}</span>
+            </div>
           {{ end }}
-        </ul>
-      </div>
-      {{ end }}
-    </div>
-
-    {{ with $data.legal }}
-    <div class="mt-4 p-4 rounded-lg border text-sm coven-card text-muted">
-      <span class="font-medium text-white">Legal Structure:</span> {{ . }}
-    </div>
+        </div>
+      </section>
     {{ end }}
-  </section>
-  {{ end }}
 
-  <!-- Financial Commitment -->
-  {{ with $data.financial }}
-  <section class="mb-8">
-    <h2 class="mb-4 text-xl font-bold text-white">4. Financial Commitment</h2>
-    <div class="grid gap-3 sm:grid-cols-2">
-      {{ range . }}
-      <div class="flex gap-3 p-4 rounded-lg border text-sm coven-card text-muted">
-        <span class="text-yellow">$</span> {{ . }}
-      </div>
-      {{ end }}
-    </div>
-  </section>
-  {{ end }}
 
-  <!-- Governance -->
-  {{ with $data.governance }}
-  <section class="mb-8">
-    <h2 class="mb-4 text-xl font-bold text-white">5. Governance</h2>
-    <div class="space-y-4">
-      {{ range . }}
-      <div class="p-5 rounded-xl border coven-card">
-        <h3 class="mb-3 font-semibold text-white">{{ .section }} {{ .title }}</h3>
-        <ul class="space-y-1.5 text-sm text-muted">
-          {{ range .points }}
-          <li class="flex gap-2"><span class="text-yellow">›</span> {{ . }}</li>
+    <!-- Mission -->
+    {{ with $data.mission }}
+      <section class="mb-8">
+        <h2 class="mb-4 text-xl font-bold text-white">2. Mission</h2>
+        <div class="coven-card rounded-xl border p-5">
+          <p class="text-muted text-sm leading-relaxed">{{ . }}</p>
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- Organizational Structure -->
+    {{ with $data.tiers }}
+      <section class="mb-8">
+        <h2 class="mb-4 text-xl font-bold text-white">3. Organizational Structure</h2>
+        <div class="sm:grid-cols-{{ len . }} grid gap-4">
+          {{ range . }}
+            {{ $c := printf "var(--coven-%s)" (default "accent" .color) }}
+            <div class="coven-card rounded-xl border p-5">
+              <div class="mb-3 text-sm font-bold" style="color: {{ $c }};">{{ .name }}</div>
+              <div class="mb-3 text-2xl font-bold text-white">
+                {{ .price }}{{ with .period }}
+                  <span class="text-sm font-normal text-gray-400">{{ . }}</span>
+                {{ end }}
+              </div>
+              <ul class="text-muted space-y-1.5 text-xs">
+                {{ range .points }}
+                  <li class="flex gap-1.5">
+                    <span style="color: {{ $c }};">›</span> {{ . | safeHTML }}
+                  </li>
+                {{ end }}
+              </ul>
+            </div>
           {{ end }}
-        </ul>
+        </div>
+
+        {{ with $data.legal }}
+          <div class="coven-card text-muted mt-4 rounded-lg border p-4 text-sm">
+            <span class="font-medium text-white">Legal Structure:</span> {{ . }}
+          </div>
+        {{ end }}
+      </section>
+    {{ end }}
+
+
+    <!-- Financial Commitment -->
+    {{ with $data.financial }}
+      <section class="mb-8">
+        <h2 class="mb-4 text-xl font-bold text-white">4. Financial Commitment</h2>
+        <div class="grid gap-3 sm:grid-cols-2">
+          {{ range . }}
+            <div class="coven-card text-muted flex gap-3 rounded-lg border p-4 text-sm">
+              <span class="text-yellow">$</span> {{ . }}
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- Governance -->
+    {{ with $data.governance }}
+      <section class="mb-8">
+        <h2 class="mb-4 text-xl font-bold text-white">5. Governance</h2>
+        <div class="space-y-4">
+          {{ range . }}
+            <div class="coven-card rounded-xl border p-5">
+              <h3 class="mb-3 font-semibold text-white">{{ .section }} {{ .title }}</h3>
+              <ul class="text-muted space-y-1.5 text-sm">
+                {{ range .points }}
+                  <li class="flex gap-2"><span class="text-yellow">›</span> {{ . }}</li>
+                {{ end }}
+              </ul>
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+    {{ with .Content }}
+      <div class="prose-coven mb-8">{{ . }}</div>
+    {{ end }}
+
+
+    <!-- Footer note -->
+    {{ with $data.footer }}
+      <div class="border-coven text-muted rounded-lg border p-4 text-center text-sm">
+        {{ . | safeHTML }}
       </div>
-      {{ end }}
-    </div>
-  </section>
-  {{ end }}
+    {{ end }}
 
-  {{ with .Content }}
-    <div class="mb-8 prose-coven">{{ . }}</div>
-  {{ end }}
-
-  <!-- Footer note -->
-  {{ with $data.footer }}
-  <div class="p-4 rounded-lg border text-sm text-center border-coven text-muted">
-    {{ . | safeHTML }}
   </div>
-  {{ end }}
-
-</div>
 {{ end }}

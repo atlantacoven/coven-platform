@@ -1,44 +1,117 @@
-<header class="sticky top-0 z-50 bg-opacity-90 backdrop-blur-md border-b-coven" style="background-color: var(--coven-bg-alpha);">
-  <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
+<header
+  class="bg-opacity-90 border-b-coven sticky top-0 z-50 backdrop-blur-md"
+  style="background-color: var(--coven-bg-alpha);">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
-      <a href="/" class="flex gap-3 items-center group">
-        <div class="flex justify-center items-center w-10 h-10 rounded-lg transition-transform group-hover:scale-105 coven-gradient">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+      <a href="/" class="group flex items-center gap-3">
+        <div
+          class="coven-gradient flex h-10 w-10 items-center justify-center rounded-lg transition-transform group-hover:scale-105">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
         </div>
         <div class="flex flex-col">
-          <span class="text-lg font-bold leading-tight text-white">The Coven</span>
-          <span class="text-xs leading-tight text-accent">Maker Space</span>
+          <span class="text-lg leading-tight font-bold text-white">The Coven</span>
+          <span class="text-accent text-xs leading-tight">Maker Space</span>
         </div>
       </a>
 
       <!-- Desktop Nav -->
-      <nav class="hidden gap-1 items-center md:flex">
-        <a href="/about/" class="py-2 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">About</a>
-        <a href="/join/" class="py-2 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">Join</a>
-        <a href="/workshops/" class="py-2 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">Workshops</a>
-        <a href="/learning/" class="py-2 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">Learning</a>
-        <a href="/faq/" class="py-2 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">FAQ</a>
-        <a href="/contact/" class="py-2 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">Contact</a>
-        <a href="https://members.thecoven.space" class="py-2 px-5 ml-4 text-sm font-semibold text-white rounded-full transition-all hover:shadow-lg coven-gradient">Member Login</a>
+      <nav class="hidden items-center gap-1 md:flex">
+        <a
+          href="/about/"
+          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >About</a
+        >
+        <a
+          href="/join/"
+          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >Join</a
+        >
+        <a
+          href="/workshops/"
+          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >Workshops</a
+        >
+        <a
+          href="/learning/"
+          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >Learning</a
+        >
+        <a
+          href="/faq/"
+          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >FAQ</a
+        >
+        <a
+          href="/contact/"
+          class="rounded-md px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >Contact</a
+        >
+        <a
+          href="https://members.thecoven.space"
+          class="coven-gradient ml-4 rounded-full px-5 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg"
+          >Member Login</a
+        >
       </nav>
 
       <!-- Mobile Menu Button -->
-      <button id="mobile-menu-btn" class="p-2 text-gray-300 rounded-md md:hidden hover:text-white hover:bg-white/10">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <button
+        id="mobile-menu-btn"
+        class="rounded-md p-2 text-gray-300 hover:bg-white/10 hover:text-white md:hidden">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
       </button>
     </div>
 
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden pb-4 md:hidden">
       <nav class="flex flex-col gap-1">
-        <a href="/about/" class="py-3 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">About</a>
-        <a href="/join/" class="py-3 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">Join</a>
-        <a href="/workshops/" class="py-3 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">Workshops</a>
-        <a href="/learning/" class="py-3 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">Learning</a>
-        <a href="/faq/" class="py-3 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">FAQ</a>
-        <a href="/contact/" class="py-3 px-4 text-sm font-medium text-gray-300 rounded-md transition-all hover:text-white hover:bg-white/10">Contact</a>
-        <a href="https://members.thecoven.space" class="py-3 px-4 mt-2 text-sm font-semibold text-center text-white rounded-md coven-gradient">Member Login</a>
+        <a
+          href="/about/"
+          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >About</a
+        >
+        <a
+          href="/join/"
+          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >Join</a
+        >
+        <a
+          href="/workshops/"
+          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >Workshops</a
+        >
+        <a
+          href="/learning/"
+          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >Learning</a
+        >
+        <a
+          href="/faq/"
+          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >FAQ</a
+        >
+        <a
+          href="/contact/"
+          class="rounded-md px-4 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+          >Contact</a
+        >
+        <a
+          href="https://members.thecoven.space"
+          class="coven-gradient mt-2 rounded-md px-4 py-3 text-center text-sm font-semibold text-white"
+          >Member Login</a
+        >
       </nav>
     </div>
   </div>

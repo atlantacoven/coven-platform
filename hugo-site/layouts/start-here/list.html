@@ -1,124 +1,147 @@
 {{ define "main" }}
-{{ $data := .Site.Data.start_here }}
-<div class="py-12 px-4 mx-auto max-w-4xl sm:px-6 lg:px-8">
-  {{ partial "breadcrumb.html" . }}
+  {{ $data := hugo.Data.start_here }}
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    {{ partial "breadcrumb.html" . }}
 
-  <div class="mb-12">
-    <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title }}</h1>
-    <p class="text-lg text-muted">{{ .Description | default "New to The Coven? Here's everything you need to know to get involved." }}</p>
-  </div>
 
-  <!-- Intro callout -->
-  {{ with $data.intro }}
-  <div class="p-5 mb-10 rounded-xl border coven-callout">
-    <p class="text-sm leading-relaxed text-muted">{{ . | safeHTML }}</p>
-  </div>
-  {{ end }}
+    <div class="mb-12">
+      <h1 class="mb-3 text-4xl font-bold text-white">{{ .Title }}</h1>
+      <p class="text-muted text-lg">
+        {{ .Description | default "New to The Coven? Here's everything you need to know to get involved." }}
+      </p>
+    </div>
 
-  <!-- What we offer -->
-  {{ with $data.offerings }}
-  <section class="mb-10">
-    <h2 class="mb-4 text-xl font-bold text-white">What We Offer</h2>
-    <div class="grid gap-4 sm:grid-cols-2">
-      {{ range . }}
-      <div class="flex gap-4 p-4 rounded-xl border coven-card">
-        <div class="flex-shrink-0 text-xl">{{ .icon }}</div>
-        <div>
-          <div class="font-semibold text-sm text-white">{{ .title }}</div>
-          <div class="text-xs mt-0.5 text-muted">{{ .desc }}</div>
+    <!-- Intro callout -->
+    {{ with $data.intro }}
+      <div class="coven-callout mb-10 rounded-xl border p-5">
+        <p class="text-muted text-sm leading-relaxed">{{ . | safeHTML }}</p>
+      </div>
+    {{ end }}
+
+
+    <!-- What we offer -->
+    {{ with $data.offerings }}
+      <section class="mb-10">
+        <h2 class="mb-4 text-xl font-bold text-white">What We Offer</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {{ range . }}
+            <div class="coven-card flex gap-4 rounded-xl border p-4">
+              <div class="flex-shrink-0 text-xl">{{ .icon }}</div>
+              <div>
+                <div class="text-sm font-semibold text-white">{{ .title }}</div>
+                <div class="text-muted mt-0.5 text-xs">{{ .desc }}</div>
+              </div>
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- How to get involved -->
+    {{ with $data.paths }}
+      <section class="mb-10">
+        <h2 class="mb-4 text-xl font-bold text-white">How to Get Involved</h2>
+        <div class="space-y-4">
+          {{/* Render wide cards stacked, then group narrow cards into 2-col rows */}}
+          {{ $narrow := slice }}
+          {{ range . }}
+            {{ if .wide }}
+              {{ partial "start-here-path.html" . }}
+            {{ else }}
+              {{ $narrow = $narrow | append . }}
+            {{ end }}
+          {{ end }}
+
+          {{ if $narrow }}
+            <div class="grid gap-4 sm:grid-cols-2">
+              {{ range $narrow }}
+                {{ partial "start-here-path.html" . }}
+              {{ end }}
+            </div>
+          {{ end }}
+
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- Membership table -->
+    {{ with $data.table }}
+      <section class="mb-10">
+        <h2 class="mb-4 text-xl font-bold text-white">Membership at a Glance</h2>
+        <div class="border-coven overflow-x-auto rounded-xl border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="coven-surface">
+                <th class="px-4 py-3 text-left font-semibold text-white">Type</th>
+                <th class="px-4 py-3 text-left font-semibold text-white">Monthly</th>
+                <th class="px-4 py-3 text-left font-semibold text-white">Access</th>
+                <th class="px-4 py-3 text-left font-semibold text-white">Storage</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ range . }}
+                <tr class="coven-card-bare border-t-coven">
+                  <td
+                    class="px-4 py-3 font-semibold"
+                    style="color: var(--coven-{{ default "accent" .color }});">
+                    {{ .type }}
+                  </td>
+                  <td class="text-muted px-4 py-3">{{ .cost }}</td>
+                  <td class="text-muted px-4 py-3">{{ .access }}</td>
+                  <td class="text-muted px-4 py-3">{{ .storage }}</td>
+                </tr>
+              {{ end }}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- First day checklist -->
+    {{ with $data.first_day }}
+      {{ $palette := slice "accent" "cyan" "warm" "yellow" }}
+      <section class="mb-10">
+        <h2 class="mb-4 text-xl font-bold text-white">Your First Day</h2>
+        <div class="grid gap-3 sm:grid-cols-2">
+          {{ range $i, $item := . }}
+            <div class="coven-card text-muted flex gap-3 rounded-lg border p-3 text-sm">
+              <span class="text-{{ index $palette (mod $i 4) }}">☐</span> {{ $item }}
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+    {{ with .Content }}
+      <div class="prose-coven mb-10">{{ . }}</div>
+    {{ end }}
+
+
+    <!-- CTA -->
+    {{ with $data.cta }}
+      <div class="coven-card rounded-xl border p-6 text-center">
+        <p class="mb-4 font-medium text-white">{{ .text }}</p>
+        <div class="flex flex-wrap justify-center gap-3">
+          {{ with .primary }}
+            <a
+              href="{{ .url }}"
+              class="coven-gradient inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold text-white"
+              >{{ .label }}</a
+            >
+          {{ end }}
+          {{ with .secondary }}
+            <a
+              href="{{ .url }}"
+              class="border-coven text-muted inline-flex items-center gap-2 rounded-full border px-6 py-2 text-sm font-semibold"
+              >{{ .label }}</a
+            >
+          {{ end }}
         </div>
       </div>
-      {{ end }}
-    </div>
-  </section>
-  {{ end }}
+    {{ end }}
 
-  <!-- How to get involved -->
-  {{ with $data.paths }}
-  <section class="mb-10">
-    <h2 class="mb-4 text-xl font-bold text-white">How to Get Involved</h2>
-    <div class="space-y-4">
-
-      {{/* Render wide cards stacked, then group narrow cards into 2-col rows */}}
-      {{ $narrow := slice }}
-      {{ range . }}
-        {{ if .wide }}
-          {{ partial "start-here-path.html" . }}
-        {{ else }}
-          {{ $narrow = $narrow | append . }}
-        {{ end }}
-      {{ end }}
-
-      {{ if $narrow }}
-      <div class="grid gap-4 sm:grid-cols-2">
-        {{ range $narrow }}
-          {{ partial "start-here-path.html" . }}
-        {{ end }}
-      </div>
-      {{ end }}
-
-    </div>
-  </section>
-  {{ end }}
-
-  <!-- Membership table -->
-  {{ with $data.table }}
-  <section class="mb-10">
-    <h2 class="mb-4 text-xl font-bold text-white">Membership at a Glance</h2>
-    <div class="overflow-x-auto rounded-xl border border-coven">
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="coven-surface">
-            <th class="text-left px-4 py-3 font-semibold text-white">Type</th>
-            <th class="text-left px-4 py-3 font-semibold text-white">Monthly</th>
-            <th class="text-left px-4 py-3 font-semibold text-white">Access</th>
-            <th class="text-left px-4 py-3 font-semibold text-white">Storage</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{ range . }}
-          <tr class="coven-card-bare border-t-coven">
-            <td class="px-4 py-3 font-semibold" style="color: var(--coven-{{ default "accent" .color }});">{{ .type }}</td>
-            <td class="px-4 py-3 text-muted">{{ .cost }}</td>
-            <td class="px-4 py-3 text-muted">{{ .access }}</td>
-            <td class="px-4 py-3 text-muted">{{ .storage }}</td>
-          </tr>
-          {{ end }}
-        </tbody>
-      </table>
-    </div>
-  </section>
-  {{ end }}
-
-  <!-- First day checklist -->
-  {{ with $data.first_day }}
-  {{ $palette := slice "accent" "cyan" "warm" "yellow" }}
-  <section class="mb-10">
-    <h2 class="mb-4 text-xl font-bold text-white">Your First Day</h2>
-    <div class="grid gap-3 sm:grid-cols-2">
-      {{ range $i, $item := . }}
-      <div class="flex gap-3 p-3 rounded-lg border text-sm coven-card text-muted">
-        <span class="text-{{ index $palette (mod $i 4) }}">☐</span> {{ $item }}
-      </div>
-      {{ end }}
-    </div>
-  </section>
-  {{ end }}
-
-  {{ with .Content }}
-    <div class="mb-10 prose-coven">{{ . }}</div>
-  {{ end }}
-
-  <!-- CTA -->
-  {{ with $data.cta }}
-  <div class="p-6 rounded-xl border text-center coven-card">
-    <p class="mb-4 font-medium text-white">{{ .text }}</p>
-    <div class="flex flex-wrap justify-center gap-3">
-      {{ with .primary }}<a href="{{ .url }}" class="inline-flex gap-2 items-center py-2 px-6 text-sm font-semibold text-white rounded-full coven-gradient">{{ .label }}</a>{{ end }}
-      {{ with .secondary }}<a href="{{ .url }}" class="inline-flex gap-2 items-center py-2 px-6 text-sm font-semibold rounded-full border border-coven text-muted">{{ .label }}</a>{{ end }}
-    </div>
   </div>
-  {{ end }}
-
-</div>
 {{ end }}

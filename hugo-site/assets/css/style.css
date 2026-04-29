@@ -1,27 +1,54 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+/* Scan Hugo template + content directories for utility classes. */
+@source "../../layouts/**/*.html";
+@source "../../content/**/*.{html,md}";
+
+@theme {
+  --color-coven0-50: #fff;
+  --color-coven0-100: var(--coven-text);
+  --color-coven0-500: var(--coven-yellow);
+  --color-coven0-600: var(--coven-warm);
+  --color-coven0-700: var(--coven-accent);
+  --color-coven0-800: var(--coven-surface);
+  --color-coven0-900: var(--coven-bg);
+  --color-coven-50: #fff;
+  --color-coven-100: var(--coven-text);
+  --color-coven-500: var(--coven-yellow);
+  --color-coven-600: var(--coven-warm);
+  --color-coven-700: var(--coven-accent);
+  --color-coven-800: var(--coven-surface);
+  --color-coven-900: var(--coven-bg);
+}
 
 :root {
-  --coven-bg: #0d0820;          /* much darker — true deep navy-black */
-  --coven-surface: #1a1035;     /* mid-dark layer */
-  --coven-card: #231445;        /* card sits visibly above surface */
-  --coven-accent: #ff79c6;      /* pastel pink — primary CTA */
-  --coven-warm: #bd93f9;        /* lavender — secondary */
-  --coven-cyan: #8be9fd;        /* cyan — contrast pop for links/tags */
-  --coven-yellow: #f1fa8c;      /* soft yellow — highlights */
-  --coven-text: #f8f4ff;        /* near-white with slight purple tint */
-  --coven-muted: #a89bc2;       /* darker muted — more contrast against cards */
-  --coven-border: rgba(189,147,249,0.18); /* lavender border, more visible */
-  --coven-accent-10: rgba(255,121,198,0.12);
-  --coven-accent-20: rgba(255,121,198,0.25);
-  --coven-warm-10: rgba(189,147,249,0.14);
-  --coven-cyan-10: rgba(139,233,253,0.14);
-  --coven-yellow-10: rgba(241,250,140,0.14);
-  --coven-bg-alpha: rgba(13,8,32,0.85);
-  --coven-surface-alpha: rgba(26,16,53,0.7);
+  --coven-bg: #0d0820; /* much darker — true deep navy-black */
+  --coven-surface: #1a1035; /* mid-dark layer */
+  --coven-card: #231445; /* card sits visibly above surface */
+  --coven-accent: #ff79c6; /* pastel pink — primary CTA */
+  --coven-warm: #bd93f9; /* lavender — secondary */
+  --coven-cyan: #8be9fd; /* cyan — contrast pop for links/tags */
+  --coven-yellow: #f1fa8c; /* soft yellow — highlights */
+  --coven-text: #f8f4ff; /* near-white with slight purple tint */
+  --coven-muted: #a89bc2; /* darker muted — more contrast against cards */
+  --coven-border: rgba(189, 147, 249, 0.18); /* lavender border, more visible */
+  --coven-accent-10: rgba(255, 121, 198, 0.12);
+  --coven-accent-20: rgba(255, 121, 198, 0.25);
+  --coven-warm-10: rgba(189, 147, 249, 0.14);
+  --coven-cyan-10: rgba(139, 233, 253, 0.14);
+  --coven-yellow-10: rgba(241, 250, 140, 0.14);
+  --coven-bg-alpha: rgba(13, 8, 32, 0.85);
+  --coven-surface-alpha: rgba(26, 16, 53, 0.7);
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    sans-serif;
   background: var(--coven-bg);
   color: var(--coven-text);
   -webkit-font-smoothing: antialiased;
@@ -29,44 +56,101 @@ body {
 }
 
 /* Surfaces */
-.coven-card { background: var(--coven-card); border-color: var(--coven-border); }
-.coven-card-bare { background: var(--coven-card); }
-.coven-surface { background: var(--coven-surface); }
-.bg-coven-surface-alpha { background: var(--coven-surface-alpha); }
-.border-coven { border-color: var(--coven-border); }
-.border-t-coven { border-top: 1px solid var(--coven-border); }
-.border-b-coven { border-bottom: 1px solid var(--coven-border); }
+.coven-card {
+  background: var(--coven-card);
+  border-color: var(--coven-border);
+}
+
+.coven-card-bare {
+  background: var(--coven-card);
+}
+
+.coven-surface {
+  background: var(--coven-surface);
+}
+
+.bg-coven-surface-alpha {
+  background: var(--coven-surface-alpha);
+}
+
+.border-coven {
+  border-color: var(--coven-border);
+}
+
+.border-t-coven {
+  border-top: 1px solid var(--coven-border);
+}
+
+.border-b-coven {
+  border-bottom: 1px solid var(--coven-border);
+}
 
 /* Text colors */
-.text-muted { color: var(--coven-muted); }
-.text-accent { color: var(--coven-accent); }
-.text-warm { color: var(--coven-warm); }
-.text-cyan { color: var(--coven-cyan); }
-.text-yellow { color: var(--coven-yellow); }
+.text-muted {
+  color: var(--coven-muted);
+}
+
+.text-accent {
+  color: var(--coven-accent);
+}
+
+.text-warm {
+  color: var(--coven-warm);
+}
+
+.text-cyan {
+  color: var(--coven-cyan);
+}
+
+.text-yellow {
+  color: var(--coven-yellow);
+}
 
 /* Tinted backgrounds */
-.bg-accent-10 { background: var(--coven-accent-10); }
-.bg-warm-10 { background: var(--coven-warm-10); }
-.bg-cyan-10 { background: var(--coven-cyan-10); }
-.bg-yellow-10 { background: var(--coven-yellow-10); }
+.bg-accent-10 {
+  background: var(--coven-accent-10);
+}
+
+.bg-warm-10 {
+  background: var(--coven-warm-10);
+}
+
+.bg-cyan-10 {
+  background: var(--coven-cyan-10);
+}
+
+.bg-yellow-10 {
+  background: var(--coven-yellow-10);
+}
 
 /* Brand gradient (used on primary CTAs and brand mark) */
-.coven-gradient { background: linear-gradient(135deg, var(--coven-accent), var(--coven-warm)); }
+.coven-gradient {
+  background: linear-gradient(135deg, var(--coven-accent), var(--coven-warm));
+}
 
 /* Palette gradient variants — for cycling step numbers, badges, etc. */
-.coven-gradient-1 { background: linear-gradient(135deg, var(--coven-accent), var(--coven-warm)); }   /* pink → lavender */
-.coven-gradient-2 { background: linear-gradient(135deg, var(--coven-warm), var(--coven-cyan)); }    /* lavender → cyan */
-.coven-gradient-3 { background: linear-gradient(135deg, var(--coven-cyan), var(--coven-yellow)); }  /* cyan → yellow */
-.coven-gradient-4 { background: linear-gradient(135deg, var(--coven-yellow), var(--coven-accent)); }/* yellow → pink */
+.coven-gradient-1 {
+  background: linear-gradient(135deg, var(--coven-accent), var(--coven-warm));
+} /* pink → lavender */
+.coven-gradient-2 {
+  background: linear-gradient(135deg, var(--coven-warm), var(--coven-cyan));
+} /* lavender → cyan */
+.coven-gradient-3 {
+  background: linear-gradient(135deg, var(--coven-cyan), var(--coven-yellow));
+} /* cyan → yellow */
+.coven-gradient-4 {
+  background: linear-gradient(135deg, var(--coven-yellow), var(--coven-accent));
+} /* yellow → pink */
 
 /* Step number badge — adds a dark inner ring + text shadow so the numeral
    stays legible across light gradients (e.g. cyan→yellow). */
 .coven-step {
   box-shadow:
-    inset 0 0 0 2px rgba(13, 8, 32, 0.85),     /* strong dark inner ring */
-    inset 0 -2px 4px rgba(13, 8, 32, 0.25),    /* subtle inner shading for depth */
-    0 0 0 2px rgba(13, 8, 32, 0.6),            /* dark outline against card */
-    0 2px 6px rgba(13, 8, 32, 0.5);            /* drop shadow lifts it off the card */
+    inset 0 0 0 2px rgba(13, 8, 32, 0.85),
+    /* strong dark inner ring */ inset 0 -2px 4px rgba(13, 8, 32, 0.25),
+    /* subtle inner shading for depth */ 0 0 0 2px rgba(13, 8, 32, 0.6),
+    /* dark outline against card */ 0 2px 6px rgba(13, 8, 32, 0.5); /* drop shadow lifts it off the card */
+
   text-shadow:
     0 1px 0 rgba(13, 8, 32, 0.9),
     0 0 4px rgba(13, 8, 32, 0.6);
@@ -87,12 +171,39 @@ body {
   border-left: 4px solid var(--coven-accent);
 }
 
-.prose-coven { line-height: 1.75; }
-.prose-coven h1,.prose-coven h2,.prose-coven h3,.prose-coven h4 { color: var(--coven-text); font-weight: 700; margin-top: 1.5em; margin-bottom: .75em; }
-.prose-coven h2 { font-size: 1.5rem; padding-bottom: .5em; border-bottom: 1px solid var(--coven-border); }
-.prose-coven p { margin-bottom: 1.25em; color: #ccc0e0; }
-.prose-coven a { color: var(--coven-cyan); text-decoration: none; }
-.prose-coven a:hover { color: var(--coven-accent); }
+.prose-coven {
+  line-height: 1.75;
+}
+
+.prose-coven h1,
+.prose-coven h2,
+.prose-coven h3,
+.prose-coven h4 {
+  color: var(--coven-text);
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.prose-coven h2 {
+  font-size: 1.5rem;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid var(--coven-border);
+}
+
+.prose-coven p {
+  margin-bottom: 1.25em;
+  color: #ccc0e0;
+}
+
+.prose-coven a {
+  color: var(--coven-cyan);
+  text-decoration: none;
+}
+
+.prose-coven a:hover {
+  color: var(--coven-accent);
+}
 
 /* FAQ answer prose: make links visibly clickable */
 .faq-prose a {
@@ -100,34 +211,126 @@ body {
   text-decoration: underline;
   text-decoration-color: rgba(139, 233, 253, 0.5);
   text-underline-offset: 2px;
-  transition: color .15s ease, text-decoration-color .15s ease;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
 }
+
 .faq-prose a:hover {
   color: var(--coven-accent);
   text-decoration-color: var(--coven-accent);
 }
-.faq-prose ul, .faq-prose ol { margin-left: 1.25em; padding-left: 0; list-style: disc; }
-.faq-prose ol { list-style: decimal; }
-.faq-prose li { margin-bottom: .25em; }
 
-.prose-coven ul,.prose-coven ol { margin-bottom: 1.25em; padding-left: 1.25em; }
-.prose-coven li { margin-bottom: .35em; }
-.prose-coven code { font-family: 'JetBrains Mono', ui-monospace, monospace; background: var(--coven-accent-10); color: var(--coven-cyan); padding: .15em .4em; border-radius: .25rem; font-size: .875em; }
-.prose-coven pre { background: var(--coven-bg); border: 1px solid var(--coven-border); border-radius: .5rem; padding: 1rem; overflow-x: auto; margin-bottom: 1.25em; }
-.prose-coven pre code { background: transparent; color: #e8d8ff; padding: 0; }
-.prose-coven blockquote { border-left: 3px solid var(--coven-accent); padding-left: 1em; margin-left: 0; font-style: italic; color: var(--coven-muted); }
-.prose-coven table { width: 100%; border-collapse: collapse; margin-bottom: 1.25em; }
-.prose-coven th,.prose-coven td { padding: .6em .8em; text-align: left; border-bottom: 1px solid var(--coven-border); }
-.prose-coven th { font-weight: 600; background: rgba(255,255,255,.03); }
-.prose-coven hr { border: none; border-top: 1px solid var(--coven-border); margin: 2em 0; }
-.prose-coven img { max-width: 100%; border-radius: .5rem; border: 1px solid var(--coven-border); }
+.faq-prose ul,
+.faq-prose ol {
+  margin-left: 1.25em;
+  padding-left: 0;
+  list-style: disc;
+}
+
+.faq-prose ol {
+  list-style: decimal;
+}
+
+.faq-prose li {
+  margin-bottom: 0.25em;
+}
+
+.prose-coven ul,
+.prose-coven ol {
+  margin-bottom: 1.25em;
+  padding-left: 1.25em;
+}
+
+.prose-coven li {
+  margin-bottom: 0.35em;
+}
+
+.prose-coven code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  background: var(--coven-accent-10);
+  color: var(--coven-cyan);
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.prose-coven pre {
+  background: var(--coven-bg);
+  border: 1px solid var(--coven-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1.25em;
+}
+
+.prose-coven pre code {
+  background: transparent;
+  color: #e8d8ff;
+  padding: 0;
+}
+
+.prose-coven blockquote {
+  border-left: 3px solid var(--coven-accent);
+  padding-left: 1em;
+  margin-left: 0;
+  font-style: italic;
+  color: var(--coven-muted);
+}
+
+.prose-coven table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.25em;
+}
+
+.prose-coven th,
+.prose-coven td {
+  padding: 0.6em 0.8em;
+  text-align: left;
+  border-bottom: 1px solid var(--coven-border);
+}
+
+.prose-coven th {
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.prose-coven hr {
+  border: none;
+  border-top: 1px solid var(--coven-border);
+  margin: 2em 0;
+}
+
+.prose-coven img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--coven-border);
+}
 
 .text-gradient {
   background: linear-gradient(135deg, var(--coven-accent), var(--coven-warm));
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.bg-gradient-dark { background: linear-gradient(135deg, var(--coven-bg) 0%, var(--coven-surface) 100%); }
-.bg-gradient-warm { background: linear-gradient(135deg, var(--coven-accent) 0%, var(--coven-warm) 50%, var(--coven-cyan) 100%); }
-.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.bg-gradient-dark {
+  background: linear-gradient(135deg, var(--coven-bg) 0%, var(--coven-surface) 100%);
+}
+
+.bg-gradient-warm {
+  background: linear-gradient(
+    135deg,
+    var(--coven-accent) 0%,
+    var(--coven-warm) 50%,
+    var(--coven-cyan) 100%
+  );
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

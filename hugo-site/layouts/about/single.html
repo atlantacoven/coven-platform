@@ -1,101 +1,113 @@
 {{ define "main" }}
-{{ $data := .Site.Data.about }}
-<div class="py-12 px-4 mx-auto max-w-4xl sm:px-6 lg:px-8">
-  {{ partial "breadcrumb.html" . }}
+  {{ $data := hugo.Data.about }}
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    {{ partial "breadcrumb.html" . }}
 
-  <!-- Hero -->
-  <div class="mb-12">
-    <h1 class="mb-4 text-5xl font-bold text-white">{{ .Title | default "About The Coven" }}</h1>
-    {{ with $data.hero.tagline }}
-    <p class="text-lg leading-relaxed max-w-2xl text-muted">{{ . }}</p>
+
+    <!-- Hero -->
+    <div class="mb-12">
+      <h1 class="mb-4 text-5xl font-bold text-white">{{ .Title | default "About The Coven" }}</h1>
+      {{ with $data.hero.tagline }}
+        <p class="text-muted max-w-2xl text-lg leading-relaxed">{{ . }}</p>
+      {{ end }}
+    </div>
+
+    <!-- Mission -->
+    {{ with $data.mission }}
+      <div class="coven-callout mb-10 rounded-xl border p-6">
+        <div class="text-accent mb-2 text-xs font-bold tracking-widest uppercase">Our Mission</div>
+        <p class="leading-relaxed text-white">{{ . }}</p>
+      </div>
     {{ end }}
-  </div>
 
-  <!-- Mission -->
-  {{ with $data.mission }}
-  <div class="p-6 mb-10 rounded-xl border coven-callout">
-    <div class="mb-2 text-xs font-bold tracking-widest uppercase text-accent">Our Mission</div>
-    <p class="leading-relaxed text-white">{{ . }}</p>
-  </div>
-  {{ end }}
 
-  <!-- Story -->
-  {{ with $data.story }}
-  <section class="mb-10">
-    <h2 class="mb-4 text-xl font-bold text-white">Our Story</h2>
-    <p class="leading-relaxed text-muted">{{ . }}</p>
-  </section>
-  {{ end }}
+    <!-- Story -->
+    {{ with $data.story }}
+      <section class="mb-10">
+        <h2 class="mb-4 text-xl font-bold text-white">Our Story</h2>
+        <p class="text-muted leading-relaxed">{{ . }}</p>
+      </section>
+    {{ end }}
 
-  <!-- Focus Areas -->
-  {{ with $data.focus_areas }}
-  <section class="mb-10">
-    <h2 class="mb-4 text-xl font-bold text-white">Focus Areas</h2>
-    <div class="grid gap-4 sm:grid-cols-2">
-      {{ range . }}
-      <div class="flex gap-4 p-5 rounded-xl border coven-card">
-        <div class="flex-shrink-0 text-2xl">{{ .icon }}</div>
-        <div>
-          <div class="mb-1 font-semibold text-white">{{ .title }}</div>
-          <div class="text-sm text-muted">{{ .desc }}</div>
+
+    <!-- Focus Areas -->
+    {{ with $data.focus_areas }}
+      <section class="mb-10">
+        <h2 class="mb-4 text-xl font-bold text-white">Focus Areas</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {{ range . }}
+            <div class="coven-card flex gap-4 rounded-xl border p-5">
+              <div class="flex-shrink-0 text-2xl">{{ .icon }}</div>
+              <div>
+                <div class="mb-1 font-semibold text-white">{{ .title }}</div>
+                <div class="text-muted text-sm">{{ .desc }}</div>
+              </div>
+            </div>
+          {{ end }}
         </div>
-      </div>
+      </section>
+    {{ end }}
+
+
+    <!-- Values -->
+    {{ with $data.values }}
+      {{ $palette := slice "accent" "cyan" "warm" "yellow" }}
+      <section class="mb-10">
+        <h2 class="mb-4 text-xl font-bold text-white">Our Values</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {{ range $i, $val := . }}
+            <div class="coven-card rounded-xl border p-4">
+              <div class="text-{{ index $palette (mod $i 4) }} mb-1 text-sm font-bold">
+                {{ $val.v }}
+              </div>
+              <div class="text-muted text-xs leading-relaxed">{{ $val.d }}</div>
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- Space + Governance -->
+    <div class="mb-10 grid gap-4 sm:grid-cols-2">
+      {{ with $data.space }}
+        <div class="coven-card rounded-xl border p-5">
+          <h3 class="mb-3 font-semibold text-white">The Space</h3>
+          <ul class="text-muted space-y-1.5 text-sm">
+            {{ range . }}
+              <li class="flex gap-2"><span class="text-cyan">›</span> {{ . | safeHTML }}</li>
+            {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+      {{ with $data.governance }}
+        <div class="coven-card rounded-xl border p-5">
+          <h3 class="mb-3 font-semibold text-white">Governance</h3>
+          <ul class="text-muted space-y-1.5 text-sm">
+            {{ range . }}
+              <li class="flex gap-2"><span class="text-warm">›</span> {{ . | safeHTML }}</li>
+            {{ end }}
+          </ul>
+        </div>
       {{ end }}
     </div>
-  </section>
-  {{ end }}
 
-  <!-- Values -->
-  {{ with $data.values }}
-  {{ $palette := slice "accent" "cyan" "warm" "yellow" }}
-  <section class="mb-10">
-    <h2 class="mb-4 text-xl font-bold text-white">Our Values</h2>
-    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {{ range $i, $val := . }}
-      <div class="p-4 rounded-xl border coven-card">
-        <div class="mb-1 text-sm font-bold text-{{ index $palette (mod $i 4) }}">{{ $val.v }}</div>
-        <div class="text-xs leading-relaxed text-muted">{{ $val.d }}</div>
+    {{ with .Content }}
+      <div class="prose-coven mb-10">{{ . }}</div>
+    {{ end }}
+
+
+    <!-- CTA -->
+    {{ with $data.cta }}
+      <div class="coven-card rounded-xl border p-6 text-center">
+        <p class="mb-4 font-medium text-white">{{ .text }}</p>
+        <a
+          href="{{ .url }}"
+          class="coven-gradient inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg"
+          >{{ .label }}</a
+        >
       </div>
-      {{ end }}
-    </div>
-  </section>
-  {{ end }}
-
-  <!-- Space + Governance -->
-  <div class="grid gap-4 mb-10 sm:grid-cols-2">
-    {{ with $data.space }}
-    <div class="p-5 rounded-xl border coven-card">
-      <h3 class="mb-3 font-semibold text-white">The Space</h3>
-      <ul class="space-y-1.5 text-sm text-muted">
-        {{ range . }}
-        <li class="flex gap-2"><span class="text-cyan">›</span> {{ . | safeHTML }}</li>
-        {{ end }}
-      </ul>
-    </div>
     {{ end }}
-    {{ with $data.governance }}
-    <div class="p-5 rounded-xl border coven-card">
-      <h3 class="mb-3 font-semibold text-white">Governance</h3>
-      <ul class="space-y-1.5 text-sm text-muted">
-        {{ range . }}
-        <li class="flex gap-2"><span class="text-warm">›</span> {{ . | safeHTML }}</li>
-        {{ end }}
-      </ul>
-    </div>
-    {{ end }}
+
   </div>
-
-  {{ with .Content }}
-    <div class="mb-10 prose-coven">{{ . }}</div>
-  {{ end }}
-
-  <!-- CTA -->
-  {{ with $data.cta }}
-  <div class="p-6 rounded-xl border text-center coven-card">
-    <p class="mb-4 text-white font-medium">{{ .text }}</p>
-    <a href="{{ .url }}" class="inline-flex gap-2 items-center py-2 px-6 text-sm font-semibold text-white rounded-full transition-all hover:shadow-lg coven-gradient">{{ .label }}</a>
-  </div>
-  {{ end }}
-
-</div>
 {{ end }}

@@ -43,15 +43,16 @@ Remove the solder wire first, then lift the iron. The joint should be shiny and 
 
 ## Common Mistakes
 
-| Problem | Cause | Fix |
-|---------|-------|-----|
-| Cold joint | Not enough heat | Reheat until solder flows |
-| Bridging | Too much solder | Use solder wick to remove excess |
-| Lifted pad | Overheating | Be quicker, use lower temperature |
+| Problem    | Cause           | Fix                               |
+| ---------- | --------------- | --------------------------------- |
+| Cold joint | Not enough heat | Reheat until solder flows         |
+| Bridging   | Too much solder | Use solder wick to remove excess  |
+| Lifted pad | Overheating     | Be quicker, use lower temperature |
 
 ## Practice Projects
 
 We have beginner kits available:
+
 - LED flashlight kit
 - Simple FM radio
 - Custom keyboard kit (intermediate)

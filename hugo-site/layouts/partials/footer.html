@@ -1,49 +1,119 @@
 <footer class="border-t-coven mt-auto">
-  <div class="py-12 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 gap-8 md:grid-cols-5">
       <div class="col-span-1 md:col-span-2">
-        <div class="flex gap-3 items-center mb-4">
-          <div class="flex justify-center items-center w-8 h-8 rounded-lg coven-gradient">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+        <div class="mb-4 flex items-center gap-3">
+          <div class="coven-gradient flex h-8 w-8 items-center justify-center rounded-lg">
+            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
           </div>
           <span class="text-lg font-bold text-white">The Coven</span>
         </div>
         <p class="mb-4 max-w-md text-sm text-gray-400">{{ .Site.Params.description }}</p>
-
       </div>
       <div>
         <h3 class="mb-4 text-sm font-semibold tracking-wider text-white uppercase">Explore</h3>
         <ul class="space-y-3">
-          <li><a href="/about/" class="text-sm text-gray-400 transition-colors hover:text-white">About</a></li>
-          <li><a href="/join/" class="text-sm text-gray-400 transition-colors hover:text-white">Join</a></li>
-          <li><a href="/workshops/" class="text-sm text-gray-400 transition-colors hover:text-white">Classes</a></li>
-          <li><a href="/workshops/" class="text-sm text-gray-400 transition-colors hover:text-white">Events</a></li>
+          <li>
+            <a href="/about/" class="text-sm text-gray-400 transition-colors hover:text-white"
+              >About</a
+            >
+          </li>
+          <li>
+            <a href="/join/" class="text-sm text-gray-400 transition-colors hover:text-white"
+              >Join</a
+            >
+          </li>
+          <li>
+            <a href="/workshops/" class="text-sm text-gray-400 transition-colors hover:text-white"
+              >Classes</a
+            >
+          </li>
+          <li>
+            <a href="/workshops/" class="text-sm text-gray-400 transition-colors hover:text-white"
+              >Events</a
+            >
+          </li>
         </ul>
       </div>
       <div>
         <h3 class="mb-4 text-sm font-semibold tracking-wider text-white uppercase">Community</h3>
         <ul class="space-y-3">
-          <li><a href="/faq/" class="text-sm text-gray-400 transition-colors hover:text-white">FAQ</a></li>
-          <li><a href="/learning/" class="text-sm text-gray-400 transition-colors hover:text-white">Learning</a></li>
-          <li><a href="/code-of-conduct/" class="text-sm text-gray-400 transition-colors hover:text-white">Code of Conduct</a></li>
-          <li><a href="/charter/" class="text-sm text-gray-400 transition-colors hover:text-white">Covenant</a></li>
+          <li>
+            <a href="/faq/" class="text-sm text-gray-400 transition-colors hover:text-white">FAQ</a>
+          </li>
+          <li>
+            <a href="/learning/" class="text-sm text-gray-400 transition-colors hover:text-white"
+              >Learning</a
+            >
+          </li>
+          <li>
+            <a
+              href="/code-of-conduct/"
+              class="text-sm text-gray-400 transition-colors hover:text-white"
+              >Code of Conduct</a
+            >
+          </li>
+          <li>
+            <a href="/charter/" class="text-sm text-gray-400 transition-colors hover:text-white"
+              >Covenant</a
+            >
+          </li>
         </ul>
       </div>
       <div>
         <h3 class="mb-4 text-sm font-semibold tracking-wider text-white uppercase">Find Us</h3>
         <ul class="space-y-3">
-          <li><a href="https://www.openstreetmap.org/relation/11742136#map=19/33.756108/-84.366843" target="_blank" rel="noopener" class="text-sm text-gray-400 transition-colors hover:text-white">{{ .Site.Params.location }}</a></li>
-          <li><a href="https://instagram.com/" target="_blank" rel="noopener" class="text-sm text-gray-400 transition-colors hover:text-white">Instagram</a></li>
-          <li><a href="https://github.com/" target="_blank" rel="noopener" class="text-sm text-gray-400 transition-colors hover:text-white">GitHub</a></li>
+          <li>
+            <a
+              href="https://www.openstreetmap.org/relation/11742136#map=19/33.756108/-84.366843"
+              target="_blank"
+              rel="noopener"
+              class="text-sm text-gray-400 transition-colors hover:text-white"
+              >{{ .Site.Params.location }}</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://instagram.com/"
+              target="_blank"
+              rel="noopener"
+              class="text-sm text-gray-400 transition-colors hover:text-white"
+              >Instagram</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://github.com/"
+              target="_blank"
+              rel="noopener"
+              class="text-sm text-gray-400 transition-colors hover:text-white"
+              >GitHub</a
+            >
+          </li>
         </ul>
       </div>
     </div>
-    <div class="flex flex-col gap-4 justify-between items-center pt-8 mt-12 md:flex-row border-t-coven">
+    <div
+      class="border-t-coven mt-12 flex flex-col items-center justify-between gap-4 pt-8 md:flex-row">
       <p class="text-sm text-gray-500">&copy; {{ now.Year }} The Coven. All rights reserved.</p>
       <div class="flex gap-6">
-        <a href="/code-of-conduct/" class="text-sm text-gray-500 transition-colors hover:text-gray-300">Code of Conduct</a>
-        <a href="/charter/" class="text-sm text-gray-500 transition-colors hover:text-gray-300">Covenant</a>
-        <a href="/contact/" class="text-sm text-gray-500 transition-colors hover:text-gray-300">Contact</a>
+        <a
+          href="/code-of-conduct/"
+          class="text-sm text-gray-500 transition-colors hover:text-gray-300"
+          >Code of Conduct</a
+        >
+        <a href="/charter/" class="text-sm text-gray-500 transition-colors hover:text-gray-300"
+          >Covenant</a
+        >
+        <a href="/contact/" class="text-sm text-gray-500 transition-colors hover:text-gray-300"
+          >Contact</a
+        >
       </div>
     </div>
   </div>

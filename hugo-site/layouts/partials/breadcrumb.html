@@ -1,9 +1,11 @@
 <nav class="mb-8">
-  <ol class="flex gap-2 items-center text-sm text-gray-400">
+  <ol class="flex items-center gap-2 text-sm text-gray-400">
     <li><a href="/" class="transition-colors hover:text-white">Home</a></li>
     {{ range .Ancestors.Reverse }}
-    <li class="text-gray-600">/</li>
-    <li><a href="{{ .RelPermalink }}" class="transition-colors hover:text-white">{{ .Title }}</a></li>
+      <li class="text-gray-600">/</li>
+      <li>
+        <a href="{{ .RelPermalink }}" class="transition-colors hover:text-white">{{ .Title }}</a>
+      </li>
     {{ end }}
     <li class="text-gray-600">/</li>
     <li class="text-gray-300" aria-current="page">{{ .Title }}</li>

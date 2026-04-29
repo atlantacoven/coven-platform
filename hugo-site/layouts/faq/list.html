@@ -1,43 +1,53 @@
 {{ define "main" }}
-<div class="py-12 px-4 mx-auto max-w-4xl sm:px-6 lg:px-8">
-  {{ partial "breadcrumb.html" . }}
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    {{ partial "breadcrumb.html" . }}
 
-  <div class="mb-12">
-    <h1 class="mb-3 text-4xl font-bold text-white">Frequently Asked Questions</h1>
-    <p class="text-muted">{{ .Description | default "Everything you need to know about The Coven makerspace." }}</p>
-  </div>
 
-  {{ with .Content }}
-    <div class="mb-10 faq-prose text-muted">{{ . }}</div>
-  {{ end }}
-
-  {{ range .Site.Data.faq }}
-    {{ $color := default "accent" .color }}
-    <div class="mb-10">
-      <h2 class="mb-4 text-xl font-bold" style="color: var(--coven-{{ $color }});">{{ .group }}</h2>
-      <div class="space-y-2">
-        {{ range .items }}
-          {{ partial "faq-item.html" (dict "item" . "color" $color) }}
-        {{ end }}
-      </div>
+    <div class="mb-12">
+      <h1 class="mb-3 text-4xl font-bold text-white">Frequently Asked Questions</h1>
+      <p class="text-muted">
+        {{ .Description | default "Everything you need to know about The Coven makerspace." }}
+      </p>
     </div>
-  {{ end }}
 
-  <!-- CTA -->
-  <div class="p-6 mt-12 text-center rounded-xl border coven-card">
-    <p class="mb-4 font-medium text-white">Still have questions?</p>
-    <a href="/contact/" class="inline-flex gap-2 items-center py-2 px-6 text-sm font-semibold text-white rounded-full transition-all hover:shadow-lg coven-gradient">Get in Touch</a>
+    {{ with .Content }}
+      <div class="faq-prose text-muted mb-10">{{ . }}</div>
+    {{ end }}
+
+    {{ range hugo.Data.faq }}
+      {{ $color := default "accent" .color }}
+      <div class="mb-10">
+        <h2 class="mb-4 text-xl font-bold" style="color: var(--coven-{{ $color }});">
+          {{ .group }}
+        </h2>
+        <div class="space-y-2">
+          {{ range .items }}
+            {{ partial "faq-item.html" (dict "item" . "color" $color) }}
+          {{ end }}
+        </div>
+      </div>
+    {{ end }}
+
+
+    <!-- CTA -->
+    <div class="coven-card mt-12 rounded-xl border p-6 text-center">
+      <p class="mb-4 font-medium text-white">Still have questions?</p>
+      <a
+        href="/contact/"
+        class="coven-gradient inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold text-white transition-all hover:shadow-lg"
+        >Get in Touch</a
+      >
+    </div>
   </div>
-</div>
 
-{{/* JSON-LD FAQPage schema for SEO */}}
+  {{/* JSON-LD FAQPage schema for SEO */}}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
     {{- $first := true -}}
-    {{- range .Site.Data.faq -}}
+    {{- range hugo.Data.faq -}}
       {{- range .items -}}
         {{- if not $first }},{{ end -}}{{- $first = false -}}
         {
