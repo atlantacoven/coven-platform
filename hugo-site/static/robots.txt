@@ -3,7 +3,7 @@ Allow: /
 
 # Humans.txt
 # See https://humanstxt.org/
-# Contact: maddie@madelyn.sh
+# Contact: hello@atlantacoven.org
 
 # Sitemap
-Sitemap: https://madelyn.sh/sitemap.xml
+Sitemap: https://atlantacoven.org/sitemap.xml

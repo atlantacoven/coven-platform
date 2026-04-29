@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const mobileMenu = document.getElementById('mobile-menu');
   if (menuBtn && mobileMenu) {
     menuBtn.addEventListener('click', function() {
-      mobileMenu.classList.toggle('hidden');
+      const open = mobileMenu.classList.toggle('hidden') === false;
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   }
 
@@ -26,6 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
       current = (n + bgSlides.length) % bgSlides.length;
       bgSlides[current].classList.replace('opacity-0', 'opacity-100');
     }
-    setInterval(() => goToSlide(current + 1), 15000);
+    setInterval(() => goToSlide(current + 1), 5000);
   }
 });

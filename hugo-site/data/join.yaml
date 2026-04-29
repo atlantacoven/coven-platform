@@ -14,14 +14,14 @@ intro: 'The Coven is primarily for <span class="font-semibold text-white">LGBTQ+
 tiers:
   - name: Founders
     color: accent
-    price: "$250"
+    price: "$225"
     period: /mo
     points:
       - { icon: "✓", text: "24/7 access" }
       - { icon: "✓", text: "Full equipment & project storage" }
       - { icon: "✓", text: "Voting rights" }
       - { icon: "✓", text: "Approve new members" }
-      - { icon: "—", text: "Julien, Maddie C, Maddie Y, Sophie", muted: true }
+      - { icon: "—", text: "Julien, Maddie C, Maddie Y, Natalie, Sophie", muted: true }
 
   - name: Members
     color: warm
@@ -53,9 +53,9 @@ steps:
       - { t: Covenant, u: /charter/ }
       - { t: Code of Conduct, u: /code-of-conduct/ }
   - title: Send an introduction
-    desc: Email hello@thecoven.space with a brief intro, your creative interests (music, cosplay, video, electronics), and what you hope to create and contribute.
+    desc: Email hello@atlantacoven.org with a brief intro, your creative interests (music, cosplay, video, electronics), and what you hope to create and contribute.
   - title: Founders review
-    desc: Applications are reviewed at monthly meetings with a majority vote and "vibe check". Each founder holds veto power to ensure community safety.
+    desc: Applications are reviewed at monthly meetings (or sooner) with a majority vote and "vibe check". Each founder holds veto power to ensure community safety.
   - title: Probationary period
     desc: Approved members begin with a probationary period. You'll receive business hours access and be onboarded to the space and equipment.
 
@@ -71,6 +71,6 @@ notes:
 
 cta:
   heading: Ready to introduce yourself?
-  sub: We aim to respond within 3–5 business days.
+  sub: We aim to respond within 3 - 5 business days.
   label: Get in touch →
   url: /contact/

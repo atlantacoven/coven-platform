@@ -35,11 +35,11 @@ mission: >-
 
 tiers:
   - name: Founders
-    price: "$250"
+    price: "$225"
     period: /mo
     color: accent
     points:
-      - "Up to $300/mo (goal: $250)"
+      - "Up to $300/mo"
       - 24/7 space access
       - Store equipment &amp; projects
       - Full voting rights

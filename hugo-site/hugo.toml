@@ -1,4 +1,4 @@
-baseURL = 'https://thecoven.space'
+baseURL = 'https://atlantacoven.org'
 languageCode = 'en-us'
 title = 'The Coven'
 
@@ -7,7 +7,7 @@ description = "A collaborative makerspace for the queer community, founded by tr
 author = "The Coven"
 tagline = "Learn. Make. Share. Grow together."
 location = "Studioplex"
-email = "hello@thecoven.space"
+email = "hello@atlantacoven.org"
 
 [taxonomies]
 tag = 'tags'

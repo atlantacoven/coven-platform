@@ -52,7 +52,7 @@ paths:
     type: steps
     wide: true
     items:
-      - 'Email <span class="text-white">hello@thecoven.space</span> with a brief intro, your creative interests, and what you''d contribute'
+      - 'Email <span class="text-white">hello@atlantacoven.org</span> with a brief intro, your creative interests, and what you''d contribute'
       - Founders review applications at monthly meetings
       - Approval requires majority vote and "vibe check"
       - Begin with a probationary period after approval
@@ -80,7 +80,7 @@ paths:
 
 table:
   - type: Founders
-    cost: Up to $300 (goal $250)
+    cost: Up to $300
     access: 24/7
     storage: Full equipment & project storage
     color: accent

@@ -6,7 +6,7 @@ intro: >
 how_to:
   - title: Email or message us
     desc: >
-      Reach out at <a class="text-cyan underline underline-offset-2" href="mailto:hello@thecoven.space">hello@thecoven.space</a>
+      Reach out at <a class="text-cyan underline underline-offset-2" href="mailto:hello@atlantacoven.org">hello@atlantacoven.org</a>
       with a few times that work for you. Weeknight evenings and weekend afternoons are
       easiest, but we'll do our best to accommodate your schedule.
   - title: We'll confirm a time
@@ -28,5 +28,5 @@ what_to_expect:
 cta:
   heading: Ready to book?
   sub: Email us with a few times that work for you.
-  url: "mailto:hello@thecoven.space"
+  url: "mailto:hello@atlantacoven.org"
   label: Email Us

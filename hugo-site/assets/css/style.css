@@ -15,33 +15,38 @@
   --color-acid-500: var(--spot-acid);
   --color-cyan-500: var(--spot-cyan);
   --color-blood-500: var(--spot-blood);
-
-  --font-display: "Bowlby One", "Rubik Mono One", Impact, system-ui, sans-serif;
+  --color-sun-500: var(--spot-sun);
+  --color-violet-500: var(--spot-violet);
+  --font-display: "Bowlby One", "Rubik Mono One", impact, system-ui, sans-serif;
   --font-typewriter: "Special Elite", "Courier Prime", ui-monospace, monospace;
   --font-mono: "Courier Prime", ui-monospace, monospace;
   --font-marker: "Permanent Marker", "Special Elite", cursive;
-  --font-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-serif: "Newsreader", "Iowan Old Style", georgia, serif;
 }
 
 :root {
-  /* Photocopy paper — warm manila / bone, riso-ink black. */
-  --paper-bg: #ede4cd;
-  --paper-bg-2: #e0d6bc; /* slightly toasted card layer */
-  --paper-ink: #1a1612; /* warm brown-black, ink-on-paper */
-  --ink-muted: #6b5e4b;
-  --ink-faint: rgba(26, 22, 18, 0.42);
+  /* Photocopy paper — brighter cream stock, deep ink for high contrast. */
+  --paper-bg: #f5ecd2;       /* main page — brighter cream */
+  --paper-bg-2: #c9b483;     /* card / flyer surface — kraft tan, pops off the page */
+  --paper-bg-3: #e8d6c0;     /* section wash — dusty pink-cream */
+  --paper-bg-4: #cfdcc8;     /* section wash — sage green-cream */
+  --paper-ink: #0e0a06;      /* near-black warm brown, max ink density */
+  --ink-muted: #5a4d3a;
+  --ink-faint: rgba(14, 10, 6, 0.5);
 
-  /* Spot colors — riso/screenprint-legible on cream paper. */
-  --spot-pink: #e0286a; /* hot pink, primary spot */
-  --spot-acid: #758f00; /* olive-lime, screenprint green */
-  --spot-cyan: #14728d; /* riso teal */
-  --spot-blood: #c8230e; /* warnings only */
+  /* Spot colors — riso/screenprint, bumped saturation for cream paper. */
+  --spot-pink: #e62872;
+  --spot-acid: #819b00;
+  --spot-cyan: #0e6d8b;
+  --spot-blood: #d11d09;
+  --spot-sun: #f0a800;       /* amber / sun yellow */
+  --spot-violet: #5a2e8a;    /* deep riso violet */
 
   /* Translucent overlays */
-  --tape: rgba(245, 220, 130, 0.55); /* yellowish masking tape */
-  --tape-strong: rgba(180, 145, 50, 0.55);
-  --rule: rgba(26, 22, 18, 0.32);
-  --rule-faint: rgba(26, 22, 18, 0.14);
+  --tape: rgba(245, 220, 130, 0.6);
+  --tape-strong: rgba(180, 145, 50, 0.6);
+  --rule: rgba(14, 10, 6, 0.4);
+  --rule-faint: rgba(14, 10, 6, 0.18);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -88,13 +93,13 @@ button:focus-visible {
   inset: 0;
   pointer-events: none;
   z-index: 100;
-  opacity: 0.32;
+  opacity: 0.18;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.14  0 0 0 0 0.10  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
 .paper-grain-strong {
-  opacity: 0.5;
+  opacity: 0.36;
 }
 
 /* ============================================================
@@ -109,15 +114,16 @@ button:focus-visible {
 
 .halftone-section {
   position: relative;
+  background: var(--paper-bg-3);
 }
 
 .halftone-section::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle at center, var(--paper-ink) 0.6px, transparent 1.2px);
+  background-image: radial-gradient(circle at center, var(--paper-ink) 0.7px, transparent 1.4px);
   background-size: 6px 6px;
-  opacity: 0.05;
+  opacity: 0.08;
   pointer-events: none;
   z-index: 0;
 }
@@ -140,13 +146,13 @@ button:focus-visible {
   border-image-slice: 4;
   border-image-width: 4px;
   border-image-repeat: round;
-  border-image-source: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M2,3 L30,2 L31,30 L3,31 Z' fill='none' stroke='%231a1612' stroke-width='2' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/></svg>");
+  border-image-source: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M2,3 L30,2 L31,30 L3,31 Z' fill='none' stroke='%230e0a06' stroke-width='2' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/></svg>");
 }
 
 .rough-border-thick {
   border-width: 3px;
   border-image-width: 6px;
-  border-image-source: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M3,4 L29,2 L30,29 L2,31 Z' fill='none' stroke='%231a1612' stroke-width='3' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/></svg>");
+  border-image-source: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M3,4 L29,2 L30,29 L2,31 Z' fill='none' stroke='%230e0a06' stroke-width='3' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/></svg>");
 }
 
 .rough-border-pink {
@@ -276,7 +282,7 @@ button:focus-visible {
   left: 0;
   right: 0;
   height: 12px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='12' viewBox='0 0 100 12' preserveAspectRatio='none'><path d='M0,0 L0,7 L4,5 L8,9 L12,4 L18,8 L24,5 L30,10 L36,4 L42,7 L48,3 L54,9 L60,5 L66,8 L72,4 L78,9 L84,5 L90,8 L96,4 L100,7 L100,0 Z' fill='%23ede4cd'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='12' viewBox='0 0 100 12' preserveAspectRatio='none'><path d='M0,0 L0,7 L4,5 L8,9 L12,4 L18,8 L24,5 L30,10 L36,4 L42,7 L48,3 L54,9 L60,5 L66,8 L72,4 L78,9 L84,5 L90,8 L96,4 L100,7 L100,0 Z' fill='%23f5ecd2'/></svg>");
   background-size: 100px 12px;
   background-repeat: repeat-x;
 }
@@ -293,7 +299,7 @@ button:focus-visible {
   left: 0;
   right: 0;
   height: 12px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='12' viewBox='0 0 100 12' preserveAspectRatio='none'><path d='M0,12 L0,5 L4,7 L8,3 L12,8 L18,4 L24,7 L30,2 L36,8 L42,5 L48,9 L54,3 L60,7 L66,4 L72,8 L78,3 L84,7 L90,4 L96,8 L100,5 L100,12 Z' fill='%23ede4cd'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='12' viewBox='0 0 100 12' preserveAspectRatio='none'><path d='M0,12 L0,5 L4,7 L8,3 L12,8 L18,4 L24,7 L30,2 L36,8 L42,5 L48,9 L54,3 L60,7 L66,4 L72,8 L78,3 L84,7 L90,4 L96,8 L100,5 L100,12 Z' fill='%23f5ecd2'/></svg>");
   background-size: 100px 12px;
   background-repeat: repeat-x;
 }
@@ -325,18 +331,23 @@ button:focus-visible {
 .tilt-1 {
   transform: rotate(0.6deg);
 }
+
 .tilt-2 {
   transform: rotate(1.4deg);
 }
+
 .tilt-3 {
   transform: rotate(2.2deg);
 }
+
 .tilt-n1 {
   transform: rotate(-0.6deg);
 }
+
 .tilt-n2 {
   transform: rotate(-1.4deg);
 }
+
 .tilt-n3 {
   transform: rotate(-2.2deg);
 }
@@ -354,7 +365,7 @@ button:focus-visible {
   font-size: 0.78rem;
   line-height: 1;
   padding: 0.45em 0.7em;
-  border: 2.5px solid currentColor;
+  border: 2.5px solid currentcolor;
   background: transparent;
   transform: rotate(-2deg);
   white-space: nowrap;
@@ -375,15 +386,19 @@ button:focus-visible {
 .stamp-pink {
   color: var(--spot-pink);
 }
+
 .stamp-acid {
   color: var(--spot-acid);
 }
+
 .stamp-cyan {
   color: var(--spot-cyan);
 }
+
 .stamp-blood {
   color: var(--spot-blood);
 }
+
 .stamp-ink {
   color: var(--paper-ink);
 }
@@ -391,9 +406,11 @@ button:focus-visible {
 .stamp-tilt-r {
   transform: rotate(2.5deg);
 }
+
 .stamp-tilt-l {
   transform: rotate(-3deg);
 }
+
 .stamp-flat {
   transform: none;
 }
@@ -408,7 +425,7 @@ button:focus-visible {
   line-height: 1;
   width: 3rem;
   height: 3rem;
-  border: 3px solid currentColor;
+  border: 3px solid currentcolor;
   transform: rotate(-3deg);
   flex-shrink: 0;
 }
@@ -543,12 +560,15 @@ button:focus-visible {
 .word-display {
   font-family: var(--font-display);
 }
+
 .word-typewriter {
   font-family: var(--font-typewriter);
 }
+
 .word-marker {
   font-family: var(--font-marker);
 }
+
 .word-serif {
   font-family: var(--font-serif);
   font-style: italic;
@@ -557,9 +577,11 @@ button:focus-visible {
 .word-pink {
   color: var(--spot-pink);
 }
+
 .word-acid {
   color: var(--spot-acid);
 }
+
 .word-cyan {
   color: var(--spot-cyan);
 }
@@ -598,13 +620,15 @@ button:focus-visible {
   border: 2px solid var(--paper-ink);
   padding: 1.25rem;
   position: relative;
+  box-shadow: 6px 6px 0 0 var(--paper-ink);
 }
 
 .zine-card-bare {
-  background: transparent;
+  background: var(--paper-bg);
   border: 2px solid var(--paper-ink);
   padding: 1.25rem;
   position: relative;
+  box-shadow: 4px 4px 0 0 var(--paper-ink);
 }
 
 .zine-card-flat {
@@ -612,6 +636,14 @@ button:focus-visible {
   padding: 1.25rem;
   position: relative;
 }
+
+/* Riso-offset shadow variants — colored offset behind a card */
+.shadow-pink { box-shadow: 6px 6px 0 0 var(--spot-pink); }
+.shadow-acid { box-shadow: 6px 6px 0 0 var(--spot-acid); }
+.shadow-cyan { box-shadow: 6px 6px 0 0 var(--spot-cyan); }
+.shadow-sun  { box-shadow: 6px 6px 0 0 var(--spot-sun); }
+.shadow-violet { box-shadow: 6px 6px 0 0 var(--spot-violet); }
+.shadow-ink  { box-shadow: 6px 6px 0 0 var(--paper-ink); }
 
 /* Photo treatment: photocopied / halftone-ish via filters */
 .photo-zine {
@@ -625,7 +657,7 @@ button:focus-visible {
 /* Polaroid-style image frame */
 .polaroid {
   background: #f7f1de;
-  padding: 10px 10px 36px 10px;
+  padding: 10px 10px 36px;
   display: inline-block;
   box-shadow: 0 6px 16px rgba(26, 22, 18, 0.28);
   border: 1px solid rgba(26, 22, 18, 0.12);
@@ -644,39 +676,75 @@ button:focus-visible {
 .text-muted {
   color: var(--ink-muted);
 }
+
 .text-faint {
   color: var(--ink-faint);
 }
+
 .text-ink {
   color: var(--paper-ink);
 }
+
 .text-pink {
   color: var(--spot-pink);
 }
+
 .text-acid {
   color: var(--spot-acid);
 }
+
 .text-spot-cyan {
   color: var(--spot-cyan);
 }
+
 .text-blood {
   color: var(--spot-blood);
+}
+
+.text-sun {
+  color: var(--spot-sun);
+}
+
+.text-violet {
+  color: var(--spot-violet);
 }
 
 .bg-paper {
   background: var(--paper-bg);
 }
+
 .bg-paper-2 {
   background: var(--paper-bg-2);
 }
+
+.bg-paper-3 {
+  background: var(--paper-bg-3);
+}
+
+.bg-paper-4 {
+  background: var(--paper-bg-4);
+}
+
 .bg-pink {
   background: var(--spot-pink);
   color: var(--paper-bg);
 }
+
 .bg-acid {
   background: var(--spot-acid);
   color: var(--paper-bg);
 }
+
+.bg-sun {
+  background: var(--spot-sun);
+  color: var(--paper-ink);
+}
+
+.bg-violet {
+  background: var(--spot-violet);
+  color: var(--paper-bg);
+}
+
 .bg-ink {
   background: var(--paper-ink);
   color: var(--paper-bg);
@@ -685,15 +753,19 @@ button:focus-visible {
 .font-display {
   font-family: var(--font-display);
 }
+
 .font-typewriter {
   font-family: var(--font-typewriter);
 }
+
 .font-marker {
   font-family: var(--font-marker);
 }
+
 .font-mono {
   font-family: var(--font-mono);
 }
+
 .font-serif {
   font-family: var(--font-serif);
 }
@@ -717,9 +789,11 @@ button:focus-visible {
 .rule-thin {
   border-top: 1px solid var(--rule-faint);
 }
+
 .rule-thick {
   border-top: 3px solid var(--paper-ink);
 }
+
 .rule-double {
   border-top: 1px solid var(--paper-ink);
   box-shadow: 0 4px 0 -3px var(--paper-ink);
@@ -754,14 +828,17 @@ button:focus-visible {
 .prose-coven h1 {
   font-size: 2.2rem;
 }
+
 .prose-coven h2 {
   font-size: 1.55rem;
   padding-bottom: 0.35em;
   border-bottom: 3px solid var(--paper-ink);
 }
+
 .prose-coven h3 {
   font-size: 1.2rem;
 }
+
 .prose-coven h4 {
   font-size: 1rem;
   letter-spacing: 0.04em;

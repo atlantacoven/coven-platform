@@ -35,7 +35,7 @@
       type: pricing
       items:
         - tier: Founders
-          price: "$250"
+          price: "$225"
           period: /mo
           note: 24/7 access · voting rights
           color: accent
@@ -52,7 +52,7 @@
       type: steps
       items:
         - Review the Covenant to understand our mission
-        - Email hello@thecoven.space with your introduction and creative interests
+        - Email hello@atlantacoven.org with your introduction and creative interests
         - Founders review applications via majority vote and "vibe check"
         - Approved members begin with a probationary period
     - q: What are the access hours?
