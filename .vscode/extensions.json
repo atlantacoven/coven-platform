@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "stylelint.vscode-stylelint",
+    "budparr.language-hugo-vscode",
+    "EditorConfig.EditorConfig"
+  ]
+}
