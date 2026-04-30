@@ -16,6 +16,8 @@ const UserSecretSize = 32
 
 var ServerKey ed25519.PrivateKey
 var ServerPubKey ed25519.PublicKey
+var DoorSignKey ed25519.PrivateKey
+var DoorSignPrivKey ed25519.PublicKey
 var DoorKey *rsa.PrivateKey
 var DoorPubKey *rsa.PublicKey
 

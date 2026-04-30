@@ -16,6 +16,35 @@ message=NdefRecord tnf=1 type=55 payload=00636F76656E3A2F2F746865636F76656E2E737
 message=NdefRecord tnf=4 type=616E64726F69642E636F6D3A706B67 payload=73706163652E746865636F76656E2E616E64726F6964 id= payload-ascii=space.thecoven.android
 ```
 
+
+```
+App->Server: authenticate (HTTPS)
+App:
+send UserId+Password
+Server:
+Padding=constant (e.g. 0xAA, 20 bytes)
+UserBlock=UserId+Padding
+ServerSignature=sign(UserBlock, ServerPrivKey)
+UserSecret=UserBlock+ServerSignature
+return UserSecret
+
+Door->App: authenticate (NFC)
+Door:
+Nonce=random(8)
+DoorSignature=sign(Nonce, DoorPrivKey)
+Challenge=Nonce+DoorSignature
+send Challenge
+App:
+Nonce+DoorSignature=Challenge
+verify(Nonce, DoorSignature, DoorPubKey)
+AccessKey=enc(UserSecret+Nonce, DoorPubKey)
+return AccessKey
+Door:
+UserSecret+Nonce=decrypt(AccessKey, DoorPrivKey)
+UserId+Padding+ServerSignature=UserSecret
+verify(UserId+Padding, ServerSignature, ServerPubKey)
+```
+
 ```
 SELECT(aid) -> OK[9000]+key
 if valid:

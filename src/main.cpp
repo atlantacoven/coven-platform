@@ -79,12 +79,12 @@ void loop() {
         if (keyResult == 0) {
           AUTH_RESULT_MESSAGE[1] = 0x90;
           AUTH_RESULT_MESSAGE[2] = 0x00;
-          nfc.inDataExchange(AUTH_RESULT_MESSAGE, 3, messagebuf, &recv_len);
+          
         } else {
           AUTH_RESULT_MESSAGE[1] = 0x66;
           AUTH_RESULT_MESSAGE[2] = keyResult;
-          nfc.inDataExchange(AUTH_RESULT_MESSAGE, 3, messagebuf, &recv_len);
         }
+        nfc.inDataExchange(AUTH_RESULT_MESSAGE, 3, messagebuf, &recv_len);
         Serial.println("sent response");
     }
     delay(1000);

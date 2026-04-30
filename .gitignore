@@ -1,2 +1,4 @@
 .pio
 .vscode/
+
+include/door_sign_priv_key.h
