@@ -5,6 +5,7 @@
 #include <wolfssl.h>
 #include <wolfssl/wolfcrypt/random.h>
 #include <wolfssl/wolfcrypt/ed25519.h>
+#include <wolfssl/wolfcrypt/hpke.h>
 
 #include "door_sign_priv_key.h"
 
@@ -16,7 +17,8 @@ class KeyVerification {
         WC_RNG kv_rng;
         // ed25519_key server_pub_key;
         ed25519_key door_sign_key;
-        
+        Hpke app_exchange;
+
     public:
     int begin() {
         int ret = wolfCrypt_Init();
@@ -35,6 +37,8 @@ class KeyVerification {
             return ret;
         }
 
+        wc_HpkeInit(&app_exchange, DHKEM_P256_HKDF_SHA256, HKDF_SHA256, HPKE_AES_128_GCM);
+
         return 0;
     }
 
@@ -52,6 +56,16 @@ class KeyVerification {
         return 0;
     }
 
+    // int getEncryptionPublicKey(uint8_t* output, uint32_t inLen, size_t* outLen) {
+    //     int res = wc_RsaKeyToPublicDer_ex(&door_enc_key, output, inLen, false);
+    //     if (res < 0) return res;
+    //     *outLen = res;
+    //     return 0;
+    // }
+
+    // int verifyAccessKey(uint8_t* accessKey) {
+
+    // }
 };
 
 #endif // KEY_VERIFICATION_H_

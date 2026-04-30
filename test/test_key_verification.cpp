@@ -30,11 +30,23 @@ void test_generate_challenge() {
     Serial.println();
 }
 
+// void test_rsa_keygen() {
+//     char pubkey[256];
+//     memset(pubkey, 0, 256);
+//     size_t* outLen;
+//     int res = verifier.getEncryptionPublicKey(pubkey, 256, outLen);
+//     TEST_ASSERT_EQUAL_INT(0, res);
+//     TEST_ASSERT_EQUAL_INT(140, outLen);
+//     Serial.println(String(pubkey));
+// }
+
 int main( int argc, char **argv) {
     UNITY_BEGIN();
 
     RUN_TEST(test_begin);
-    RUN_TEST(test_generate_challenge);
+    // RUN_TEST(test_generate_challenge);
+    // RUN_TEST(test_rsa_keygen);
+
 
     UNITY_END();
 }

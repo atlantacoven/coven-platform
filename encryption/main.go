@@ -1,10 +1,10 @@
 package main
 
 import (
+	"crypto/ecdh"
 	"crypto/ed25519"
+	"crypto/hpke"
 	"crypto/rand"
-	"crypto/rsa"
-	"crypto/sha256"
 	"crypto/x509"
 	"encoding/binary"
 	"fmt"
@@ -13,13 +13,21 @@ import (
 )
 
 const UserSecretSize = 32
+const NonceSize = 8
 
 var ServerKey ed25519.PrivateKey
 var ServerPubKey ed25519.PublicKey
 var DoorSignKey ed25519.PrivateKey
-var DoorSignPrivKey ed25519.PublicKey
-var DoorKey *rsa.PrivateKey
-var DoorPubKey *rsa.PublicKey
+var DoorSignPubKey ed25519.PublicKey
+
+var KEM = hpke.DHKEM(ecdh.P256())
+var KDF = hpke.HKDFSHA256()
+var AEAD = hpke.AES128GCM()
+
+var Info = []byte("coven.space")
+
+var DoorEncKey hpke.PrivateKey
+var DoorEncPubKey []byte
 
 // server has public/private key pair
 // door has public/private key pair
@@ -38,91 +46,111 @@ func init() {
 	fmt.Printf("ServerPrivateKey=%x\n", ServerKeyDer)
 	fmt.Printf("ServerPublicKey=%x\n\n", ServerPubKey)
 
-	DoorKey, err = rsa.GenerateKey(rand.Reader, 2048)
+	DoorSignPubKey, DoorSignKey, err = ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		log.Panicf("generate key: %v\n", err)
 	}
-	DoorPivKeyDer, err := x509.MarshalPKCS8PrivateKey(DoorKey)
+	DoorKeyDer, err := x509.MarshalPKCS8PrivateKey(DoorSignKey)
 	if err != nil {
 		log.Panicf("marshall key: %v\n", err)
 	}
-	DoorPubKey = &DoorKey.PublicKey
-	fmt.Printf("DoorPrivateKey=%x\n", DoorPivKeyDer)
-	DoorPubKeyDer := x509.MarshalPKCS1PublicKey(DoorPubKey)
-	fmt.Printf("DoorPublicKey=%x\n\n", DoorPubKeyDer)
+	fmt.Printf("DoorSignPrivateKey=%x\n", DoorKeyDer)
+	fmt.Printf("DoorSignPublicKey=%x\n\n", DoorSignKey)
+
+	DoorEncKey, err = KEM.GenerateKey()
+	if err != nil {
+		log.Panicf("generate key: %v\n", err)
+	}
+	DoorEncPubKey = DoorEncKey.PublicKey().Bytes()
+	fmt.Printf("DoorEncPublicKey[%v]=%x\n\n", len(DoorEncPubKey), DoorEncPubKey)
 }
 
 func ServerGenerateUserKey(userid uint64) []byte {
 	UserSecret := make([]byte, UserSecretSize+ed25519.SignatureSize)
 	binary.BigEndian.PutUint64(UserSecret, userid)
-	rand.Read(UserSecret[8:UserSecretSize]) // Salt
+	// fill with constant
+	for i := 8; i < UserSecretSize; i++ {
+		UserSecret[i] = 0xAA
+	}
 
-	fmt.Printf("UserSecretDecrypted=%x\n", UserSecret)
+	fmt.Printf("UserSecretDecrypted[%v]=%x\n", UserSecretSize, UserSecret[:UserSecretSize])
 
-	// ServerCipher, err := aes.NewCipher(ServerKey)
-	// if err != nil {
-	// 	log.Panicf("generate cipher: %v\n", err)
-	// }
-	// for i := 0; i < UserSecretSize; i += ServerCipher.BlockSize() {
-	// 	ServerCipher.Encrypt(UserSecret[i:], UserSecret[i:])
-	// }
 	sig := ed25519.Sign(ServerKey, UserSecret[:UserSecretSize])
 	copy(UserSecret[UserSecretSize:], sig)
-	fmt.Printf("UserSecret=%x\n\n", UserSecret)
+	fmt.Printf("UserSecret[%v]=%x\n\n", len(UserSecret), UserSecret)
 	return UserSecret
 }
 
-func AppGenerateKey(userid uint64, usersecret []byte, dpubkey *rsa.PublicKey) []byte {
+func DoorGenerateChallenge() []byte {
 	Nonce := time.Now().Unix()
 	fmt.Printf("Nonce=%x\n", Nonce)
+	Challenge := make([]byte, NonceSize+ed25519.SignatureSize)
+	binary.BigEndian.PutUint64(Challenge, uint64(Nonce))
 
-	dkey := make([]byte, 8+UserSecretSize+ed25519.SignatureSize)
-	binary.BigEndian.PutUint64(dkey[0:], uint64(Nonce))
-	copy(dkey[8:], usersecret)
-	fmt.Printf("KeyDecrypted=%x\n", dkey)
+	DoorSignature := ed25519.Sign(DoorSignKey, Challenge[0:8])
+	copy(Challenge[8:], DoorSignature)
+	fmt.Printf("Challenge[%v]=%x\n", len(Challenge), Challenge)
+	return Challenge
+}
 
-	Key, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, dpubkey, dkey, nil)
+func AppGenerateKey(userid uint64, usersecret []byte, challenge []byte, doorSignPubKey ed25519.PublicKey, doorEncPubKey []byte) []byte {
+	// verify challenge
+	doorSig := challenge[NonceSize:]
+	doorSigValid := ed25519.Verify(doorSignPubKey, challenge[0:NonceSize], doorSig)
+	if !doorSigValid {
+		log.Panicf("Invalid signature")
+	}
+	nonce := challenge[0:8]
+
+	// generate access key
+	AccessKey := make([]byte, NonceSize+len(usersecret))
+	copy(AccessKey[0:], nonce)
+	copy(AccessKey[NonceSize:], usersecret)
+	fmt.Printf("AccessKey[%v]=%x\n", len(AccessKey), AccessKey)
+
+	// encrypt access key with hpke
+	publicKey, err := KEM.NewPublicKey(doorEncPubKey)
+	if !doorSigValid {
+		log.Panicf("get pub key: %v", err)
+	}
+	Key, err := hpke.Seal(publicKey, KDF, AEAD, Info, AccessKey)
+
 	if err != nil {
 		log.Panicf("encrypt key: %v\n", err)
 	}
-	fmt.Printf("Key=%x\n\n", Key)
+	fmt.Printf("AccessKeyEncrypted[%v]=%x\n\n", len(Key), Key)
 	return Key
 }
 
 func DoorValidateKey(key []byte, serverpubkey ed25519.PublicKey) error {
-	DecryptedKey, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, DoorKey, key, nil)
+	DecryptedKey, err := hpke.Open(DoorEncKey, KDF, AEAD, Info, key)
 	if err != nil {
 		return fmt.Errorf("decrypt key: %w", err)
 	}
 	fmt.Printf("DecryptedKey=%x\n", DecryptedKey)
 
-	// ServerCipher, err := aes.NewCipher(serverkey)
-	// if err != nil {
-	// 	return fmt.Errorf("generate cipher: %w", err)
-	// }
-	// outusec := make([]byte, UserSecretSize)
-	// for i := 0; i < UserSecretSize; i += ServerCipher.BlockSize() {
-	// 	ServerCipher.Decrypt(outusec[i:], DecryptedKey[16+i:])
-	// }
-	valid := ed25519.Verify(serverpubkey, DecryptedKey[8:UserSecretSize+8], DecryptedKey[UserSecretSize+8:])
-	// fmt.Printf("DecryptedUserSecret=%x\n\n", outusec)
+	Nonce := DecryptedKey[0:NonceSize]
+	fmt.Printf("Nonce=%x\n", Nonce)
+
+	UserSecret := DecryptedKey[NonceSize : NonceSize+UserSecretSize]
+	ServerSignature := DecryptedKey[NonceSize+UserSecretSize:]
+	fmt.Printf("UserSecret[%v]=%x\n", len(UserSecret), UserSecret)
+	fmt.Printf("ServerSignature[%v]=%x\n", len(ServerSignature), ServerSignature)
+
+	valid := ed25519.Verify(serverpubkey, UserSecret, ServerSignature)
 	if !valid {
 		return fmt.Errorf("invalid UserSecret")
 	}
 
-	t := time.Unix(int64(binary.BigEndian.Uint64(DecryptedKey[0:8])), 0)
+	t := time.Unix(int64(binary.BigEndian.Uint64(Nonce)), 0)
 	fmt.Printf("Time=%v\n", t)
 	delta := time.Now().Unix() - t.Unix()
 	if delta > 15 || delta < -15 {
 		return fmt.Errorf("nonce expired")
 	}
 
-	srcuid := binary.BigEndian.Uint64(DecryptedKey[8:16])
-	// destuid := binary.BigEndian.Uint64(DecryptedKey[0:8])
+	srcuid := binary.BigEndian.Uint64(UserSecret[0:8])
 	fmt.Printf("UserID=%v\n", srcuid)
-	// if srcuid != destuid {
-	// 	return fmt.Errorf("user ids do not match: %v %v", srcuid, destuid)
-	// }
 
 	return nil // valid
 }
@@ -136,7 +164,8 @@ func main() {
 
 	// When at the door, app generates a temporary Key using the UserSecret, encrypted with
 	// the door's public key
-	Key := AppGenerateKey(UserId, UserSecret, &DoorKey.PublicKey)
+	Challenge := DoorGenerateChallenge()
+	Key := AppGenerateKey(UserId, UserSecret, Challenge, DoorSignPubKey, DoorEncPubKey)
 
 	// The door validates the key, and if valid unlocks door
 	err := DoorValidateKey(Key, ServerPubKey)
