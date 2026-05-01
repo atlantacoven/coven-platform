@@ -24,14 +24,16 @@ func main() {
 	}
 	defer f1.Close()
 	f1.WriteString("#include <Arduino.h>\n\n")
-	fmt.Fprintf(f1, "/* %v */", hex.EncodeToString(DoorKey))
-	f1.WriteString("const uint8_t DOOR_SIGN_PRIV_KEY[64] = {\n")
-	for _, b := range DoorKey {
+	fmt.Fprintf(f1, "/* %v */\n", hex.EncodeToString(DoorKey))
+	f1.WriteString("const uint8_t DOOR_SIGN_PRIV_KEY[64] = {\n\t")
+	for i, b := range DoorKey {
 		fmt.Fprintf(f1, "0x%x, ", b)
+		if (i+1)%16 == 0 {
+			f1.WriteString("\n\t")
+		}
 	}
 	f1.WriteString("\n};\n")
 
-	// pubkeyhex := hex.EncodeToString(DoorSignPub)
 	pubkey, err := x509.MarshalPKIXPublicKey(DoorSignPub)
 	pubkeyhex := hex.EncodeToString(pubkey)
 	if err != nil {

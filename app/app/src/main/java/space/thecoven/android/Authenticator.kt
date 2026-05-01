@@ -1,6 +1,5 @@
 package space.thecoven.android
 
-import android.util.Log
 import org.bouncycastle.crypto.hpke.HPKE
 import java.security.KeyFactory
 import java.security.Signature
@@ -25,8 +24,13 @@ class Authenticator(val doorSigningPubKey: ByteArray) {
         val INFO_FIELD = "thecoven.space".toByteArray(Charsets.US_ASCII)
     }
 
+    sealed class ChallengeResult {
+        object InvalidSignature : ChallengeResult()
+        class ValidSignature(val nonce: ByteArray) : ChallengeResult()
+    }
+
     @Throws(SecurityException::class)
-    fun verifyChallenge(challenge: ByteArray): ByteArray {
+    fun verifyChallenge(challenge: ByteArray): ChallengeResult {
         val nonce = challenge.copyOfRange(0, NONCE_SIZE)
         val signature = challenge.copyOfRange(NONCE_SIZE, challenge.size)
 
@@ -35,8 +39,12 @@ class Authenticator(val doorSigningPubKey: ByteArray) {
         val sig = Signature.getInstance("Ed25519")
         sig.initVerify(key)
         sig.update(nonce)
-        sig.verify(signature)
-        return nonce
+        val valid = sig.verify(signature)
+        if (valid) {
+            return ChallengeResult.ValidSignature(nonce)
+        } else {
+            return ChallengeResult.InvalidSignature
+        }
     }
 
     fun authenticate(nonce: ByteArray, userSecret: ByteArray, pubkey: ByteArray): ByteArray {

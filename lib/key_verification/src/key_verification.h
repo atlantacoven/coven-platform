@@ -11,6 +11,8 @@
 
 #define NONCE_SIZE 8
 #define CHALLENGE_SIZE (NONCE_SIZE+ED25519_SIG_SIZE)
+#define USER_SECRET_SIZE 96
+#define DECRYPTED_ACCESS_KEY_SIZE (NONCE_SIZE+USER_SECRET_SIZE)
 
 #define EXCHANGE_INFO_LEN 14
 byte EXCHANGE_INFO[] = "thecoven.space";
@@ -23,8 +25,9 @@ class KeyVerification {
     Hpke app_exchange;
     void* exchange_key = NULL;
     uint8_t nonce[NONCE_SIZE];
-    uint8_t exchange_pub_key[128];
+    uint8_t exchange_pub_key[65];
     uint16_t exchange_pub_key_size;
+    uint8_t decryptedKey[DECRYPTED_ACCESS_KEY_SIZE];
 
     int begin() {
         int ret = wolfCrypt_Init();
@@ -82,13 +85,14 @@ class KeyVerification {
 
     // returns negative numbers for wolfssl errors, positive numbers for invalid key errors. 0 for valid.
     int verifyAccessKey(uint8_t* accessKey, size_t accessKeyLen) {
-        // uint8_t decryptedKey[128];
-        // int res = wc_HpkeOpenBase(&app_exchange, exchange_key,
-        //     exchange_pub_key, exchange_pub_key_size,
-        //     EXCHANGE_INFO, EXCHANGE_INFO_LEN, NULL, 0,
-        //     accessKey, accessKeyLen,
-        //     decryptedKey);
-        // if (res != 0) return res;
+        Serial.println(F("HPKE Open"));
+        int res = wc_HpkeOpenBase(&app_exchange, exchange_key,
+            exchange_pub_key, exchange_pub_key_size,
+            EXCHANGE_INFO, EXCHANGE_INFO_LEN, NULL, 0,
+            accessKey, accessKeyLen,
+            decryptedKey);
+        Serial.println(F("HPKE Opened"));
+        if (res != 0) return res;
 
         // // free the temporary key
         // wc_HpkeFreeKey(&app_exchange, DHKEM_P256_HKDF_SHA256, exchange_key, NULL);

@@ -40,7 +40,7 @@ class DoorAccessService : HostApduService() {
                 is IDCard.CommandAPDU.InterIndustry ->
                     Log.d(
                         "NFC",
-                        "RequestADPU ${apdu.command.name} ${apdu.data.toString(Charsets.US_ASCII)}"
+                        "RequestADPU ${apdu.command.name} len=${apdu.data.size}"
                     )
             }
             handleCommand(apdu)
@@ -80,7 +80,11 @@ class DoorAccessService : HostApduService() {
                         val auth = Authenticator(doorPubSigningKey)
 
                         try {
-                            val nonce = auth.verifyChallenge(challenge)
+                            val nonce = when (val res = auth.verifyChallenge(challenge)) {
+                                Authenticator.ChallengeResult.InvalidSignature ->
+                                    return IDCard.Status(0x66.toUByte(), 0x10.toUByte()).toResponse()
+                                is Authenticator.ChallengeResult.ValidSignature -> res.nonce
+                            }
                             Log.d("NFC", "nonce=${nonce.toHexString()}")
                             val accessKey = auth.authenticate(nonce, USER_SECRET, pubKey)
                             Log.d("NFC", "accessKey=${accessKey.toHexString()}")
