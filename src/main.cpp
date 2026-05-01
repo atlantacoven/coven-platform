@@ -1,7 +1,5 @@
 #include <Arduino.h>
 
-// #include "TeensyDebug.h"
-
 #include <SPI.h>
 #include <PN532_SPI.h>
 #include <PN532_SPI.cpp>
@@ -27,8 +25,6 @@ size_t messageSize;
 
 void setup() {
   Serial.begin(115200);
-
-  // debug.begin(SerialUSB1);
 
   nfc.begin();
   size_t version = nfc.getFirmwareVersion();
@@ -78,32 +74,7 @@ void debugPrintHex(uint8_t* ptr, size_t size) {
     Serial.println();
 }
 
-#include <malloc.h>
-
-extern volatile void* __bss_end;
-void printHeapStats()
-{
-  Serial.print("                  arena: ");Serial.println(mallinfo().arena);
-  Serial.print("  total allocated space: ");Serial.println(mallinfo().uordblks);
-  Serial.print("  total non-inuse space: ");Serial.println(mallinfo().fordblks);
-  Serial.print("   top releasable space: ");Serial.println(mallinfo().keepcost);
-  Serial.println("");
-}
-
-extern unsigned long _estack; // Linker symbol for top of stack
-
-void printStackDepth() {
-    uint32_t sp;
-    // Get the current Stack Pointer (SP)
-    asm volatile("mov %0, sp" : "=r" (sp)); 
-    
-    uint32_t usage = (uint32_t)&_estack - sp;
-    Serial.printf("Current stack depth: %u bytes\n", usage);
-}
-
 void loop() {
-    printHeapStats();
-    printStackDepth();
     // wait for a card in range
     if (!nfc.inListPassiveTarget()) {
         delay(100);
@@ -157,8 +128,6 @@ void loop() {
       return;
     }
     
-    printHeapStats();
-    printStackDepth();
     res = verifier.verifyAccessKey(messagebuf, accessKeyLen);
     if (res == 0) {
       Serial.println(F("verification success"));

@@ -85,13 +85,11 @@ class KeyVerification {
 
     // returns negative numbers for wolfssl errors, positive numbers for invalid key errors. 0 for valid.
     int verifyAccessKey(uint8_t* accessKey, size_t accessKeyLen) {
-        Serial.println(F("HPKE Open"));
         int res = wc_HpkeOpenBase(&app_exchange, exchange_key,
             exchange_pub_key, exchange_pub_key_size,
             EXCHANGE_INFO, EXCHANGE_INFO_LEN, NULL, 0,
             accessKey, accessKeyLen,
             decryptedKey);
-        Serial.println(F("HPKE Opened"));
         if (res != 0) return res;
 
         // // free the temporary key
