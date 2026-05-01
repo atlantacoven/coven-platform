@@ -26,7 +26,7 @@ func main() {
 	defer f1.Close()
 	f1.WriteString("#include <Arduino.h>\n\n")
 	fmt.Fprintf(f1, "/* %v */", hex.EncodeToString(DoorKey))
-	f1.WriteString("const uint8_t DOOR_SIGN_PRIV_KEY[64] PROGMEM = {\n")
+	f1.WriteString("const uint8_t DOOR_SIGN_PRIV_KEY[64] = {\n")
 	for _, b := range DoorKey {
 		fmt.Fprintf(f1, "0x%x, ", b)
 	}

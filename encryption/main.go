@@ -24,7 +24,7 @@ var KEM = hpke.DHKEM(ecdh.P256())
 var KDF = hpke.HKDFSHA256()
 var AEAD = hpke.AES128GCM()
 
-var Info = []byte("coven.space")
+var Info = []byte("thecoven.space")
 
 var DoorEncKey hpke.PrivateKey
 var DoorEncPubKey []byte
@@ -62,6 +62,11 @@ func init() {
 		log.Panicf("generate key: %v\n", err)
 	}
 	DoorEncPubKey = DoorEncKey.PublicKey().Bytes()
+	DoorEncKeyBytes, err := DoorEncKey.Bytes()
+	if err != nil {
+		log.Panicf("generate key: %v\n", err)
+	}
+	fmt.Printf("DoorEncKey[%v]=%x\n", len(DoorEncKeyBytes), DoorEncKeyBytes)
 	fmt.Printf("DoorEncPublicKey[%v]=%x\n\n", len(DoorEncPubKey), DoorEncPubKey)
 }
 
@@ -110,16 +115,21 @@ func AppGenerateKey(userid uint64, usersecret []byte, challenge []byte, doorSign
 
 	// encrypt access key with hpke
 	publicKey, err := KEM.NewPublicKey(doorEncPubKey)
-	if !doorSigValid {
+	if err != nil {
 		log.Panicf("get pub key: %v", err)
 	}
-	Key, err := hpke.Seal(publicKey, KDF, AEAD, Info, AccessKey)
+	FullKey, err := hpke.Seal(publicKey, KDF, AEAD, Info, AccessKey)
+	// FullKey is the concatenation of the encapsulated key	and ciphertext
+	// For this algorithm, the encapsulated key is 65 bytes
+	EncapsulatedKey := FullKey[0:65]
+	CipherText := FullKey[65:]
 
 	if err != nil {
 		log.Panicf("encrypt key: %v\n", err)
 	}
-	fmt.Printf("AccessKeyEncrypted[%v]=%x\n\n", len(Key), Key)
-	return Key
+	fmt.Printf("AccessKeyEncapsulatedKey[%v]=%x\n", len(EncapsulatedKey), EncapsulatedKey)
+	fmt.Printf("AccessKeyCipherText[%v]=%x\n\n", len(CipherText), CipherText)
+	return FullKey
 }
 
 func DoorValidateKey(key []byte, serverpubkey ed25519.PublicKey) error {

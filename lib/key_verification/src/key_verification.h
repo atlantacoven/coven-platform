@@ -12,12 +12,19 @@
 #define NONCE_SIZE 8
 #define CHALLENGE_SIZE (NONCE_SIZE+ED25519_SIG_SIZE)
 
+byte EXCHANGE_INFO[] = "thecoven.space";
+#define EXCHANGE_INFO_LEN 14
+
 class KeyVerification {
     private:
         WC_RNG kv_rng;
         // ed25519_key server_pub_key;
         ed25519_key door_sign_key;
         Hpke app_exchange;
+        void* exchange_key = NULL;
+        uint8_t nonce[NONCE_SIZE];
+        uint8_t exchange_pub_key[128];
+        uint16_t exchange_pub_key_size;
 
     public:
     int begin() {
@@ -37,7 +44,10 @@ class KeyVerification {
             return ret;
         }
 
-        wc_HpkeInit(&app_exchange, DHKEM_P256_HKDF_SHA256, HKDF_SHA256, HPKE_AES_128_GCM);
+        ret = wc_HpkeInit(&app_exchange, DHKEM_P256_HKDF_SHA256, HKDF_SHA256, HPKE_AES_128_GCM, NULL);
+        if (ret != 0) {
+            return ret;
+        }
 
         return 0;
     }
@@ -46,8 +56,10 @@ class KeyVerification {
     // by a signature signed by door_sign_priv_key using ed25519. Signature is 64 bytes,
     // meaning challenge must be 8+64=72 bytes.
     int generateChallenge(uint8_t* challenge) {
-        int ret = wc_RNG_GenerateBlock(&kv_rng, challenge, NONCE_SIZE);
+        int ret = wc_RNG_GenerateBlock(&kv_rng, nonce, NONCE_SIZE);
         if (ret != 0) return ret;
+
+        memcpy(challenge, nonce, NONCE_SIZE);
 
         unsigned int outLen = ED25519_SIG_SIZE;
         ret = wc_ed25519_sign_msg(challenge, NONCE_SIZE,
@@ -56,16 +68,46 @@ class KeyVerification {
         return 0;
     }
 
-    // int getEncryptionPublicKey(uint8_t* output, uint32_t inLen, size_t* outLen) {
-    //     int res = wc_RsaKeyToPublicDer_ex(&door_enc_key, output, inLen, false);
-    //     if (res < 0) return res;
-    //     *outLen = res;
-    //     return 0;
-    // }
+    int getEncryptionPublicKey(uint8_t** output, uint16_t* outLen) {
+        int ret = wc_HpkeGenerateKeyPair(&app_exchange, &exchange_key, &kv_rng);
+        if (ret != 0) return ret;
 
-    // int verifyAccessKey(uint8_t* accessKey) {
+        exchange_pub_key_size = 128;
+        ret = wc_HpkeSerializePublicKey(&app_exchange, exchange_key, exchange_pub_key, &exchange_pub_key_size);
+        if (ret != 0) return ret;
+        *output = exchange_pub_key;
+        *outLen = exchange_pub_key_size;
 
-    // }
+        return 0;
+    }
+
+    int test_generateFakeAccessKey(uint8_t* plaintext, size_t ptlen, uint8_t* accessKey) {
+        int ret;
+        // void* receiver_key = NULL;
+        // int ret = wc_HpkeGenerateKeyPair(&app_exchange, &receiver_key, &kv_rng);
+        // if (ret != 0) return ret;
+
+        ret = wc_HpkeSealBase(&app_exchange, exchange_key, exchange_key,
+            EXCHANGE_INFO, EXCHANGE_INFO_LEN, NULL, 0,
+            plaintext, ptlen, accessKey);
+        if (ret != 0) return ret;
+        return 0;
+    }
+
+    // returns negative numbers for wolfssl errors, positive numbers for invalid key errors. 0 for valid.
+    int verifyAccessKey(uint8_t* accessKey, size_t keyLen) {
+        uint8_t decryptedKey[128];
+        int res = wc_HpkeOpenBase(&app_exchange, exchange_key,
+            exchange_pub_key, exchange_pub_key_size,
+            EXCHANGE_INFO, EXCHANGE_INFO_LEN, NULL, 0,
+            accessKey, keyLen,
+            decryptedKey);
+        if (res != 0) return res;
+
+        // // free the temporary key
+        // wc_HpkeFreeKey(&app_exchange, DHKEM_P256_HKDF_SHA256, exchange_key, NULL);
+        return 0;
+    }
 };
 
 #endif // KEY_VERIFICATION_H_
