@@ -53,8 +53,6 @@ class MainActivity : ComponentActivity() {
 
         Log.d("NFC", "isDefault=$isDefault")
 
-        generateKey()
-
 //        var message = NdefRecord.createUri("coven://thecoven.space/door")
 //        Log.d("NFC", "message=$message id=${message.id.toHexString()} payload-ascii=${message.payload.toString(Charsets.US_ASCII)}")
 //        message = NdefRecord.createApplicationRecord(application.packageName)

@@ -17,6 +17,11 @@ import android.util.Log
  */
 class DoorAccessService : HostApduService() {
 
+    companion object {
+        const val DOOR_UNLOCK_RESULT_CMD = 0xFA
+        val USER_SECRET = "0000000000001234aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa609510891e090572c105d0ce3dccf8125e4403daea4284de511f10b4d154b1a8f48c3a8a9cd99aca946561aedf4a6eb562741f140687835276e6f698ea499407".hexToByteArray() // STOPSHIP
+    }
+
     override fun onCreate() {
         super.onCreate()
         Log.d("NFC", "DoorAccessService started")
@@ -43,7 +48,7 @@ class DoorAccessService : HostApduService() {
             Log.e("NFC", "Invalid message", e)
             IDCard.Status.InvalidLength.toResponse()
         }
-        Log.d("NFC", "ResponseADPU status=${res.status} ${res.data.toHexString()}")
+        Log.d("NFC", "ResponseADPU status=${res.status} || ${res.encode().toHexString()}")
         return res.encode()
     }
 
@@ -62,9 +67,30 @@ class DoorAccessService : HostApduService() {
                         val aid = cmd.data.toHexString(HexFormat.UpperCase)
                         if (aid != getString(R.string.aid))
                             return IDCard.Status.FileOrApplicationNotFound.toResponse()
+                        return IDCard.Status.OK.toResponse()
+                    }
 
-                        val key = authenticate()
-                        return IDCard.ResponseAPDU(data = key)
+                    IDCard.Command.GENERAL_AUTHENTICATE -> {
+                        val challenge = cmd.data.copyOfRange(0, Authenticator.CHALLENGE_SIZE)
+                        val pubKey = cmd.data.copyOfRange(Authenticator.CHALLENGE_SIZE, cmd.data.size)
+                        Log.d("NFC", "challenge=${challenge.toHexString()}")
+                        Log.d("NFC", "pubKey=${pubKey.toHexString()}")
+
+                        val doorPubSigningKey = getString(R.string.doorPubSigningKey).hexToByteArray()
+                        val auth = Authenticator(doorPubSigningKey)
+
+                        try {
+                            val nonce = auth.verifyChallenge(challenge)
+                            Log.d("NFC", "nonce=${nonce.toHexString()}")
+                            val accessKey = auth.authenticate(nonce, USER_SECRET, pubKey)
+                            Log.d("NFC", "accessKey=${accessKey.toHexString()}")
+
+                            return IDCard.ResponseAPDU(data = accessKey)
+                        } catch (e: Exception) {
+                            Log.e("NFC", "Authentication Failed", e)
+                            // Return a security error
+                            return IDCard.Status(0x66.toUByte(), 0x00.toUByte()).toResponse()
+                        }
                     }
 
                     else ->
@@ -74,7 +100,7 @@ class DoorAccessService : HostApduService() {
 
             is IDCard.CommandAPDU.Proprietary -> {
                 when (val proprietaryCommand = cmd.cla.toUByte().toInt()) {
-                    0xFA -> {
+                    DOOR_UNLOCK_RESULT_CMD -> {
                         // auth result
                         if (cmd.raw.size < 2) {
                             Log.d("NFC", "invalid command size=${cmd.raw.size}")
@@ -89,6 +115,10 @@ class DoorAccessService : HostApduService() {
                         }
                         return IDCard.Status.OK.toResponse()
                     }
+                    0xFF -> {
+                        // Dummy test command
+                        return IDCard.ResponseAPDU(data = listOf(0xDE, 0xAD, 0xBE, 0xEF).map { it.toByte() }.toByteArray())
+                    }
 
                     else -> {
                         Log.d("NFC", "unknown command $proprietaryCommand")
@@ -97,11 +127,6 @@ class DoorAccessService : HostApduService() {
                 }
             }
         }
-    }
-
-    fun authenticate(): ByteArray {
-        // generate key
-        return listOf(0xDE, 0xAD, 0xBE, 0xEF).map { it.toByte() }.toByteArray()
     }
 
     override fun onDeactivated(reason: Int) {

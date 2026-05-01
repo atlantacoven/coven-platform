@@ -12,21 +12,20 @@
 #define NONCE_SIZE 8
 #define CHALLENGE_SIZE (NONCE_SIZE+ED25519_SIG_SIZE)
 
-byte EXCHANGE_INFO[] = "thecoven.space";
 #define EXCHANGE_INFO_LEN 14
+byte EXCHANGE_INFO[] = "thecoven.space";
 
 class KeyVerification {
-    private:
-        WC_RNG kv_rng;
-        // ed25519_key server_pub_key;
-        ed25519_key door_sign_key;
-        Hpke app_exchange;
-        void* exchange_key = NULL;
-        uint8_t nonce[NONCE_SIZE];
-        uint8_t exchange_pub_key[128];
-        uint16_t exchange_pub_key_size;
-
     public:
+    WC_RNG kv_rng;
+    // ed25519_key server_pub_key;
+    ed25519_key door_sign_key;
+    Hpke app_exchange;
+    void* exchange_key = NULL;
+    uint8_t nonce[NONCE_SIZE];
+    uint8_t exchange_pub_key[128];
+    uint16_t exchange_pub_key_size;
+
     int begin() {
         int ret = wolfCrypt_Init();
         if (ret != 0) {
@@ -68,41 +67,28 @@ class KeyVerification {
         return 0;
     }
 
-    int getEncryptionPublicKey(uint8_t** output, uint16_t* outLen) {
+    int getEncryptionPublicKey(uint8_t* output, uint16_t* outLen) {
         int ret = wc_HpkeGenerateKeyPair(&app_exchange, &exchange_key, &kv_rng);
         if (ret != 0) return ret;
 
         exchange_pub_key_size = 128;
         ret = wc_HpkeSerializePublicKey(&app_exchange, exchange_key, exchange_pub_key, &exchange_pub_key_size);
         if (ret != 0) return ret;
-        *output = exchange_pub_key;
+        memcpy(output, exchange_pub_key, exchange_pub_key_size);
         *outLen = exchange_pub_key_size;
 
         return 0;
     }
 
-    int test_generateFakeAccessKey(uint8_t* plaintext, size_t ptlen, uint8_t* accessKey) {
-        int ret;
-        // void* receiver_key = NULL;
-        // int ret = wc_HpkeGenerateKeyPair(&app_exchange, &receiver_key, &kv_rng);
-        // if (ret != 0) return ret;
-
-        ret = wc_HpkeSealBase(&app_exchange, exchange_key, exchange_key,
-            EXCHANGE_INFO, EXCHANGE_INFO_LEN, NULL, 0,
-            plaintext, ptlen, accessKey);
-        if (ret != 0) return ret;
-        return 0;
-    }
-
     // returns negative numbers for wolfssl errors, positive numbers for invalid key errors. 0 for valid.
-    int verifyAccessKey(uint8_t* accessKey, size_t keyLen) {
-        uint8_t decryptedKey[128];
-        int res = wc_HpkeOpenBase(&app_exchange, exchange_key,
-            exchange_pub_key, exchange_pub_key_size,
-            EXCHANGE_INFO, EXCHANGE_INFO_LEN, NULL, 0,
-            accessKey, keyLen,
-            decryptedKey);
-        if (res != 0) return res;
+    int verifyAccessKey(uint8_t* accessKey, size_t accessKeyLen) {
+        // uint8_t decryptedKey[128];
+        // int res = wc_HpkeOpenBase(&app_exchange, exchange_key,
+        //     exchange_pub_key, exchange_pub_key_size,
+        //     EXCHANGE_INFO, EXCHANGE_INFO_LEN, NULL, 0,
+        //     accessKey, accessKeyLen,
+        //     decryptedKey);
+        // if (res != 0) return res;
 
         // // free the temporary key
         // wc_HpkeFreeKey(&app_exchange, DHKEM_P256_HKDF_SHA256, exchange_key, NULL);

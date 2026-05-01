@@ -17,6 +17,10 @@ message=NdefRecord tnf=4 type=616E64726F69642E636F6D3A706B67 payload=73706163652
 ```
 
 
+```ruby
+puts data.chars.each_slice(2).map { |a, b| "0x#{a}#{b}," }.each_slice(16).map { |v| v.join(" ") }.join("\n")
+```
+
 ```
 App->Server: authenticate (HTTPS)
 App:
@@ -30,17 +34,17 @@ return UserSecret
 
 Door->App: authenticate (NFC)
 Door:
-Nonce=random(8)
-DoorSignature=sign(Nonce, DoorPrivKey)
-Challenge=Nonce+DoorSignature
-send Challenge
+DoorEncPubKey, DoorEncPrivKey = generateKeys()
+DoorSignature=sign(DoorEncPubKey, DoorSignPrivKey)
+AuthInfo=DoorEncPubKey+DoorSignature
+send AuthInfo
 App:
-Nonce+DoorSignature=Challenge
-verify(Nonce, DoorSignature, DoorPubKey)
-AccessKey=enc(UserSecret+Nonce, DoorPubKey)
+DoorEncPubKey+DoorSignature=AuthInfo
+verify(DoorEncPubKey, DoorSignature, DoorSignPubKey)
+AccessKey=enc(UserSecret, DoorEncPubKey)
 return AccessKey
 Door:
-UserSecret+Nonce=decrypt(AccessKey, DoorPrivKey)
+UserSecret=decrypt(AccessKey, DoorEncPrivKey)
 UserId+Padding+ServerSignature=UserSecret
 verify(UserId+Padding, ServerSignature, ServerPubKey)
 ```

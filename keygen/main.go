@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/ed25519"
 	"crypto/rand"
-	"crypto/rsa"
 	"crypto/x509"
 	"encoding/hex"
 	"fmt"
@@ -32,19 +31,13 @@ func main() {
 	}
 	f1.WriteString("\n};\n")
 
-	pubkeyhex := hex.EncodeToString(DoorSignPub)
+	// pubkeyhex := hex.EncodeToString(DoorSignPub)
+	pubkey, err := x509.MarshalPKIXPublicKey(DoorSignPub)
+	pubkeyhex := hex.EncodeToString(pubkey)
+	if err != nil {
+		log.Panicf("marshall: %v", err)
+	}
 	err = os.WriteFile("door_signing.pubkey", []byte(pubkeyhex), 0664)
-	if err != nil {
-		log.Panicf("create file: %v", err)
-	}
-
-	DoorEncKey, err := rsa.GenerateKey(rand.Reader, RSA_KEYSIZE)
-	if err != nil {
-		log.Panicf("create file: %v", err)
-	}
-
-	DoorEncPubKeyDER := x509.MarshalPKCS1PublicKey(&DoorEncKey.PublicKey)
-	err = os.WriteFile("door_enc.pubkey", DoorEncPubKeyDER, 0664)
 	if err != nil {
 		log.Panicf("create file: %v", err)
 	}
