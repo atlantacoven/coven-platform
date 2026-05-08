@@ -315,7 +315,11 @@ object IDCard {
             }
         }
 
-        fun encode(): ByteArray = data + byteArrayOf(status.sw1.toByte(), status.sw2.toByte())
+        fun encode(): ByteArray {
+            return data + byteArrayOf(status.sw1.toByte(), status.sw2.toByte()).also {
+                if (it.size > 255) throw IllegalStateException("Message too big")
+            }
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

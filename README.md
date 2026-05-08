@@ -22,6 +22,82 @@ puts data.chars.each_slice(2).map { |a, b| "0x#{a}#{b}," }.each_slice(16).map { 
 ```
 
 ```
+receiver:
+pkR, skR = genKeypair()
+
+-> pkR
+
+sender:
+pkS, skS = genKeypair()
+ct, enc = seal(pkR, info, aad, pt, [psk, pskId], skS)
+
+-> ct, enc, pkS
+
+receiver:
+open(enc, skR, info, aad, ct, [psk, pskId], pkS)
+
+```
+
+
+
+```
+info="thecoven.space"
+enc: [65]byte
+-> Decap(enc)
+    pkE = enc // verify it's a pubkey
+    dh: [32]byte = ECDH(pkE)
+    kemCtx: [65+65]byte = concat(pkE, pkR)
+    -> extractAndExpand(dh, kemCtx)
+        suiteId = "KEM" + 0x0010
+        ->labeledExtract(suiteId, salt=nil, "eae_prk", dh)
+            labeledIkm [51]byte = "HPKE-v1KEM" + 0x0010 + "eae_prk" + dh
+            eaePrk: [32]byte = Extract(SHA256, labeledIkm, salt=nil)
+            L = kem.NSecret = 32
+        ->labeledExpand(suiteId, randomKey=eaePrk, label="shared_secret", info=kemCtx, L)
+            labeledInfo: [157]byte = L + "HPKE-v1" + "KEM" + 0x0010 + "shared_secret" + kemCtx
+            sharedSecret: [32]byte = Expand(SHA256, eaePrk, labeledInfo, L)
+
+->newContext
+    suiteId="HPKE" + 0x0010 (kem) + 0x0001 (kdf) + 0x0001 (aead)
+    pskIdHash: [32]byte = labeledExtract(suiteId, salt=nil, label="psk_id_hash", inputKey=nil)
+        labeledIkm: [28]byte = "HPKE-v1" + "HPKE" + 0x0010 0x0001 0x001 + "psk_id_hash"
+        Extract(SHA256, labeledIkm, salt=nil)
+    infoHash: [32]byte = labeledExtract(suiteId, nil, "info_hash", info="thecoven.space")
+        labeledIkm: [40]byte = "HPKE-v1" + "HPKE" + 0x0010 0x0001 0x001 + "info_hash" + "thecoven.space"
+        Extract(SHA256, labeledIkm, salt=nil)
+    ksCtx: [65]byte = 0x00 + pskIdHash + infoHash
+    secret [32]byte = labeledExtract(suiteId, sharedSecret, "secret", salt=nil)
+        labeledIkm: [23]byte = "HPKE-v1" + "HPKE" + 0x0010 0x0001 0x001 + "secret"
+        Extract(SHA256, labeledIkm, salt=nil)
+    
+    key [16]byte = labeledExpand(suiteId, randomKey=secret, label="key", info=ksCtx, L=aeadKeySize=16)
+        labeledInfo: [87]byte = L + "HPKE-v1" + "HPKE" + 0x0010 0x0001 0x0001 + "key" + kesCtx
+        Expand(SHA256, randomKey=secret, info=labeledInfo, L=16)
+
+aead = AEAD(key)
+baseNonce: [12]byte = labeledExpand(suiteId, randomKey=secret, label="base_nonce", info=ksCtx, L=nonceSize=12)
+    labeledInfo: [94]byte = L + "HPKE-v1" + "HPKE" + 0x0010 0x0001 0x0001 + "base_nonce" + ksCtx
+    Expand(SHA256, randomKey=secret, info=labeledInfo, L=12)
+expSecret: [32]byte = labeledExpand(suiteId, randomKey=secret, "exp", ksCtx, L=kdfSize=32)
+    labeledInfo: [87]byte = L + "HPKE-v1" + "HPKE" + 0x0010 0x0001 0x0001 + "exp" + ksCtx
+    Expand(SHA256, randomKey=secret, info=labeledInfo, L=32)
+
+ciphertext: [120]byte
+plaintext: [104]byte = Open(aad=nil, ciphertext)
+    Nonce: [12]byte = NextNonce() // from seqnum xored with baseNonce
+    -> aead.Open(dst=nil, Nonce, ciphertext, data=aad=nil)
+        -> GCM(dst=nil, nonce, ciphertext, data=aad=nil)
+seqNum += 1
+
+
+
+
+// export: labeledExpand(suiteId, randomKey=expSecret, "sec, exporterContext, L)
+```
+
+
+
+```
 App->Server: authenticate (HTTPS)
 App:
 send UserId+Password

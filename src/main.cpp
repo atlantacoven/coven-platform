@@ -8,8 +8,11 @@
 
 #include "key_verification.h"
 
-#define LED 13
+#if defined ARDUINO_ESP32_THING
+#define NFC_CS_PIN 2
+#elif defined ARDUINO_TEENSY31
 #define NFC_CS_PIN 15
+#endif
 
 #define STATUS_OK 0x9000
 #define DOOR_UNLOCK_RESULT_CMD 0xFA
@@ -34,8 +37,6 @@ void setup() {
   }
   Serial.print(F("Firmware version: ")); Serial.println(version);
   nfc.SAMConfig();
-
-  verifier.begin();
 }
 
 uint8_t AID_MESSAGE[22] = {
@@ -81,6 +82,8 @@ void loop() {
         return;
     }
 
+    verifier.begin();
+
     // send SELECT message with AID
     uint8_t recv_len = 255;
     Serial.println(F("sending SELECT"));
@@ -101,12 +104,14 @@ void loop() {
       Serial.println(F("Generate challenge fail"));
       return;
     }
+    Serial.println("Challenge:"); debugPrintHex(messagebuf + 5, CHALLENGE_SIZE);
     uint16_t messageSize = 0;
     res = verifier.getEncryptionPublicKey(messagebuf + 5 + CHALLENGE_SIZE, &messageSize);
     if (res != 0) {
       Serial.println(F("Generate pubkey fail"));
       return;
     }
+    Serial.println("pkR:"); debugPrintHex(messagebuf + 5 + CHALLENGE_SIZE, PUB_KEY_SIZE);
     messageSize += CHALLENGE_SIZE;
     if (messageSize >= 256) {
       Serial.println(F("message overflow"));
@@ -122,26 +127,31 @@ void loop() {
     }
     debugPrintHex(messagebuf, recv_len);
 
-    size_t accessKeyLen = recv_len - 2;
-    if (recv_len < 2 || !statusMatch(messagebuf + accessKeyLen, STATUS_OK)) {
+    // message=cipher[120]+encapsulatedKey[32]+status[2]
+    size_t pksSize = PUB_KEY_SIZE;
+    size_t accessKeyLen = recv_len - pksSize - 2;
+    if (recv_len < 2 || !statusMatch(messagebuf + pksSize + accessKeyLen, STATUS_OK)) {
       Serial.println(F("not ok"));
       return;
     }
     
-    res = verifier.verifyAccessKey(messagebuf, accessKeyLen);
+    Serial.println("AccessKey:"); debugPrintHex(messagebuf, accessKeyLen);
+    Serial.println("pkS:"); debugPrintHex(messagebuf + accessKeyLen, PUB_KEY_SIZE);
+    res = verifier.verifyAccessKey(messagebuf, accessKeyLen, messagebuf + accessKeyLen);
     if (res == 0) {
       Serial.println(F("verification success"));
       AUTH_RESULT_MESSAGE[1] = 0x90;
       AUTH_RESULT_MESSAGE[2] = 0x00;
       // TODO: unlock door
     } else {
-      Serial.println(F("verification failed"));
+      Serial.print(F("verification failed: "));
+      Serial.println(res);
       AUTH_RESULT_MESSAGE[1] = 0x66;
       AUTH_RESULT_MESSAGE[2] = (uint8_t) res;
     }
-
     nfc.inDataExchange(AUTH_RESULT_MESSAGE, 3, messagebuf, &recv_len);
-    Serial.println("sent response");
+
+    // verifier.free();
 
     delay(1000);
 }

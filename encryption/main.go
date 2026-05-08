@@ -20,14 +20,11 @@ var ServerPubKey ed25519.PublicKey
 var DoorSignKey ed25519.PrivateKey
 var DoorSignPubKey ed25519.PublicKey
 
-var KEM = hpke.DHKEM(ecdh.P256())
+var KEM = hpke.DHKEM(ecdh.X25519())
 var KDF = hpke.HKDFSHA256()
 var AEAD = hpke.AES128GCM()
 
 var Info = []byte("thecoven.space")
-
-var DoorEncKey hpke.PrivateKey
-var DoorEncPubKey []byte
 
 // server has public/private key pair
 // door has public/private key pair
@@ -56,18 +53,6 @@ func init() {
 	}
 	fmt.Printf("DoorSignPrivateKey=%x\n", DoorKeyDer)
 	fmt.Printf("DoorSignPublicKey=%x\n\n", DoorSignKey)
-
-	DoorEncKey, err = KEM.GenerateKey()
-	if err != nil {
-		log.Panicf("generate key: %v\n", err)
-	}
-	DoorEncPubKey = DoorEncKey.PublicKey().Bytes()
-	DoorEncKeyBytes, err := DoorEncKey.Bytes()
-	if err != nil {
-		log.Panicf("generate key: %v\n", err)
-	}
-	fmt.Printf("DoorEncKey[%v]=%x\n", len(DoorEncKeyBytes), DoorEncKeyBytes)
-	fmt.Printf("DoorEncPublicKey[%v]=%x\n\n", len(DoorEncPubKey), DoorEncPubKey)
 }
 
 func ServerGenerateUserKey(userid uint64) []byte {
@@ -78,15 +63,15 @@ func ServerGenerateUserKey(userid uint64) []byte {
 		UserSecret[i] = 0xAA
 	}
 
-	fmt.Printf("UserSecretDecrypted[%v]=%x\n", UserSecretSize, UserSecret[:UserSecretSize])
+	fmt.Printf("UserSecret[%v]=%x\n", UserSecretSize, UserSecret[:UserSecretSize])
 
 	sig := ed25519.Sign(ServerKey, UserSecret[:UserSecretSize])
 	copy(UserSecret[UserSecretSize:], sig)
-	fmt.Printf("UserSecret[%v]=%x\n\n", len(UserSecret), UserSecret)
+	fmt.Printf("UserSecretSigned[%v]=%x\n\n", len(UserSecret), UserSecret)
 	return UserSecret
 }
 
-func DoorGenerateChallenge() []byte {
+func DoorGenerateChallenge() (challenge, pkR []byte, skR hpke.PrivateKey) {
 	Nonce := time.Now().Unix()
 	fmt.Printf("Nonce=%x\n", Nonce)
 	Challenge := make([]byte, NonceSize+ed25519.SignatureSize)
@@ -95,10 +80,23 @@ func DoorGenerateChallenge() []byte {
 	DoorSignature := ed25519.Sign(DoorSignKey, Challenge[0:8])
 	copy(Challenge[8:], DoorSignature)
 	fmt.Printf("Challenge[%v]=%x\n", len(Challenge), Challenge)
-	return Challenge
+
+	DoorEncKey, err := KEM.GenerateKey()
+	if err != nil {
+		log.Panicf("generate key: %v\n", err)
+	}
+	DoorEncPubKey := DoorEncKey.PublicKey().Bytes()
+	// DoorEncKeyBytes, err := DoorEncKey.Bytes()
+	// if err != nil {
+	// 	log.Panicf("generate key: %v\n", err)
+	// }
+	// fmt.Printf("DoorEncKey[%v]=%x\n", len(DoorEncKeyBytes), DoorEncKeyBytes)
+	fmt.Printf("DoorEncPublicKey[%v]=%x\n\n", len(DoorEncPubKey), DoorEncPubKey)
+
+	return Challenge, DoorEncPubKey, DoorEncKey
 }
 
-func AppGenerateKey(userid uint64, usersecret []byte, challenge []byte, doorSignPubKey ed25519.PublicKey, doorEncPubKey []byte) []byte {
+func AppGenerateKey(userid uint64, usersecretsigned []byte, challenge []byte, doorSignPubKey ed25519.PublicKey, doorEncPubKey []byte) (enc, ct []byte) {
 	// verify challenge
 	doorSig := challenge[NonceSize:]
 	doorSigValid := ed25519.Verify(doorSignPubKey, challenge[0:NonceSize], doorSig)
@@ -108,32 +106,44 @@ func AppGenerateKey(userid uint64, usersecret []byte, challenge []byte, doorSign
 	nonce := challenge[0:8]
 
 	// generate access key
-	AccessKey := make([]byte, NonceSize+len(usersecret))
+	AccessKey := make([]byte, NonceSize+len(usersecretsigned))
 	copy(AccessKey[0:], nonce)
-	copy(AccessKey[NonceSize:], usersecret)
+	copy(AccessKey[NonceSize:], usersecretsigned)
 	fmt.Printf("AccessKey[%v]=%x\n", len(AccessKey), AccessKey)
 
 	// encrypt access key with hpke
-	publicKey, err := KEM.NewPublicKey(doorEncPubKey)
+	pkR, err := KEM.NewPublicKey(doorEncPubKey)
 	if err != nil {
 		log.Panicf("get pub key: %v", err)
 	}
-	FullKey, err := hpke.Seal(publicKey, KDF, AEAD, Info, AccessKey)
-	// FullKey is the concatenation of the encapsulated key	and ciphertext
-	// For this algorithm, the encapsulated key is 65 bytes
-	EncapsulatedKey := FullKey[0:65]
-	CipherText := FullKey[65:]
-
+	EncapsulatedKey, s, err := hpke.NewSender(pkR, KDF, AEAD, Info)
 	if err != nil {
-		log.Panicf("encrypt key: %v\n", err)
+		log.Panicf("create sender: %v", err)
 	}
+	CipherText, err := s.Seal(nil, AccessKey)
+	if err != nil {
+		log.Panicf("seal: %v", err)
+	}
+	// FullKey, err := hpke.Seal(publicKey, KDF, AEAD, Info, AccessKey)
+	// // FullKey is the concatenation of the encapsulated key	and ciphertext
+	// // For this algorithm, the encapsulated key is 65 bytes
+	// EncapsulatedKey := FullKey[0:65]
+	// CipherText := FullKey[65:]
+	// if err != nil {
+	// 	log.Panicf("encrypt key: %v\n", err)
+	// }
 	fmt.Printf("AccessKeyEncapsulatedKey[%v]=%x\n", len(EncapsulatedKey), EncapsulatedKey)
 	fmt.Printf("AccessKeyCipherText[%v]=%x\n\n", len(CipherText), CipherText)
-	return FullKey
+	return EncapsulatedKey, CipherText
 }
 
-func DoorValidateKey(key []byte, serverpubkey ed25519.PublicKey) error {
-	DecryptedKey, err := hpke.Open(DoorEncKey, KDF, AEAD, Info, key)
+func DoorValidateKey(CipherText []byte, Enc []byte, serverpubkey ed25519.PublicKey, skr hpke.PrivateKey) error {
+	// DecryptedKey, err := hpke.Open(DoorEncKey, KDF, AEAD, Info, key)
+	r, err := hpke.NewRecipient(Enc, skr, KDF, AEAD, Info)
+	if err != nil {
+		return fmt.Errorf("create receiver: %w", err)
+	}
+	DecryptedKey, err := r.Open(nil, CipherText)
 	if err != nil {
 		return fmt.Errorf("decrypt key: %w", err)
 	}
@@ -170,15 +180,15 @@ func main() {
 
 	// App authenticates with Server, acquiring UserSecret. It saves this securely to
 	// the device
-	UserSecret := ServerGenerateUserKey(UserId)
+	UserSecretSigned := ServerGenerateUserKey(UserId)
 
 	// When at the door, app generates a temporary Key using the UserSecret, encrypted with
 	// the door's public key
-	Challenge := DoorGenerateChallenge()
-	Key := AppGenerateKey(UserId, UserSecret, Challenge, DoorSignPubKey, DoorEncPubKey)
+	Challenge, DoorEncPubKey, DoorEncKey := DoorGenerateChallenge()
+	Enc, Ct := AppGenerateKey(UserId, UserSecretSigned, Challenge, DoorSignPubKey, DoorEncPubKey)
 
 	// The door validates the key, and if valid unlocks door
-	err := DoorValidateKey(Key, ServerPubKey)
+	err := DoorValidateKey(Ct, Enc, ServerPubKey, DoorEncKey)
 	if err != nil {
 		log.Panicf("failed: %v", err)
 	} else {

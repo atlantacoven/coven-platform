@@ -6,6 +6,7 @@ import (
 	"crypto/hpke"
 	"encoding/hex"
 	"fmt"
+	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -69,4 +70,28 @@ func TestAndroidOpen(t *testing.T) {
 
 	expected := must(hex.DecodeString("0000000069f3ee9d0000000000001234aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa23020bc0a02c5b7aa5dd064d2c40ed6996650c58c635597fd9601687c09d7ba7dfba23f585f853d267909efeada28322c3bb280e96d92636a2937c039d922b0a"))
 	assert.EqualValues(t, expected, decrypted)
+}
+
+func TestDirectOpen(t *testing.T) {
+	kem := hpke.DHKEM(ecdh.X25519())
+	kdf := hpke.HKDFSHA256()
+	aead := hpke.AES128GCM()
+
+	info := []byte("thecoven.space")
+
+	// skR := must(kem.GenerateKey())
+	// skR := must(kem.DeriveKeyPair([]byte(must(hex.DecodeString("b8c18a67c46736811bd81c6aad8520d2871cca22844ab4d6883f8c12694f3d4e")))))
+	skR := must(kem.NewPrivateKey([]byte(must(hex.DecodeString("d0131ad0e69e97fdc5ea978790f21320bf1a89f2cb7b39a7e84595697ac4fa79")))))
+	pkR := skR.PublicKey()
+	log.Printf("skR: %x\n", must(skR.Bytes()))
+	log.Printf("pkR: %x\n", pkR.Bytes())
+	// 5580eb6a4d21e341f82f89b441ae22d18114a123c9e5c64cac9ae6a63d50605f
+
+	ct := []byte(must(hex.DecodeString("9b79ae08c9a84989c4fc0691fa71171ad28291efcab5d646bbe3d4ae0b9b3037ffc02326799364e76a588ac60847c5f65c6d257be8915c555417b88f8c0354338fa8f32fd5d027252ffca598b70168d5c7678f42b51d6d6fe96c28d4663d5b101bb7dbb1c58f0f379bf797c145fe9df536287078a00771c6")))
+	enc := []byte(must(hex.DecodeString("5c511df441dd45e854eacea39e565e5dac8a3b9b9e6033026a445c759ca52334")))
+
+	r := must(hpke.NewRecipient(enc, skR, kdf, aead, info))
+	pt := must(r.Open(nil, ct))
+
+	log.Printf("pt: %x\n", pt)
 }
