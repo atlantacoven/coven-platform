@@ -9,6 +9,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"log"
+	"testing"
 	"time"
 )
 
@@ -175,7 +176,7 @@ func DoorValidateKey(CipherText []byte, Enc []byte, serverpubkey ed25519.PublicK
 	return nil // valid
 }
 
-func main() {
+func TestAlgorithm(t *testing.T) {
 	UserId := uint64(0x1234)
 
 	// App authenticates with Server, acquiring UserSecret. It saves this securely to
