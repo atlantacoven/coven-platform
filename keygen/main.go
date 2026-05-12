@@ -4,6 +4,7 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/x509"
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/pem"
 	"fmt"
@@ -71,6 +72,17 @@ func main() {
 	dpk := must(x509.MarshalPKIXPublicKey(DoorSignPub))
 	fmt.Fprintf(f2, "\t<string name=\"door_signing_pubkey\">%v</string>\n", hex.EncodeToString(dpk))
 	f2.WriteString("</resources>\n")
+
+	// Test key // STOPSHIP if we leave this in here and it leaks anyone can get in
+	userId := 0x1234
+	userSecret := make([]byte, 32)
+	binary.BigEndian.PutUint64(userSecret, uint64(userId))
+	for i := 8; i < 32; i++ {
+		userSecret[i] = 0xAA
+	}
+	sig := ed25519.Sign(ServerKey, userSecret)
+	fmt.Println("Test UserSecret:")
+	fmt.Printf("%x%x\n", userSecret, sig)
 }
 
 func writeCArray(w io.Writer, name string, data []byte) (err error) {

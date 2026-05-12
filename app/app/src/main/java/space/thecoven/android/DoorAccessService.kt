@@ -20,7 +20,7 @@ class DoorAccessService : HostApduService() {
 
     companion object {
         const val DOOR_UNLOCK_RESULT_CMD = 0xFA
-        val USER_SECRET = "0000000000001234aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa609510891e090572c105d0ce3dccf8125e4403daea4284de511f10b4d154b1a8f48c3a8a9cd99aca946561aedf4a6eb562741f140687835276e6f698ea499407".hexToByteArray() // STOPSHIP
+        val USER_SECRET = "0000000000001234aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaad296227188105d36c9fa96066a6c39f763dbf634422c945cdc21f7b573ce08347f89708d6a137f35ed64202f0f02cf7f776a36625f59fc6820d7d4f255200608".hexToByteArray() // STOPSHIP
     }
 
     override fun onCreate() {

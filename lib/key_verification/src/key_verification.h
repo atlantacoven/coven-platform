@@ -144,7 +144,7 @@ class KeyVerification {
         }
         
         // server signature is the remaining 64 bytes
-        uint8_t* serverSig = userSecret + USER_DATA_SIZE;
+        uint8_t* serverSig = padding + PADDING_SIZE;
         res = verifyServerSignature(userSecret, USER_DATA_SIZE, serverSig, ED25519_SIG_SIZE);
         if (res != 0) return res;
         return 0; // valid
