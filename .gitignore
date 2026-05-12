@@ -1,4 +1,6 @@
 .pio
 .vscode/
 
-include/door_sign_priv_key.h
+server_signing.pem
+include/_keys.h
+app/app/src/main/res/values/keys.xml

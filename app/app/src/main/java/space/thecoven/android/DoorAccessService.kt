@@ -3,6 +3,7 @@ package space.thecoven.android
 import android.nfc.cardemulation.HostApduService
 import android.os.Bundle
 import android.util.Log
+import java.util.Locale
 
 /**
  * This class uses Android's support for Host Card Emulation to exchange keys with the door lock
@@ -64,8 +65,9 @@ class DoorAccessService : HostApduService() {
 
                 when (cmd.command) {
                     IDCard.Command.SELECT -> {
-                        val aid = cmd.data.toHexString(HexFormat.UpperCase)
-                        if (aid != getString(R.string.aid))
+
+                        val aid = getString(R.string.aid).hexToByteArray()
+                        if (!cmd.data.contentEquals(aid))
                             return IDCard.Status.FileOrApplicationNotFound.toResponse()
                         return IDCard.Status.OK.toResponse()
                     }
@@ -76,7 +78,7 @@ class DoorAccessService : HostApduService() {
                         Log.d("NFC", "challenge=${challenge.toHexString()}")
                         Log.d("NFC", "pubKey=${pubKey.toHexString()}")
 
-                        val doorPubSigningKey = getString(R.string.doorPubSigningKey).hexToByteArray()
+                        val doorPubSigningKey = getString(R.string.door_signing_pubkey).hexToByteArray()
                         val auth = Authenticator(doorPubSigningKey)
 
                         try {

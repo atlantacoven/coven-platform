@@ -2,10 +2,6 @@
     <string name="app_name">The Coven</string>
     <string name="apdu_service_description">Access The Coven makerspace</string>
     <string name="aid_group_description">Unlock the door</string>
-
-    <string name="aid">FF746865636F76656E2E7370616365FF</string>
-
-    <string name="doorPubSigningKey">302a300506032b6570032100b5a05e8b25e9ddd586bd9a3952123f65a2c287cf364d40fc7a27851aa058898b</string>
     
     <attr name="requireDeviceScreenOn">false</attr>
 </resources>

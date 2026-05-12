@@ -1,157 +1,119 @@
 #include <Arduino.h>
 
-#include <SPI.h>
-#include <PN532_SPI.h>
-#include <PN532_SPI.cpp>
-#include "PN532.h"
-
-
-#include "key_verification.h"
-
 #if defined ARDUINO_ESP32_THING
 #define NFC_CS_PIN 2
 #elif defined ARDUINO_TEENSY31
 #define NFC_CS_PIN 15
 #endif
 
-#define STATUS_OK 0x9000
-#define DOOR_UNLOCK_RESULT_CMD 0xFA
+#include "iso7816_4.h"
+#include "key_verification.h"
 
-PN532_SPI pn532spi(SPI, NFC_CS_PIN);
-PN532 nfc(pn532spi);
+#define DOOR_UNLOCK_RESULT_CMD 
 
 KeyVerification verifier;
 
-// Buffer for storing messages across NFC
-uint8_t messagebuf[256];
-size_t messageSize;
+const MessageHeader SELECT_AID_MESSAGE = {
+    0x00, // CLA
+    0xA4, // INS: SELECT command
+    0x04, // p1: the command data contains a DF name (the AID)
+    0x00, // p2
+};
+
+const MessageHeader GENERAL_AUTH_MESSAGE = {
+  0x00, // CLA
+  0x86, // INS: GENERAL AUTHENTICATE
+  0x00, 0x00, // params (these are key and algorithm ids according to spec, but have user-defined meanings)
+};
+
+const MessageHeader DOOR_STATUS_MESSAGE = {
+  0xFA, // proprietary cla value (bit8=1)
+  0x01, // proprietary inc
+};
+
+int writeGeneralAuthenticate(Message* msg);
+bool writeDoorLockStatus(Message* msg, uint16_t status);
 
 void setup() {
   Serial.begin(115200);
-
-  nfc.begin();
-  size_t version = nfc.getFirmwareVersion();
-  if (version == 0) {
-    Serial.println(F("PN532 not found"));
-    while (1) ;;
-  }
-  Serial.print(F("Firmware version: ")); Serial.println(version);
-  nfc.SAMConfig();
-}
-
-uint8_t AID_MESSAGE[22] = {
-  0x00, // CLA
-  0xA4, // INS: SELECT command
-  0x04, // p1: the command data contains a DF name (the AID)
-  0x00, // p2
-  16,   // Lc (message len)
-  // message data: the AID
-  0xFF, 't', 'h', 'e', 'c', 'o', 'v', 'e', 'n', '.', 's', 'p', 'a', 'c', 'e', 0xFF,
-  0x00, // accept up to 256 bytes in response
-};
-
-uint8_t AUTH_RESULT_MESSAGE[3] = {
-  DOOR_UNLOCK_RESULT_CMD, // proprietary cla value (bit8=1)
-  0x90, 0x00, // status ok
-};
-
-uint8_t AUTH_MESSAGE_HEAD[] = {
-  0x00, // CLA
-  0x86, // INS: GENERAL AUTHENTICATE
-  0x00, 0x00, // params
-};
-
-bool statusMatch(uint8_t* statusLoc, uint16_t expected) {
-  uint16_t actual = ((uint16_t)(statusLoc[0]) << 8) + ((uint16_t) statusLoc[1]);
-  return actual == expected;
-}
-
-void debugPrintHex(uint8_t* ptr, size_t size) {
-    for (size_t i = 0; i < size; i++) {
-        if (ptr[i] < 16) Serial.print("0");
-        Serial.print(ptr[i], HEX);
-        if ((i+1) % 32 == 0) Serial.println();
-    }
-    Serial.println();
+  verifier.begin();
+  beginNFC();
 }
 
 void loop() {
     // wait for a card in range
-    if (!nfc.inListPassiveTarget()) {
+    if (!cardInRange()) {
         delay(100);
         return;
     }
 
-    verifier.begin();
-
     // send SELECT message with AID
-    uint8_t recv_len = 255;
-    Serial.println(F("sending SELECT"));
-    if (!nfc.inDataExchange(AID_MESSAGE, 22, messagebuf, &recv_len)) {
-        Serial.println(F("send failed"));
-        return;
+    Message selectMsg;
+    selectMsg.setHeader(&SELECT_AID_MESSAGE);
+    selectMsg.appendDataFrom((uint8_t*) AID, AID_LEN);
+
+    uint8_t recvLen;
+    uint8_t* responseBuf;
+    if (!selectMsg.send(&responseBuf, &recvLen)) {
+        return; // send failed
     }
-    debugPrintHex(messagebuf, recv_len);
-    if (recv_len != 2 || !statusMatch(messagebuf, STATUS_OK)) {
+    if (!selectMsg.isResponseOk()) {
       Serial.println(F("not ok"));
       return;
     }
 
     // Send GENERAL AUTHENTICATE message with Challenge and PubKey
-    memcpy(messagebuf, AUTH_MESSAGE_HEAD, 4);
-    int res = verifier.generateChallenge(messagebuf + 5);
-    if (res != 0) {
-      Serial.println(F("Generate challenge fail"));
+    Message authMsg;
+    if (writeGeneralAuthenticate(&authMsg) != 0) {
+      Serial.println(F("build message failed"));
       return;
     }
-    Serial.println("Challenge:"); debugPrintHex(messagebuf + 5, CHALLENGE_SIZE);
-    uint16_t messageSize = 0;
-    res = verifier.getEncryptionPublicKey(messagebuf + 5 + CHALLENGE_SIZE, &messageSize);
-    if (res != 0) {
-      Serial.println(F("Generate pubkey fail"));
-      return;
+    if (!authMsg.send(&responseBuf, &recvLen)) {
+        return; // send failed
     }
-    Serial.println("pkR:"); debugPrintHex(messagebuf + 5 + CHALLENGE_SIZE, PUB_KEY_SIZE);
-    messageSize += CHALLENGE_SIZE;
-    if (messageSize >= 256) {
-      Serial.println(F("message overflow"));
-    }
-    messagebuf[4] = (uint8_t) messageSize;
-    messagebuf[5+messageSize] = 0x00; // expect up to 256 bytes
-
-    Serial.println(F("sending GENERAL AUTHENTICATE"));
-    recv_len = 255;
-    if (!nfc.inDataExchange(messagebuf, 6+messageSize, messagebuf, &recv_len)) {
-        Serial.println(F("send failed"));
-        return;
-    }
-    debugPrintHex(messagebuf, recv_len);
-
-    // message=cipher[120]+encapsulatedKey[32]+status[2]
-    size_t pksSize = PUB_KEY_SIZE;
-    size_t accessKeyLen = recv_len - pksSize - 2;
-    if (recv_len < 2 || !statusMatch(messagebuf + pksSize + accessKeyLen, STATUS_OK)) {
+    if (!authMsg.isResponseOk()) {
       Serial.println(F("not ok"));
       return;
     }
+
+    // Check the result
+    size_t accessKeyLen = recvLen - PUB_KEY_SIZE;
+    Serial.println("AccessKey:"); debugPrintHex(responseBuf, accessKeyLen);
+    Serial.println("enc:"); debugPrintHex(responseBuf + accessKeyLen, PUB_KEY_SIZE);
     
-    Serial.println("AccessKey:"); debugPrintHex(messagebuf, accessKeyLen);
-    Serial.println("pkS:"); debugPrintHex(messagebuf + accessKeyLen, PUB_KEY_SIZE);
-    res = verifier.verifyAccessKey(messagebuf, accessKeyLen, messagebuf + accessKeyLen);
+    int res = verifier.verifyAccessKey(responseBuf, accessKeyLen);
+    Message doorStatusMsg;
     if (res == 0) {
       Serial.println(F("verification success"));
-      AUTH_RESULT_MESSAGE[1] = 0x90;
-      AUTH_RESULT_MESSAGE[2] = 0x00;
+      writeDoorLockStatus(&doorStatusMsg, STATUS_OK);
       // TODO: unlock door
     } else {
       Serial.print(F("verification failed: "));
       Serial.println(res);
-      AUTH_RESULT_MESSAGE[1] = 0x66;
-      AUTH_RESULT_MESSAGE[2] = (uint8_t) res;
+      writeDoorLockStatus(&doorStatusMsg, 0x6600 | (uint16_t) res);
     }
-    nfc.inDataExchange(AUTH_RESULT_MESSAGE, 3, messagebuf, &recv_len);
-
-    // verifier.free();
+    // don't care if it goes through or not
+    doorStatusMsg.send();
 
     delay(1000);
+}
+
+int writeGeneralAuthenticate(Message* msg) {
+  int res;
+  uint8_t* outbuf;
+  msg->setHeader(&GENERAL_AUTH_MESSAGE);
+  if (!msg->appendDataDirect(&outbuf, CHALLENGE_SIZE)) return -1;
+  res = verifier.generateChallenge(outbuf);
+  if (res != 0) return res;
+
+  if (!msg->appendDataDirect(&outbuf, PUB_KEY_SIZE)) return -1;
+  res = verifier.getEncryptionPublicKey(outbuf);
+  if (res != 0) return res;
+  return 0;
+}
+
+bool writeDoorLockStatus(Message* msg, uint16_t status) {
+  uint8_t* outbuf;
+  msg->setHeader(&DOOR_STATUS_MESSAGE);
+  return msg->appendUInt16(status);
 }
