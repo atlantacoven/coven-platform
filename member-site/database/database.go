@@ -1,3 +1,5 @@
+// Package database manages creating and providing a relational
+// database appropriate for the environment.
 package database
 
 import (
@@ -20,8 +22,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// DB is an interface implemented by both *sqlx.DB and *sqlx.Tx
-// so that either can be used by our code
+// DB is an interface implemented by both *[sqlx.DB] and *[sqlx.Tx]
+// so that either can be used by our code.
 type DB interface {
 	Query(query string, args ...any) (*sql.Rows, error)
 	Queryx(query string, args ...any) (*sqlx.Rows, error)
@@ -40,6 +42,7 @@ type DB interface {
 	SelectContext(ctx context.Context, dest any, query string, args ...any) error
 }
 
+// Create connects to the default database for the current environment.
 func Create() (*sqlx.DB, error) {
 	dburl := os.Getenv("DATABASE_URL")
 	if dburl != "" {
@@ -53,13 +56,14 @@ func createEnv(env api.Environment) (*sqlx.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("find project root: %w", err)
 	}
-	return createSrc(fmt.Sprintf("%v/server/%v.db", root.Path, env))
+	return createSrc(fmt.Sprintf("%v/member-site/%v.db", root.Path, env))
 }
 
 func createSrc(src string) (*sqlx.DB, error) {
 	return sqlx.Open("sqlite3", src)
 }
 
+// NewMigrator creates a [migrate.Migrate] instance for managing migrations.
 func NewMigrator(db DB) (*migrate.Migrate, error) {
 	driver, err := sqlite3.WithInstance(db.(*sqlx.DB).DB, &sqlite3.Config{})
 	if err != nil {
@@ -71,14 +75,16 @@ func NewMigrator(db DB) (*migrate.Migrate, error) {
 	if err != nil {
 		return nil, fmt.Errorf("find project root: %w", err)
 	}
-	path := fmt.Sprintf("file://%v/server/migrations", root.Path)
+	path := fmt.Sprintf("file://%v/member-site/migrations", root.Path)
 	return migrate.NewWithDatabaseInstance(path, "sqlite3", driver)
 }
 
+// WithDB attaches db to the provided [context.Context].
 func WithDB(db DB, ctx context.Context) context.Context {
 	return context.WithValue(ctx, "db", db)
 }
 
+// Get accesses a db instance attached to [context.Context].
 func Get(ctx context.Context) DB {
 	return ctx.Value("db").(DB)
 }

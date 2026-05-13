@@ -31,6 +31,7 @@ func main() {
 		if *n < 0 {
 			err := m.Up()
 			if errors.Is(err, migrate.ErrNoChange) {
+				fmt.Println("Already up to date.")
 				return
 			}
 			if err != nil {
@@ -67,7 +68,7 @@ func main() {
 		version := now.Unix()
 		date := now.Format("2006-01-02")
 		for _, dir := range []string{"up", "down"} {
-			path := fmt.Sprintf("server/migrations/%v_%v_%v.%v.sql", version, date, sanitize(name), dir)
+			path := fmt.Sprintf("member-site/migrations/%v_%v_%v.%v.sql", version, date, sanitize(name), dir)
 			file := must(os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0666))
 			defer file.Close()
 

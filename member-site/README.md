@@ -1,16 +1,34 @@
+# Member Site
+
 A backend webserver for managing users, written in Go.
 
 ```bash
-go run ./server/migrate up
-go run ./server
-
-# test suite
+# run any pending migrations
+go run ./scripts/migrate up
+# start the server
+go run ./member-site
+# run test suite
 go test ./...
 ```
 
+## Development
+
+Models and other conceptual units are given their own packages, which follow this convention:
+
+- `{model_name}.go` defines the model struct and associated methods
+- `queries.go` defines the database operations
+- `controller.go` defines the application-level functions/operations that can be performed
+- `router.go` defines the API controller to map endpoints to operations
+
+The separation of controllers and routers offers a separation of concerns (for example, a
+hypothetical future CLI could expose the same operations as the API by calling the same controllers).
+
+The tests for the router endpoints are defined in the top-level `member-site` package. This separation
+is clunky but allows us to run the test end-to-end, checking there are no conflicts between routers
+and that the router is properly attached to the main server.
+
 ## Framework tools
 
-- https://jmoiron.github.io/sqlx/
-- https://github.com/masterminds/squirrel
-- https://github.com/go-chi/chi
-- https://pkg.go.dev/encoding/json
+- Database: [sqlx](https://jmoiron.github.io/sqlx/), [squirrel](https://github.com/masterminds/squirrel)
+- Routing: [chi](https://github.com/go-chi/chi)
+- Migrations: [golang-migrate](github.com/golang-migrate/migrate)

@@ -13,6 +13,9 @@ import (
 	"testing"
 )
 
+// NewTestServer provides an interface for end-to-end testing an [http.Handler].
+// It sets up an end-to-end server on a random port, provides methods for generating
+// requests, and automatically serializes and deserializes JSON.
 func NewTestServer(t *testing.T, ctx context.Context, handler http.Handler) *TestServer {
 	t.Helper()
 
@@ -36,8 +39,9 @@ type TestServer struct {
 
 type TestResponse struct {
 	*http.Response
-	Data  map[string]any
-	Error map[string]any
+	Data       map[string]any
+	Pagination map[string]any
+	Error      map[string]any
 }
 
 func (ts *TestServer) SetHeader(header, value string) {
@@ -90,7 +94,9 @@ func (ts *TestServer) Request(method, path string, body any) (*TestResponse, err
 		} else {
 			maps.Copy(tr.Data, jd["data"].(map[string]any))
 		}
-		// TODO: pagination
+		if jd["pagination"] != nil {
+			maps.Copy(tr.Pagination, jd["pagination"].(map[string]any))
+		}
 	}
 	return &tr, nil
 }
