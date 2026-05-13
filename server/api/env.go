@@ -1,15 +1,22 @@
 package api
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type Environment string
 
 const (
+	Test        Environment = "test"
 	Development Environment = "development"
 	Production  Environment = "production"
 )
 
 func Env() Environment {
+	if strings.HasSuffix(os.Args[0], ".test") {
+		return Test
+	}
 	v := os.Getenv("APP_ENV")
 	if v == "" {
 		return Development

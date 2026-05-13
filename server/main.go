@@ -5,16 +5,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/go-chi/chi/v5"
-
-	"rabidaudio.com/coven-door/server/api"
+	"rabidaudio.com/coven-door/server/app"
 	"rabidaudio.com/coven-door/server/database"
 	"rabidaudio.com/coven-door/server/users"
 )
 
-type RouteBuilder func(r chi.Router)
-
-var routers = []RouteBuilder{
+var routers = []app.RouteBuilder{
 	// Add route handlers here
 	users.Router,
 }
@@ -30,27 +26,13 @@ func main() {
 		panic(fmt.Errorf("db ping: %w", err))
 	}
 
-	r := chi.NewRouter()
-
-	// attach db to context
-	r.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx := database.WithDB(db, r.Context())
-			next.ServeHTTP(w, r.WithContext(ctx))
-		})
-	})
-	// health check
-	r.Get("/", api.HealthCheck)
-	// routes from other packages
-	for _, rb := range routers {
-		rb(r)
-	}
+	r := app.New(db, routers...)
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
-	addr := ":" + port
+	addr := "localhost:" + port
 	fmt.Printf("Starting server on %v\n", addr)
 	if err := http.ListenAndServe(addr, r); err != nil {
 		panic(fmt.Errorf("start server: %v", err))

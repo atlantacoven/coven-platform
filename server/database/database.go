@@ -21,32 +21,32 @@ import (
 // DB is an interface implemented by both *sqlx.DB and *sqlx.Tx
 // so that either can be used by our code
 type DB interface {
-	Query(query string, args ...interface{}) (*sql.Rows, error)
-	Queryx(query string, args ...interface{}) (*sqlx.Rows, error)
-	QueryRow(query string, args ...interface{}) *sql.Row
-	QueryRowx(query string, args ...interface{}) *sqlx.Row
+	Query(query string, args ...any) (*sql.Rows, error)
+	Queryx(query string, args ...any) (*sqlx.Rows, error)
+	QueryRow(query string, args ...any) *sql.Row
+	QueryRowx(query string, args ...any) *sqlx.Row
 
-	Get(dest interface{}, query string, args ...interface{}) error
-	Select(dest interface{}, query string, args ...interface{}) error
+	Get(dest any, query string, args ...any) error
+	Select(dest any, query string, args ...any) error
 
-	QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error)
-	QueryxContext(ctx context.Context, query string, args ...interface{}) (*sqlx.Rows, error)
-	QueryRowContext(ctx context.Context, query string, args ...interface{}) *sql.Row
-	QueryRowxContext(ctx context.Context, query string, args ...interface{}) *sqlx.Row
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+	QueryxContext(ctx context.Context, query string, args ...any) (*sqlx.Rows, error)
+	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
+	QueryRowxContext(ctx context.Context, query string, args ...any) *sqlx.Row
 
-	GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
-	SelectContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
+	GetContext(ctx context.Context, dest any, query string, args ...any) error
+	SelectContext(ctx context.Context, dest any, query string, args ...any) error
 }
 
-func Create() (DB, error) {
+func Create() (*sqlx.DB, error) {
 	return CreateEnv(api.Env())
 }
 
-func CreateEnv(env api.Environment) (DB, error) {
+func CreateEnv(env api.Environment) (*sqlx.DB, error) {
 	return CreateSrc(fmt.Sprintf("server/%v.db", env))
 }
 
-func CreateSrc(src string) (DB, error) {
+func CreateSrc(src string) (*sqlx.DB, error) {
 	return sqlx.Open("sqlite3", src)
 }
 
@@ -65,7 +65,7 @@ func NewMigrator(db DB) (*migrate.Migrate, error) {
 }
 
 func createTest() *sqlx.DB {
-	db := must(CreateSrc(":memory:")).(*sqlx.DB)
+	db := must(CreateSrc(":memory:"))
 
 	// Wipe the database and migrate up to the latest schema
 	m := must(NewMigrator(db))

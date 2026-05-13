@@ -3,6 +3,9 @@ A backend webserver for managing users, written in Go.
 ```bash
 go run ./server/migrate up
 go run ./server
+
+# test suite
+go test ./...
 ```
 
 ## Framework tools

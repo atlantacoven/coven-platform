@@ -34,6 +34,7 @@ func postSession(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		api.RespondError(w, err)
+		return
 	}
 
 	res := PutSessionResponseBody{

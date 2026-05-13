@@ -1,19 +1,21 @@
-package api
+package app
 
 import (
 	"net/http"
 	"time"
+
+	"rabidaudio.com/coven-door/server/api"
 )
 
 type healthResponseBody struct {
-	Environment Environment `json:"environment"`
-	CurrentTime time.Time   `json:"current_time"`
+	Environment api.Environment `json:"environment"`
+	CurrentTime time.Time       `json:"current_time"`
 }
 
 // HealthCheck implements a simple endpoint for checking if the server is running.
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
-	Respond(w, &healthResponseBody{
-		Environment: Env(),
+	api.Respond(w, &healthResponseBody{
+		Environment: api.Env(),
 		CurrentTime: time.Now(),
 	}, "OK")
 }
