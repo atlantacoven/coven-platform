@@ -3,8 +3,8 @@ package main
 import (
 	"testing"
 
+	"github.com/atlantacoven/door-lock/server/users"
 	"github.com/stretchr/testify/assert"
-	"rabidaudio.com/coven-door/server/users"
 )
 
 func TestPostSession(t *testing.T) {

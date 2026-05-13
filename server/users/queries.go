@@ -6,7 +6,7 @@ import (
 	"errors"
 
 	sq "github.com/Masterminds/squirrel"
-	"rabidaudio.com/coven-door/server/database"
+	"github.com/atlantacoven/door-lock/server/database"
 )
 
 func findByEmail(ctx context.Context, email string) (*User, error) {

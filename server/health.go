@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"rabidaudio.com/coven-door/server/api"
+	"github.com/atlantacoven/door-lock/server/api"
 )
 
 type healthResponseBody struct {

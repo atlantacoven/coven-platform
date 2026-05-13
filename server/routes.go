@@ -3,9 +3,9 @@ package main
 import (
 	"net/http"
 
+	"github.com/atlantacoven/door-lock/server/database"
+	"github.com/atlantacoven/door-lock/server/users"
 	"github.com/go-chi/chi/v5"
-	"rabidaudio.com/coven-door/server/database"
-	"rabidaudio.com/coven-door/server/users"
 )
 
 type RouteBuilder func(r chi.Router)

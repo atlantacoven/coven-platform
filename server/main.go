@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"rabidaudio.com/coven-door/server/database"
+	"github.com/atlantacoven/door-lock/server/database"
 )
 
 func main() {

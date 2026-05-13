@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"rabidaudio.com/coven-door/server/database"
+	"github.com/atlantacoven/door-lock/server/database"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/source/file"

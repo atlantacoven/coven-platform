@@ -3,8 +3,8 @@ package users
 import (
 	"net/http"
 
+	"github.com/atlantacoven/door-lock/server/api"
 	"github.com/go-chi/chi/v5"
-	"rabidaudio.com/coven-door/server/api"
 )
 
 type PutSessionRequestBody struct {

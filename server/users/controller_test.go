@@ -3,8 +3,8 @@ package users
 import (
 	"testing"
 
+	"github.com/atlantacoven/door-lock/server/database"
 	"github.com/stretchr/testify/assert"
-	"rabidaudio.com/coven-door/server/database"
 )
 
 func TestAuthenticatePassword(t *testing.T) {
