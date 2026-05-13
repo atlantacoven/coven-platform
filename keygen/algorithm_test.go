@@ -13,6 +13,61 @@ import (
 	"time"
 )
 
+/*
+- The app authenticates via HTTPS with the server using a typical mechanism (password, oauth, etc).
+  The server returns a UserSecret, which is info about the user, signed by the server using ED25519.
+
+```
+Nonce = random(8)
+Padding = repeat(0xAA, 8)
+UserData = UserID[8]+ExpiresAt[8]+Nonce[8]+Padding[8]
+Signature = ed25519.Sign(UserData, server_private_key)
+UserSecret = UserData[32]+Signature[64]
+```
+
+- The door sends an authentication Challenge to the app, which is a random nonce, a signature verifying itself,
+	and a public key to use for secure transfer of the UserSecret.
+
+```
+Nonce = random(8)
+Signature = ed25519.Sign(Nonce, door_private_key)
+ReceiverKey = hpke.GenerateKeyPair()
+ReceiverPublicKey = hpke.SerializePublicKey(ReceiverKey.Public)
+Challenge = Nonce[8]+Signature[64]+ReceiverPublicKey[32]
+```
+
+- The app verifies the signature.
+
+```
+Nonce = Challenge[0:8]
+Signature = Challenge[8:8+64]
+ed25519.Verify(Nonce, Signature)
+```
+
+- The app encrypts the UserSecret and sends it.
+
+```
+ReceiverPublicKey = Challenge[8+64:8+64+32]
+ChallengeResponse = Nonce+UserSecret
+CipherText, EncapsulationKey = hpke.Seal(ChallengeResponse, ReceiverPublicKey)
+EncryptedAccessKey = CipherText[120] + EncapsulationKey[32]
+```
+
+- The door decrypts the message. Then it verifies that the nonce is correct, that the UserSecret is signed by the server,
+	and that it has not expired.
+
+```
+CipherText = EncryptedAccessKey[0:120]
+EncapsulationKey = EncryptedAccessKey[120:120+32]
+ChallengeResponse = hpke.Open(CipherText, EncapsulationKey, ReceiverKey.Private)
+UserSecret = ChallengeResponse[8:]
+ed25519.Verify(UserSecret[0:32], UserSecret[32:])
+equal(Nonce, ChallengeResponse[0:8])
+ExpiresAt = UserSecret[8:16]
+isBefore(ExpiresAt)
+```
+*/
+
 const UserSecretSize = 32
 const NonceSize = 8
 

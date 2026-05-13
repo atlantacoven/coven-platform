@@ -18,60 +18,15 @@ The security requirements for the door lock mechanism:
 - The lock controller should be able to verify authenticity offline, to avoid a network-based attack
 
 Based on these requirements, the following algorithm is used:
-1. The app authenticates via HTTPS with the server using a typical mechanism (password, oauth, etc)
-2. The server returns a UserSecret, which is info about the user, signed by the server using ED25519.
-
-```
-Nonce = random(8)
-Padding = repeat(0xAA, 8)
-UserData = UserID[8]+ExpiresAt[8]+Nonce[8]+Padding[8]
-Signature = ed25519.Sign(UserData, server_private_key)
-UserSecret = UserData[32]+Signature[64]
-```
-3. The app saves this UserSecret securely on the device. It periodically re-authenticates to avoid expiration.
+1. The app authenticates via HTTPS with the server using a typical mechanism (password, oauth, etc).
+2. The server returns a `UserSecret`, which is info about the user, signed by the server using ED25519. Similar in design to a JWT token but in binary rather than JSON due to embedded performance.
+3. The app saves this `UserSecret` securely on the device. It periodically re-authenticates to avoid expiration.
 4. The user presents the phone to the door controller. The phone and door controller communicate via standards described in ISO 14443-4 and ISO 7816-4.
-5. The door sends an AID identifying it as implementing this (proprietary) algorithm. The app has associated itself with this AID so that it executes in response to the message.
-6. The door sends an authentication Challenge to the app, which is a random nonce, a signature verifying itself, and a public key to use for secure transfer of the UserSecret.
-
-```
-Nonce = random(8)
-Signature = ed25519.Sign(Nonce, door_private_key)
-ReceiverKey = hpke.GenerateKeyPair()
-ReceiverPublicKey = hpke.SerializePublicKey(ReceiverKey.Public)
-Challenge = Nonce[8]+Signature[64]+ReceiverPublicKey[32]
-```
-
-7. The app verifies the signature.
-
-```
-Nonce = Challenge[0:8]
-Signature = Challenge[8:8+64]
-ed25519.Verify(Nonce, Signature)
-```
-
-8. The app encrypts the UserSecret and sends it. Secure transfer of the UserSecret is done using HPKE as defined in [RFC 9180](https://datatracker.ietf.org/doc/rfc9180/), using `DHKEM(X25519, HKDF-SHA256)/HKDF-SHA256/AES-128-GCM`.
-
-```
-ReceiverPublicKey = Challenge[8+64:8+64+32]
-ChallengeResponse = Nonce+UserSecret
-CipherText, EncapsulationKey = hpke.Seal(ChallengeResponse, ReceiverPublicKey)
-EncryptedAccessKey = CipherText[120] + EncapsulationKey[32]
-```
-
-9. The door decrypts the message. Then it verifies that the nonce is correct, that the UserSecret is signed by the server, and that it has not expired.
-
-```
-CipherText = EncryptedAccessKey[0:120]
-EncapsulationKey = EncryptedAccessKey[120:120+32]
-ChallengeResponse = hpke.Open(CipherText, EncapsulationKey, ReceiverKey.Private)
-UserSecret = ChallengeResponse[8:]
-ed25519.Verify(UserSecret[0:32], UserSecret[32:])
-equal(Nonce, ChallengeResponse[0:8])
-ExpiresAt = UserSecret[8:16]
-isBefore(ExpiresAt)
-```
-
-10. If all of those checks pass, it unlocks the door for a brief number of seconds. It sends a message to the app indicating if the door was unlocked.
+5. The door sends an `AID` identifying it as implementing this (proprietary) algorithm. The app has associated itself with this `AID` so that it executes in response to the message.
+6. The door sends an authentication `Challenge` to the app, which is a random nonce, a signature verifying itself, and a public key to use for secure transfer of the `UserSecret`.
+7. The app verifies the signature, then encrypts the `UserSecret` and sends it. Secure transfer of the `UserSecret` is done using HPKE as defined in [RFC 9180](https://datatracker.ietf.org/doc/rfc9180/), using `DHKEM(X25519, HKDF-SHA256)/HKDF-SHA256/AES-128-GCM`.
+8. The door decrypts the message. Then it verifies that the nonce is correct, that the `UserSecret` is signed by the server, and that it has not expired.
+9.  If all of those checks pass, it unlocks the door for a brief number of seconds. It sends a message to the app indicating if the door was unlocked.
 
 An example of this algorithm can be found in `keygen/algorithm_test.go`.
 

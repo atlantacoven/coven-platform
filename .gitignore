@@ -1,6 +1,10 @@
-.pio
+.DS_Store
+
+.pio/
 .vscode/
 
 server/server_signing.pem
 firmware/include/_keys.h
 android/app/src/main/res/values/keys.xml
+
+ref/
