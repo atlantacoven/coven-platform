@@ -1,6 +1,6 @@
-module github.com/atlantacoven/door-lock
+module github.com/atlantacoven/coven-platform
 
-go 1.26.2
+go 1.26.3
 
 require (
 	github.com/Masterminds/squirrel v1.5.4

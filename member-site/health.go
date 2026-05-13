@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/atlantacoven/door-lock/server/api"
+	"github.com/atlantacoven/coven-platform/member-site/api"
 )
 
 type healthResponseBody struct {

@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/atlantacoven/door-lock/server/api"
+	"github.com/atlantacoven/coven-platform/member-site/api"
 	"github.com/golang-migrate/migrate/v4"
 
 	"github.com/integralist/go-findroot/find"

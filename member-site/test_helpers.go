@@ -3,8 +3,8 @@ package main
 import (
 	"testing"
 
-	"github.com/atlantacoven/door-lock/server/api"
-	"github.com/atlantacoven/door-lock/server/database"
+	"github.com/atlantacoven/coven-platform/member-site/api"
+	"github.com/atlantacoven/coven-platform/member-site/database"
 )
 
 func TestServer(t *testing.T) *api.TestServer {

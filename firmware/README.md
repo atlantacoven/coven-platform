@@ -1,94 +1,41 @@
-https://github.com/don/NDEF
-https://github.com/Seeed-Studio/PN532
+# Door Lock
 
+This project implements an electronic NFC door lock for the makerspace from scratch,
+allowing active members access to the space via their phone.
 
-```C
-// nfc.InJumpForDEP(); - Active, baud? PassiveInitiatorData, NFCID3i, Gi (ATR_REQ)
-nfc.inListPassiveTarget(); // returns true when a card is found (or alternatively readPassiveTargetID)
-nfc.inDataExchange(send_buf, send_len, recv_buf, *recv_len); // transfer data via ISO-14443-3A
-// when tg is ISO/IEC14443-4 compliant, 
-    // -> D4 40 01  [00 B0 82 00 10]
-    // <- D5 41 00  [00 01 02 03 04 … 0F 90 00]
+It's a large mono-repo consisting of several interconnected subprojects:
+- `firmware`: The embedded code for the door lock controller, using PlatformIO
+- `member-site`: An HTTP API in Go for managing and authenticating members
+- `app`: A Flutter app that is able to unlock the door via NFC
+- `keygen`: A small Go CLI which generates security credentials for all the projects
 
+## Handshake algorithm
 
-// InSelect - trigger initialization - is this necessary??
-```
+The security requirements for the door lock mechanism:
+- An attacker should not be able to generate a valid key in a reasonable time
+- The NFC communication should be considered cleartext. An attacker who eavesdropped on a successful NFC handshake should not be able to reuse a previously valid key
+- An attacker who spoofs the lock controller should not be able to steal a valid key from the app
+- The lock controller should be able to verify authenticity offline, to avoid a network-based attack
 
-pcd=reader AKA
-picc=card  AKA
+Based on these requirements, the following algorithm is used:
+1. The app authenticates via HTTPS with the server using a typical mechanism (password, oauth, etc).
+2. The server returns a `UserSecret`, which is info about the user, signed by the server using ED25519. Similar in design to a JWT token but in binary rather than JSON due to embedded performance.
+3. The app saves this `UserSecret` securely on the device. It periodically re-authenticates to avoid expiration.
+4. The user presents the phone to the door controller. The phone and door controller communicate via standards described in ISO 14443-4 and ISO 7816-4.
+5. The door sends an `AID` identifying it as implementing this (proprietary) algorithm. The app has associated itself with this `AID` so that it executes in response to the message.
+6. The door sends an authentication `Challenge` to the app, which is a random nonce, a signature verifying itself, and a public key to use for secure transfer of the `UserSecret`.
+7. The app verifies the signature, then encrypts the `UserSecret` and sends it. Secure transfer of the `UserSecret` is done using HPKE as defined in [RFC 9180](https://datatracker.ietf.org/doc/rfc9180/), using `DHKEM(X25519, HKDF-SHA256)/HKDF-SHA256/AES-128-GCM`.
+8. The door decrypts the message. Then it verifies that the nonce is correct, that the `UserSecret` is signed by the server, and that it has not expired.
+9.  If all of those checks pass, it unlocks the door for a brief number of seconds. It sends a message to the app indicating if the door was unlocked.
 
+An example of this algorithm can be found in `keygen/algorithm_test.go`.
 
-In=initiator
-Tg=target
+## Useful Reference
 
-
-passive=initiator has radio
-active=both sides have radios
-
-
-ISO-14443-4 reader/card data exchange protocol
-NFC-DEP active peer-to-peer  LLCP/SNEP
-
-
-
-The Initiator selects the communication mode (either Active or Passive) and bit rate
-
-
-Android apps use DEP (active extension of 14443-4), on top of ISO-14443-3A
-
-reader: -> "SELECT AID" APDU
-
-
-If you don't want to register an AID, you are free to use AIDs in the proprietary range: bits 8-5 of the first byte must each be set to '1'. For example, "0xF00102030405" is a proprietary AID.
-
-FF + thecoven.space
-FF 74 68 65 63 6F 76 65 6E 2E 73 70 61 63 65 FF
-
-
-CLA As defined in 5.1.1
-INS 'A4'
-P1 See Table 39
-P2 See Table 40
-L c field Absent for encoding N c = 0, present for encoding N c > 0
-Data field Absent or file identifier or path or DF name (according to P1)
-L e field Absent for encoding N e = 0, present for encoding N e > 0
-Data field Absent or file control information (according to P2)
-SW1-SW2 See Tables 5 and 6 when relevant, e.g., '6283', '6284', '6A80', '6A81', '6A82', '6A86', '6A87'
-
-
-```C
-cla = 0; // The command is the last or only command of a chain,
-        // No SM or no indication, Logical channel number from zero to three
-ins = 0xA4; // SELECT
-param[0] = 0x04; // the command data contains a DF name (the AID)
-param[0]
-tag = 0x4F; // AID 8.2.1.2
-```
-
-
-Two categories of structures are supported: dedicated file (DF) and elementary file (EF)
-An internal EF stores data interpreted by the card, i.e., data used by the card for management and
-control purposes.
-Any appli-
-cation identifier (AID, see 8.2.1.2) may be used as DF name.
-
-The entity to authenticate has to prove the knowledge of the relevant
-secret or private key in an authentication procedure (e.g., a GET CHALLENGE command followed by an
-EXTERNAL AUTHENTICATE command, a sequence of GENERAL AUTHENTICATE commands).
-
-
-
-GENERAL AUTHENTICATE
-INS= '86' or '87
-p1=algorithm (or zero, no info given)
-p2=secret id (or zero, no info given)
-
-
-
-
-The historical bytes indicate operating characteristics of the card.
-The first historical byte is the “category indicator byte”. If the category indicator byte is set to '00', '10' or '8X',
-then Table 83 summarizes the format of the historical bytes. Any other value indicates a proprietary format
-
-AID
-Referenced by a compact header set to 'FY' in the historical bytes (see 8.1.1), or by tag '4F' in the initial dat
+- https://learn.adafruit.com/adafruit-pn532-rfid-nfc/about-nfc
+- https://developer.android.com/develop/connectivity/nfc/hce
+- http://www.emutag.com/iso/14443-3.pdf
+- http://www.emutag.com/iso/14443-4.pdf
+- https://www.freecalypso.org/pub/GSM/ISO7816/ISO_7816-4_2005.pdf
+- https://cdn-shop.adafruit.com/datasheets/pn532um.pdf
+- https://datatracker.ietf.org/doc/rfc9180/

@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/atlantacoven/door-lock/server/users"
+	"github.com/atlantacoven/coven-platform/member-site/users"
 	"github.com/stretchr/testify/assert"
 )
 

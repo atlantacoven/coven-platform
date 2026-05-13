@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/atlantacoven/door-lock/server/database"
-	"github.com/atlantacoven/door-lock/server/users"
+	"github.com/atlantacoven/coven-platform/member-site/database"
+	"github.com/atlantacoven/coven-platform/member-site/users"
 	"github.com/go-chi/chi/v5"
 )
 

@@ -30,6 +30,11 @@ func init() {
 // our domain.
 var INFO = DOMAIN
 
+// paths
+const serverSigningPath = "member-site/signing.pem"
+const firmwareIncludePath = "firmware/include/_keys.h"
+const androidResPath = "android/app/src/main/res/values/keys.xml"
+
 func main() {
 	log.Println("Generating new keys...")
 	ServerSignPub, ServerKey, err := ed25519.GenerateKey(rand.Reader)
@@ -41,17 +46,17 @@ func main() {
 		panic(err)
 	}
 
-	log.Println("Saving server key to: server/server_signing.pem")
+	log.Printf("Saving server key to: %v\n", serverSigningPath)
 	ssk := must(x509.MarshalPKCS8PrivateKey(ServerKey))
-	f0 := must(os.Create("server/server_signing.pem"))
+	f0 := must(os.Create(serverSigningPath))
 	defer f0.Close()
 	err = pem.Encode(f0, &pem.Block{Type: "ED25519 PRIVATE KEY", Bytes: ssk})
 	if err != nil {
 		panic(err)
 	}
 
-	log.Println("Saving includes file for door lock code: firmware/include/_keys.h")
-	f1 := must(os.Create("firmware/include/_keys.h"))
+	log.Printf("Saving includes file for door lock code: %v\n", firmwareIncludePath)
+	f1 := must(os.Create(firmwareIncludePath))
 	defer f1.Close()
 	f1.WriteString("#include <Arduino.h>\n\n")
 	// TODO: put these in PROGMEM instead
@@ -61,8 +66,8 @@ func main() {
 	writeCArray(f1, "DOOR_SIGN_PRIV_KEY", DoorKey)
 	writeCArray(f1, "SERVER_SIGNING_PUB_KEY", ServerSignPub)
 
-	log.Println("Saving public keys for Android app: android/app/src/main/res/values/keys.xml")
-	f2 := must(os.Create("android/app/src/main/res/values/keys.xml"))
+	log.Printf("Saving public keys for Android app: %v\n", androidResPath)
+	f2 := must(os.Create(androidResPath))
 	defer f2.Close()
 	f2.WriteString("<resources>\n")
 	fmt.Fprintf(f2, "\t<string name=\"aid\">%v</string>\n", hex.EncodeToString(AID))

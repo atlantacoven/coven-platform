@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/atlantacoven/door-lock/server/database"
+	"github.com/atlantacoven/coven-platform/member-site/database"
 )
 
 func main() {

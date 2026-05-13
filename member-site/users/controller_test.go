@@ -3,7 +3,7 @@ package users
 import (
 	"testing"
 
-	"github.com/atlantacoven/door-lock/server/database"
+	"github.com/atlantacoven/coven-platform/member-site/database"
 	"github.com/stretchr/testify/assert"
 )
 

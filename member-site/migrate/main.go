@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/atlantacoven/door-lock/server/database"
+	"github.com/atlantacoven/coven-platform/member-site/database"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
