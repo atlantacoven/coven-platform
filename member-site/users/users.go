@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
@@ -11,6 +12,15 @@ type User struct {
 	Name              string `db:"name"`
 	Email             string `db:"email"`
 	EncryptedPassword string `db:"encrypted_password"`
+}
+
+func Register(ctx context.Context, name, email, password string) (*User, error) {
+	u := User{ Name: name, Email: email }
+	u.SetPassword(password)
+	if err := create(ctx, &u); err != nil {
+		return nil, err
+	}
+	return &u, nil
 }
 
 func (u *User) SetPassword(p string) error {
