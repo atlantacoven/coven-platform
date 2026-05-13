@@ -7,10 +7,10 @@ import (
 )
 
 type User struct {
-	Id                int
-	Name              string
-	Email             string
-	encryptedPassword []byte
+	Id                int    `db:"id"`
+	Name              string `db:"name"`
+	Email             string `db:"email"`
+	EncryptedPassword string `db:"encrypted_password"`
 }
 
 func (u *User) SetPassword(p string) error {
@@ -18,14 +18,14 @@ func (u *User) SetPassword(p string) error {
 	if err != nil {
 		return fmt.Errorf("set password: %w", err)
 	}
-	u.encryptedPassword = enc
+	u.EncryptedPassword = string(enc)
 	return nil
 }
 
 // VerifyPassword checks if p matches EncryptedPassword
 // in a
 func (u *User) VerifyPassword(p string) bool {
-	err := bcrypt.CompareHashAndPassword(u.encryptedPassword, []byte(p))
+	err := bcrypt.CompareHashAndPassword([]byte(u.EncryptedPassword), []byte(p))
 	if err == nil {
 		return true
 	}

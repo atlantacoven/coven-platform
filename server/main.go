@@ -6,8 +6,9 @@ import (
 	"os"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+
+	"rabidaudio.com/coven-door/server/api"
+	"rabidaudio.com/coven-door/server/database"
 	"rabidaudio.com/coven-door/server/users"
 )
 
@@ -19,7 +20,7 @@ var routers = []RouteBuilder{
 }
 
 func main() {
-	db, err := sqlx.Open("sqlite3", "development.db")
+	db, err := database.Create()
 	if err != nil {
 		panic(fmt.Errorf("open db: %w", err))
 	}
@@ -30,6 +31,17 @@ func main() {
 	}
 
 	r := chi.NewRouter()
+
+	// attach db to context
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := database.WithDB(db, r.Context())
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	})
+	// health check
+	r.Get("/", api.HealthCheck)
+	// routes from other packages
 	for _, rb := range routers {
 		rb(r)
 	}
@@ -39,8 +51,8 @@ func main() {
 		port = "8080"
 	}
 	addr := ":" + port
-	fmt.Printf("Starting server on %v", addr)
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	fmt.Printf("Starting server on %v\n", addr)
+	if err := http.ListenAndServe(addr, r); err != nil {
 		panic(fmt.Errorf("start server: %v", err))
 	}
 }
