@@ -28,7 +28,7 @@ func create(ctx context.Context, user *User) error {
 	q, args := sq.Insert("users").
 		Columns("name", "email", "encrypted_password").
 		Values(user.Name, user.Email, user.EncryptedPassword).
-		Suffix("RETURNING \"id\"").
+		Suffix(`RETURNING "id"`).
 		MustSql()
 	return db.QueryRowContext(ctx, q, args...).Scan(&user.Id)
 }

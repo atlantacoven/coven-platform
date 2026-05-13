@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -11,6 +12,7 @@ import (
 
 	"rabidaudio.com/coven-door/server/database"
 
+	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
@@ -28,6 +30,9 @@ func main() {
 	case "up":
 		if *n < 0 {
 			err := m.Up()
+			if errors.Is(err, migrate.ErrNoChange) {
+				return
+			}
 			if err != nil {
 				panic(err)
 			}
@@ -78,6 +83,9 @@ func main() {
 		}
 		v := must(strconv.ParseUint(version, 10, 64))
 		err := m.Migrate(uint(v))
+		if errors.Is(err, migrate.ErrNoChange) {
+			return
+		}
 		if err != nil {
 			panic(err)
 		}

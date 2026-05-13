@@ -10,7 +10,7 @@ import (
 func TestServer(t *testing.T) *api.TestServer {
 	t.Helper()
 
-	ctx := database.PrepareForTest(t)
+	ctx := database.CreateTest(t)
 	db := database.Get(ctx)
 	return api.NewTestServer(t, ctx, NewServer(db))
 }

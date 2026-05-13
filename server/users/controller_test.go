@@ -8,7 +8,7 @@ import (
 )
 
 func TestAuthenticatePassword(t *testing.T) {
-	ctx := database.PrepareForTest(t)
+	ctx := database.CreateTest(t)
 	u1 := Fixture(t, ctx)
 
 	// test find
