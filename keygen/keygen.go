@@ -41,17 +41,17 @@ func main() {
 		panic(err)
 	}
 
-	log.Println("Saving server key to: server_signing.pem")
+	log.Println("Saving server key to: server/server_signing.pem")
 	ssk := must(x509.MarshalPKCS8PrivateKey(ServerKey))
-	f0 := must(os.Create("server_signing.pem"))
+	f0 := must(os.Create("server/server_signing.pem"))
 	defer f0.Close()
 	err = pem.Encode(f0, &pem.Block{Type: "ED25519 PRIVATE KEY", Bytes: ssk})
 	if err != nil {
 		panic(err)
 	}
 
-	log.Println("Saving includes file for door lock code: include/_keys.h")
-	f1 := must(os.Create("include/_keys.h"))
+	log.Println("Saving includes file for door lock code: firmware/include/_keys.h")
+	f1 := must(os.Create("firmware/include/_keys.h"))
 	defer f1.Close()
 	f1.WriteString("#include <Arduino.h>\n\n")
 	// TODO: put these in PROGMEM instead
@@ -61,8 +61,8 @@ func main() {
 	writeCArray(f1, "DOOR_SIGN_PRIV_KEY", DoorKey)
 	writeCArray(f1, "SERVER_SIGNING_PUB_KEY", ServerSignPub)
 
-	log.Println("Saving public keys for Android app: app/app/src/main/res/values/keys.xml")
-	f2 := must(os.Create("app/app/src/main/res/values/keys.xml"))
+	log.Println("Saving public keys for Android app: android/app/src/main/res/values/keys.xml")
+	f2 := must(os.Create("android/app/src/main/res/values/keys.xml"))
 	defer f2.Close()
 	f2.WriteString("<resources>\n")
 	fmt.Fprintf(f2, "\t<string name=\"aid\">%v</string>\n", hex.EncodeToString(AID))

@@ -1,6 +1,6 @@
 .pio
 .vscode/
 
-server_signing.pem
-include/_keys.h
-app/app/src/main/res/values/keys.xml
+server/server_signing.pem
+firmware/include/_keys.h
+android/app/src/main/res/values/keys.xml
