@@ -4,6 +4,10 @@
     "esbenp.prettier-vscode",
     "stylelint.vscode-stylelint",
     "budparr.language-hugo-vscode",
+    "platformio.platformio-ide",
     "EditorConfig.EditorConfig"
+  ],
+  "unwantedRecommendations": [
+    "ms-vscode.cpptools-extension-pack"
   ]
 }
