@@ -1,3 +1,4 @@
+// Package api manages the low-level operations for an http api
 package api
 
 import (

@@ -1,4 +1,4 @@
-package app
+package main
 
 import (
 	"testing"
@@ -7,9 +7,9 @@ import (
 )
 
 func TestHealthCheck(t *testing.T) {
-	a := NewTest(t)
+	s := TestServer(t)
 
-	res, err := a.Request("GET", "/", nil)
+	res, err := s.Request("GET", "/", nil)
 	assert.NoError(t, err)
 	assert.Equal(t, 200, res.StatusCode)
 	assert.Equal(t, "test", res.Data["environment"])

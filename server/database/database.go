@@ -61,7 +61,8 @@ func NewMigrator(db DB) (*migrate.Migrate, error) {
 	if err != nil {
 		return nil, fmt.Errorf("find project root: %w", err)
 	}
-	return migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%v/server/migrations", root.Path), "sqlite3", driver)
+	path := fmt.Sprintf("file://%v/server/migrations", root.Path)
+	return migrate.NewWithDatabaseInstance(path, "sqlite3", driver)
 }
 
 func createTest() *sqlx.DB {
@@ -84,23 +85,21 @@ func Get(ctx context.Context) DB {
 	return ctx.Value("db").(DB)
 }
 
-var testdb *sqlx.DB
-
 // PrepareForTest creates a clean, empty database and a transaction
 // to run queries in which will be automatically rolled back at the
 // end of the test. It attaches this to the test Context so it can
 // be accessed as usual.
 func PrepareForTest(t *testing.T) context.Context {
 	t.Helper()
-	if testdb == nil {
-		testdb = createTest()
-		// probably fine to not close since it's just in memory
-	}
-	tx := must(testdb.BeginTxx(t.Context(), &sql.TxOptions{}))
+
+	// NOTE: we construct a new in-memory database for each test.
+	// This can cause some performance issues but dealing with the
+	// thread-safety of sharing an instance across processes is tricky
+	testdb := createTest()
 	t.Cleanup(func() {
-		tx.Rollback()
+		testdb.Close()
 	})
-	return WithDB(tx, t.Context())
+	return WithDB(testdb, t.Context())
 }
 
 func must[T any](obj T, err error) T {

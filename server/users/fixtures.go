@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func UserFixture(t *testing.T, ctx context.Context) *User {
+func Fixture(t *testing.T, ctx context.Context) *User {
 	t.Helper()
 
 	u := User{Name: "Julien", Email: "julien@example.com"}

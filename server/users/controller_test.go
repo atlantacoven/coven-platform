@@ -9,7 +9,7 @@ import (
 
 func TestAuthenticatePassword(t *testing.T) {
 	ctx := database.PrepareForTest(t)
-	u1 := UserFixture(t, ctx)
+	u1 := Fixture(t, ctx)
 
 	// test find
 	u2, err := AuthenticatePassword(ctx, "julien@example.com", "password")

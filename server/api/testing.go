@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"bytes"
@@ -11,29 +11,27 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	"rabidaudio.com/coven-door/server/database"
 )
 
-func NewTest(t *testing.T, routers ...RouteBuilder) *TestApp {
+func NewTestServer(t *testing.T, ctx context.Context, handler http.Handler) *TestServer {
 	t.Helper()
 
-	ctx := database.PrepareForTest(t)
-	app := New(database.Get(ctx), routers...)
-
-	s := httptest.NewServer(app)
+	s := httptest.NewServer(handler)
 	t.Cleanup(func() {
 		s.Close()
 	})
-	tapp := TestApp{Server: s, Header: http.Header{}, Context: ctx}
-	return &tapp
+	if ctx == nil {
+		ctx = t.Context()
+	}
+	ts := TestServer{Server: s, Header: http.Header{}, Context: ctx}
+	return &ts
 }
 
-type TestApp struct {
+type TestServer struct {
 	*httptest.Server
-	http.Header
+	Header http.Header
 	context.Context
-	http.Client
+	client http.Client
 }
 
 type TestResponse struct {
@@ -42,22 +40,18 @@ type TestResponse struct {
 	Error map[string]any
 }
 
-func (ta *TestApp) DB() database.DB {
-	return database.Get(ta.Context)
+func (ts *TestServer) SetHeader(header, value string) {
+	ts.Header[header] = []string{value}
 }
 
-func (ta *TestApp) SetHeader(header, value string) {
-	ta.Header[header] = []string{value}
+func (ts *TestServer) UnsetHeader(header string) {
+	ts.Header[header] = []string{}
 }
 
-func (ta *TestApp) UnsetHeader(header string) {
-	ta.Header[header] = []string{}
-}
-
-func (ta *TestApp) Request(method, path string, body any) (*TestResponse, error) {
-	url := fmt.Sprintf("%v%v", ta.Server.URL, path)
-	ta.SetHeader("Content-Type", "application/json")
-	ta.SetHeader("Accept", "application/json")
+func (ts *TestServer) Request(method, path string, body any) (*TestResponse, error) {
+	url := fmt.Sprintf("%v%v", ts.Server.URL, path)
+	ts.SetHeader("Content-Type", "application/json")
+	ts.SetHeader("Accept", "application/json")
 
 	var br io.Reader
 	if body == nil {
@@ -75,12 +69,12 @@ func (ta *TestApp) Request(method, path string, body any) (*TestResponse, error)
 		br = bytes.NewReader(data)
 	}
 
-	req, err := http.NewRequestWithContext(ta, method, url, br)
+	req, err := http.NewRequestWithContext(ts, method, url, br)
 	if err != nil {
 		return nil, err
 	}
-	maps.Copy(req.Header, ta.Header)
-	res, err := ta.Do(req)
+	maps.Copy(req.Header, ts.Header)
+	res, err := ts.client.Do(req)
 	if err != nil {
 		return nil, err
 	}

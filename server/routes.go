@@ -1,15 +1,21 @@
-package app
+package main
 
 import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"rabidaudio.com/coven-door/server/database"
+	"rabidaudio.com/coven-door/server/users"
 )
 
 type RouteBuilder func(r chi.Router)
 
-func New(db database.DB, routers ...RouteBuilder) http.Handler {
+var routers = []RouteBuilder{
+	// ADD ROUTES HERE
+	users.Router,
+}
+
+func NewServer(db database.DB) http.Handler {
 	r := chi.NewRouter()
 
 	// attach db to context
