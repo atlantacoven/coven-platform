@@ -1,10 +1,12 @@
 name: Firmware CI
 
+# Disabled for now — re-enable by restoring the pull_request trigger below.
 on:
-  pull_request:
-    paths:
-      - "firmware/**"
-      - ".github/workflows/firmware-ci.yml"
+  workflow_dispatch:
+  # pull_request:
+  #   paths:
+  #     - "firmware/**"
+  #     - ".github/workflows/firmware-ci.yml"
 
 defaults:
   run:
