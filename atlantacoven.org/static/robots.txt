@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Humans.txt
+# See https://humanstxt.org/
+# Contact: hello@atlantacoven.org
+
+# Sitemap
+Sitemap: https://atlantacoven.org/sitemap.xml

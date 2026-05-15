@@ -1,0 +1,32 @@
+intro: >
+  Want to see the space before joining? We host walk-throughs by appointment so you can
+  meet a member, see the equipment, and ask questions in person. Tours are casual and
+  typically run about 30 minutes.
+
+how_to:
+  - title: Email or message us
+    desc: >
+      Reach out at <a class="text-cyan underline underline-offset-2" href="mailto:hello@atlantacoven.org">hello@atlantacoven.org</a>
+      with a few times that work for you. Weeknight evenings and weekend afternoons are
+      easiest, but we'll do our best to accommodate your schedule.
+  - title: We'll confirm a time
+    desc: >
+      A founding member will reply with a confirmed slot and the address details.
+      The space is at Studioplex in Atlanta — easy to find once you have the gate code.
+  - title: Drop in
+    desc: >
+      Show up at the agreed time. There's nothing to bring and nothing to prepare.
+      We'll walk you through the equipment, talk about how membership works, and answer
+      anything you'd like to know.
+
+what_to_expect:
+  - A friendly, low-pressure conversation — no sales pitch
+  - A walk-through of the workshop, tools, and shared areas
+  - Time to chat about projects you're interested in making
+  - Honest answers about cost, access, and community expectations
+
+cta:
+  heading: Ready to book?
+  sub: Email us with a few times that work for you.
+  url: "mailto:hello@atlantacoven.org"
+  label: Email Us

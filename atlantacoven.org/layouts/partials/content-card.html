@@ -1,0 +1,40 @@
+{{/* Compact zine-style content card used in section listings and homepage previews.
+  Call with the page as context: {{ partial "content-card.html" .
+}}
+*/}}
+{{ $palette := slice "pink" "spot-cyan" "acid" "ink" }}
+{{ $stamps := slice "pink" "cyan" "acid" "ink" }}
+{{ $tilts := slice "tilt-n1" "tilt-1" "tilt-n2" "tilt-2" }}
+{{ $i := 0 }}
+{{ if .Parent }}{{ $i = len .Parent.Pages }}{{ end }}
+{{ $idx := mod (or .Weight 0 | int) 4 }}
+{{ $excerpt := "" }}
+{{ with .Description }}{{ $excerpt = . }}{{ else }}{{ $excerpt = .Summary | plainify }}{{ end }}
+{{ $excerpt = $excerpt | truncate 140 }}
+<article
+  class="zine-card-bare relative flex h-full min-h-[180px] flex-col gap-3 transition-transform hover:translate-x-[-2px] hover:translate-y-[-2px]">
+  {{ if or .Params.tags .Params.difficulty }}
+    <div class="-mt-1 -ml-1 flex flex-wrap gap-2">
+      {{ if .Params.tags }}
+        {{ range $i, $tag := first 2 .Params.tags }}
+          {{ $c := index $stamps (mod $i 4) }}
+          <span class="zine-stamp stamp-{{ $c }}">{{ $tag }}</span>
+        {{ end }}
+      {{ end }}
+      {{ if .Params.difficulty }}
+        {{ $d := lower .Params.difficulty }}
+        {{ $dc := cond (in (slice "beginner" "easy") $d) "spot-cyan" (cond (in (slice "intermediate" "medium") $d) "acid" (cond (in (slice "advanced" "hard") $d) "blood" "pink")) }}
+        <span class="zine-stamp stamp-{{ $dc }} stamp-tilt-r">{{ .Params.difficulty }}</span>
+      {{ end }}
+    </div>
+  {{ end }}
+  <h3 class="font-display text-lg leading-tight tracking-wide uppercase">
+    <a href="{{ .RelPermalink }}" class="marker-link">{{ .Title }}</a>
+  </h3>
+  <p class="text-muted line-clamp-3 flex-1 font-typewriter text-sm">{{ $excerpt }}</p>
+  <a
+    href="{{ .RelPermalink }}"
+    class="text-pink hover:text-acid mt-auto self-start font-display text-xs tracking-[0.18em] uppercase">
+    Read on →
+  </a>
+</article>

@@ -1,0 +1,76 @@
+# Join page content. Rendered by layouts/join/single.html
+#
+# Sections:
+#   intro       - HTML allowed (highlighted callout)
+#   tiers       - list of {name, color, price, period, badge?, points: [{icon, text}]}
+#                 icon: ✓ | ✗ | ~ | — (or any character)
+#   tiers_note  - small caption under tier cards
+#   steps       - list of {title, desc, links?: [{t, u}]}
+#   notes       - list of {title, body}
+#   cta         - {heading, sub, label, url}
+
+intro: 'The Coven is primarily for <span class="font-semibold text-white">LGBTQ+ individuals</span>, with membership approved by the founders.'
+
+tiers:
+  - name: Founders
+    color: accent
+    price: "$225"
+    period: /mo
+    points:
+      - { icon: "✓", text: "24/7 access" }
+      - { icon: "✓", text: "Full equipment & project storage" }
+      - { icon: "✓", text: "Voting rights" }
+      - { icon: "✓", text: "Approve new members" }
+      - { icon: "—", text: "Julien, Maddie C, Maddie Y, Natalie, Sophie", muted: true }
+
+  - name: Members
+    color: warm
+    price: "$75"
+    period: /mo
+    badge: Now accepting
+    points:
+      - { icon: "✓", text: "Business hours access" }
+      - { icon: "✓", text: "Cubby-sized storage" }
+      - { icon: "✓", text: "Personal equipment (founder approval)" }
+      - { icon: "✓", text: "Community & events" }
+      - { icon: "~", text: "Probationary period on joining" }
+
+  - name: Guests
+    color: cyan
+    price: Free
+    points:
+      - { icon: "✓", text: "Chaperoned visits" }
+      - { icon: "✓", text: "Attend events" }
+      - { icon: "✗", text: "No solo access", off: true }
+      - { icon: "✗", text: "No equipment unsupervised", off: true }
+
+tiers_note: Up to 5 initial members, expandable to 10. Founders may contribute up to $300/mo.
+
+steps:
+  - title: Review our docs
+    desc: Read the Covenant and Code of Conduct to understand our mission, structure, and commitments.
+    links:
+      - { t: Covenant, u: /charter/ }
+      - { t: Code of Conduct, u: /code-of-conduct/ }
+  - title: Send an introduction
+    desc: Email hello@atlantacoven.org with a brief intro, your creative interests (music, cosplay, video, electronics), and what you hope to create and contribute.
+  - title: Founders review
+    desc: Applications are reviewed at monthly meetings (or sooner) with a majority vote and "vibe check". Each founder holds veto power to ensure community safety.
+  - title: Probationary period
+    desc: Approved members begin with a probationary period. You'll receive business hours access and be onboarded to the space and equipment.
+
+notes:
+  - title: Queer Community Space
+    body: Founded by trans people for the queer community.
+  - title: Safety First
+    body: Founders may decline applications to maintain a safe, affirming environment.
+  - title: Financial Commitment
+    body: Founders maintain lease and core expenses regardless of membership numbers.
+  - title: Vibe Check
+    body: Founders use consensus judgment to ensure alignment with our mission and values.
+
+cta:
+  heading: Ready to introduce yourself?
+  sub: We aim to respond within 3 - 5 business days.
+  label: Get in touch →
+  url: /contact/

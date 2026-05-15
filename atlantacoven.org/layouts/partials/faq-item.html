@@ -1,0 +1,84 @@
+{{- /*
+  Renders a single FAQ entry as a typewritten Q/A block, with a dashed cut-line above each.
+  Context: dict "item" $item "color" $colorVar
+  Color is one of: pink | acid | spot-cyan | ink (mapped to stamp variants)
+  */
+-}}
+{{- $item := .item -}}
+{{- $color := .color -}}
+{{- $stampColor := $color -}}
+{{- if eq $color "warm" }}{{ $stampColor = "acid" }}{{ end -}}
+{{- if eq $color "cyan" }}{{ $stampColor = "spot-cyan" }}{{ end -}}
+{{- if eq $color "yellow" }}{{ $stampColor = "acid" }}{{ end -}}
+{{- if eq $color "accent" }}{{ $stampColor = "pink" }}{{ end -}}
+<details class="group border-b border-dashed py-4" style="border-color: var(--rule);">
+  <summary class="flex cursor-pointer list-none items-start gap-4">
+    <span class="zine-stamp stamp-{{ $stampColor }} flex-shrink-0">Q</span>
+    <span class="text-ink flex-1 font-typewriter text-base leading-snug">{{ $item.q }}</span>
+    <span
+      class="text-{{ if eq $stampColor "ink" }}
+        ink
+      {{ else }}
+        {{ $stampColor }}
+      {{ end }} font-display text-xl transition-transform group-open:rotate-90"
+      >›</span
+    >
+  </summary>
+
+  {{- $type := default "text" $item.type -}}
+  <div class="mt-3 flex items-start gap-4">
+    <span class="zine-stamp stamp-{{ $stampColor }} stamp-tilt-r flex-shrink-0">A</span>
+    <div class="flex-1 pt-1">
+      {{- if eq $type "text" -}}
+        <div class="faq-prose">{{ $item.a | markdownify }}</div>
+      {{- else if eq $type "list" -}}
+        <div class="faq-prose">{{ $item.a | markdownify }}</div>
+      {{- else if eq $type "labeled" -}}
+        <ul class="text-muted space-y-1.5 font-typewriter text-sm">
+          {{- range $item.items }}
+            <li><span class="text-ink font-bold">{{ .label }}</span> {{ .text }}</li>
+          {{- end }}
+        </ul>
+      {{- else if eq $type "steps" -}}
+        <ol class="text-muted space-y-2 font-typewriter text-sm">
+          {{- range $i, $step := $item.items }}
+            <li class="flex gap-3">
+              <span class="text-pink font-display">{{ add $i 1 }}.</span>
+              <span class="flex-1">{{ $step }}</span>
+            </li>
+          {{- end }}
+        </ol>
+      {{- else if eq $type "pricing" -}}
+        <div
+          class="grid gap-3"
+          style="grid-template-columns: repeat({{ len $item.items }}, minmax(0, 1fr));">
+          {{- range $item.items }}
+            {{- $tc := default "pink" .color -}}
+            {{- if eq $tc "accent" }}{{ $tc = "pink" }}{{ end -}}
+            {{- if eq $tc "warm" }}{{ $tc = "acid" }}{{ end -}}
+            {{- if eq $tc "cyan" }}{{ $tc = "spot-cyan" }}{{ end -}}
+            {{- if eq $tc "yellow" }}{{ $tc = "acid" }}{{ end -}}
+            <div
+              class="rough-border-{{ if eq $tc "spot-cyan" }}
+                cyan
+              {{ else }}
+                {{ $tc }}
+              {{ end }} p-3 text-center">
+              <div class="text-{{ $tc }} font-display text-xs tracking-wider uppercase">
+                {{ .tier }}
+              </div>
+              <div class="text-ink mt-1 font-display text-2xl">
+                {{ .price }}{{ with .period }}
+                  <span class="text-muted font-typewriter text-xs"> {{ . }}</span>
+                {{ end }}
+              </div>
+              {{- with .note }}
+                <div class="text-muted mt-1 font-typewriter text-xs">{{ . }}</div>
+              {{ end }}
+            </div>
+          {{- end }}
+        </div>
+      {{- end }}
+    </div>
+  </div>
+</details>

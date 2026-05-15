@@ -1,0 +1,28 @@
+baseURL = 'https://atlantacoven.org'
+languageCode = 'en-us'
+title = 'The Coven'
+
+[params]
+description = "A collaborative makerspace for the queer community, founded by trans creators and focused on mutual support, skill-sharing, and creative projects in music, cosplay, video, and electronics."
+author = "The Coven"
+tagline = "Learn. Make. Share. Grow together."
+location = "Studioplex"
+email = "hello@atlantacoven.org"
+
+[taxonomies]
+tag = 'tags'
+category = 'categories'
+difficulty = 'difficulty'
+
+[build]
+writeStats = true
+
+[assets]
+[assets.css]
+minify = true
+[assets.js]
+minify = true
+[assets.images]
+quality = 85
+resampleFilter = "lanczos"
+anchor = "smart"
