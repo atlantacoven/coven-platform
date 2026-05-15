@@ -1,0 +1,28 @@
+{
+  "name": "coven-site",
+  "private": true,
+  "description": "The Coven — Hugo site assets pipeline.",
+  "scripts": {
+    "format": "prettier --write \"layouts/**/*.html\" \"assets/css/**/*.css\" \"content/**/*.md\" \"data/**/*.{yaml,yml}\" \"*.{json,md,toml}\"",
+    "format:check": "prettier --check \"layouts/**/*.html\" \"assets/css/**/*.css\" \"content/**/*.md\" \"data/**/*.{yaml,yml}\" \"*.{json,md,toml}\"",
+    "lint:css": "stylelint \"assets/css/**/*.css\"",
+    "lint:css:fix": "stylelint --fix \"assets/css/**/*.css\"",
+    "lint": "npm run format:check && npm run lint:css"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "@tailwindcss/postcss": "^4.1.4",
+    "postcss": "^8.5.3",
+    "postcss-cli": "^11.0.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-go-template": "^0.0.15",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "prettier-plugin-toml": "^2.0.1",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard": "^36.0.1",
+    "tailwindcss": "^4.1.4"
+  },
+  "dependencies": {
+    "lightningcss": "^1.32.0"
+  }
+}

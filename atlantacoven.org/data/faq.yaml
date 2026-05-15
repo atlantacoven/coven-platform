@@ -1,0 +1,108 @@
+# FAQ content. Each group renders as a section with an accent color.
+# Each item is an accordion. `type` controls how the answer renders:
+#   text     - default; `a` is markdown
+#   list     - `a` is markdown rendered as-is (use a real markdown list)
+#   labeled  - `items` is a list of {label, text} rows
+#   steps    - `items` is an ordered list of strings
+#   pricing  - `items` is a list of {tier, price, period, note, color}
+# Colors map to CSS vars: accent, warm, cyan, yellow
+
+- group: About The Coven
+  color: accent
+  items:
+    - q: What is The Coven?
+      a: >-
+        The Coven is a collaborative makerspace for the queer community,
+        founded by trans creators, focused on mutual support, skill-sharing,
+        and creative projects including music, cosplay, video, and electronics.
+        Our space prioritizes trans safety, empowerment, and creative freedom.
+    - q: Who founded The Coven?
+      a: The Coven was founded by Julien, Maddie C, Maddie Y, Natalie, and Sophie.
+    - q: Where is The Coven located?
+      a: >-
+        The Coven is located in the
+        [Studioplex](https://www.openstreetmap.org/relation/11742136#map=19/33.756108/-84.366843) building near Krog St. Market.
+    - q: When did The Coven open?
+      a: The Coven started in June 2025.
+
+- group: Membership & Access
+  color: warm
+  items:
+    - q: Who can join The Coven?
+      a: >-
+        The Coven is primarily for lgbtq individuals with membership being approved by the founders.
+    - q: What are the membership options?
+      type: pricing
+      items:
+        - tier: Founders
+          price: "$225"
+          period: /mo
+          note: 24/7 access · voting rights
+          color: accent
+        - tier: Members
+          price: "$75"
+          period: /mo
+          note: Business hours · cubby storage
+          color: warm
+        - tier: Guests
+          price: Free
+          note: With founder or member chaperone
+          color: cyan
+    - q: How do I become a member?
+      type: steps
+      items:
+        - Review the Covenant to understand our mission
+        - Email hello@atlantacoven.org with your introduction and creative interests
+        - Founders review applications via majority vote and "vibe check"
+        - Approved members begin with a probationary period
+    - q: What are the access hours?
+      type: labeled
+      items:
+        - label: "Founders:"
+          text: 24/7 access
+        - label: "Members:"
+          text: Business hours (to be established)
+        - label: "Guests:"
+          text: Scheduled visits with a founder or member chaperone only
+
+- group: Space & Equipment
+  color: cyan
+  items:
+    - q: What equipment is available?
+      type: list
+      a: |
+        - Various Woodworking Tools
+        - Multiple resin printers
+        - Multiple filament printers
+        - Laser Cuter
+        - Embroidery Machine
+        - DVD / CD production station
+        - Analog video encoding station
+        - Soldering stations
+        - Sewing machine
+    - q: Can I store personal projects or equipment?
+      type: labeled
+      items:
+        - label: "Founders:"
+          text: May store equipment and personal projects
+        - label: "Members:"
+          text: Assigned cubby-sized storage; personal equipment with founder approval
+        - label: "Note:"
+          text: Equipment brought in remains the owner's property unless explicitly donated
+
+- group: Governance & Finances
+  color: yellow
+  items:
+    - q: How is The Coven governed?
+      type: list
+      a: |
+        - Founders govern by do-ocracy (lazy consensus) — the person who cares takes initiative, and the action stands if no one objects
+        - Formal voting is used when lazy consensus fails or for finances and policy changes
+        - Each founder has one vote; majority vote (≥3 of 5) required for finances, equipment, policy changes, and new members
+        - Each founder retains veto power regarding new members
+        - Founders meet ad hoc, with coordination happening over Signal
+    - q: How is The Coven funded?
+      type: list
+      a: |
+        - Founders contribute up to $300/mo (goal: <= $250) to cover lease and expenses
+        - Membership fees offset shared expenses and fund future improvements

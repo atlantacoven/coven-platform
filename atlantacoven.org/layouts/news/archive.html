@@ -1,0 +1,44 @@
+{{ define "main" }}
+  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+    {{ partial "breadcrumb.html" . }}
+
+    <div class="mb-10">
+      <div class="mb-3">
+        <span class="zine-stamp stamp-acid stamp-tilt-r">Archive</span>
+      </div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        {{ .Title }}
+      </h1>
+      {{ with .Description }}
+        <p class="text-muted mt-4 max-w-3xl font-typewriter text-base leading-relaxed">{{ . }}</p>
+      {{ end }}
+    </div>
+
+    {{ $news := where .Site.RegularPages "Section" "news" }}
+    {{ $news = where $news "Path" "ne" .Path }}
+    {{ $news = sort $news "Date" "desc" }}
+
+    {{ with $news }}
+      <section class="mb-12">
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {{ range $i, $p := . }}
+            <div class="{{ index (slice "tilt-n1" "tilt-1" "tilt-n2" "tilt-2") (mod $i 4) }}">
+              {{ partial "content-card.html" $p }}
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ else }}
+      {{ partial "empty-state.html" . }}
+    {{ end }}
+
+    <div class="mt-8">
+      <a
+        href="/news/"
+        class="text-acid hover:text-pink font-marker"
+        style="display:inline-block; transform: rotate(-2deg);"
+        >↩ back to News</a
+      >
+    </div>
+  </div>
+{{ end }}

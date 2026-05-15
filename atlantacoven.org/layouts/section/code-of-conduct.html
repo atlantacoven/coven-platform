@@ -1,0 +1,136 @@
+{{ define "main" }}
+  {{ $data := hugo.Data.code_of_conduct }}
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    {{ partial "breadcrumb.html" . }}
+
+
+    <div class="mb-10">
+      <div class="mb-3">
+        <span class="zine-stamp stamp-blood stamp-tilt-l zine-stamp-lg">House Rules</span>
+      </div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        Code of Conduct
+      </h1>
+      <p class="text-muted mt-4 max-w-3xl font-typewriter text-base">
+        {{ .Description | default "Our commitment to creating a safe, respectful, and affirming space for all members." }}
+      </p>
+    </div>
+
+    {{ with $data.intro }}
+      <div class="rough-border-thick tilt-n1 bg-paper-2 mb-10 p-6">
+        <p class="text-ink font-serif text-lg leading-relaxed">{{ . }}</p>
+      </div>
+    {{ end }}
+
+
+    <!-- Expectations — vertical numbered manifesto -->
+    {{ with $data.expectations }}
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">
+          Our Expectations
+        </h2>
+        <div class="space-y-6">
+          {{ range $i, $e := . }}
+            {{ $stamps := slice "pink" "spot-cyan" "acid" "ink" }}
+            {{ $sc := index $stamps (mod $i 4) }}
+            {{ $tilt := index (slice "tilt-n1" "tilt-1" "tilt-n2" "tilt-2") (mod $i 4) }}
+            <div
+              class="{{ $tilt }} bg-paper-2 rough-border-{{ if eq $sc "spot-cyan" }}
+                cyan
+              {{ else if eq $sc "ink" }}
+              {{ else }}
+                {{ $sc }}
+              {{ end }} relative p-5">
+              <div class="flex items-start gap-4">
+                <span class="zine-letter-stamp text-{{ $sc }}">{{ printf "%02d" (add $i 1) }}</span>
+                <div class="flex-1">
+                  <h3 class="text-ink font-display text-xl tracking-wide uppercase">
+                    {{ $e.title }}
+                  </h3>
+                  <ul
+                    class="{{ if $e.wide }}
+                      grid gap-1.5 sm:grid-cols-2
+                    {{ else }}
+                      space-y-1.5
+                    {{ end }} text-muted mt-3 font-typewriter text-sm">
+                    {{ range $e.points }}
+                      <li class="flex gap-2">
+                        <span class="text-{{ $sc }}">›</span> <span>{{ . }}</span>
+                      </li>
+                    {{ end }}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- Unacceptable behaviors -->
+    {{ with $data.unacceptable }}
+      <section class="mb-12">
+        <h2 class="text-blood mb-3 font-display text-3xl tracking-wide uppercase">
+          VOID · Forbidden
+        </h2>
+        <p class="text-muted mb-5 font-typewriter text-sm">
+          The following behaviors are violations and may result in warnings, suspension, or removal:
+        </p>
+        <div class="rough-border-blood bg-paper-2 p-5">
+          <ul class="text-ink grid gap-2 font-typewriter text-sm sm:grid-cols-2">
+            {{ range . }}
+              <li class="flex gap-2">
+                <span class="text-blood font-display">✘</span> <span>{{ . }}</span>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- Reporting -->
+    {{ with $data.reporting }}
+      <section class="mb-12">
+        <h2 class="text-ink mb-5 font-display text-3xl tracking-wide uppercase">
+          Reporting Violations
+        </h2>
+        <div class="space-y-3">
+          {{ range $i, $step := . }}
+            {{ $stamps := slice "pink" "spot-cyan" "acid" "ink" }}
+            {{ $sc := index $stamps (mod $i 4) }}
+            <div class="zine-card-bare flex gap-4">
+              <span
+                class="zine-letter-stamp text-{{ $sc }}"
+                style="width:2.4rem;height:2.4rem;font-size:1.2rem;"
+                >{{ add $i 1 }}</span
+              >
+              <p class="text-ink flex-1 font-typewriter text-sm leading-relaxed">{{ $step }}</p>
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+
+    <!-- Closing -->
+    {{ with $data.closing }}
+      <div class="grid gap-5 sm:grid-cols-2">
+        {{ range $i, $c := . }}
+          {{ $tilt := index (slice "tilt-n1" "tilt-1") (mod $i 2) }}
+          <div class="zine-card-bare {{ $tilt }}">
+            <h3 class="text-pink mb-2 font-display text-base tracking-wide uppercase">
+              {{ $c.title }}
+            </h3>
+            <p class="text-muted font-typewriter text-sm">{{ $c.body }}</p>
+          </div>
+        {{ end }}
+      </div>
+    {{ end }}
+
+    {{ with .Content }}
+      <div class="prose-coven mt-10">{{ . }}</div>
+    {{ end }}
+  </div>
+{{ end }}

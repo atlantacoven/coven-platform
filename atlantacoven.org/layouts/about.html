@@ -1,0 +1,144 @@
+{{ define "main" }}
+  {{ $data := hugo.Data.about }}
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    {{ partial "breadcrumb.html" . }}
+
+
+    <!-- Hero -->
+    <div class="mb-10">
+      <div class="mb-3"><span class="zine-stamp stamp-pink stamp-tilt-l">About Us</span></div>
+      <h1 class="text-ink font-display text-5xl leading-none tracking-wide uppercase sm:text-6xl">
+        {{ .Title | default "About The Coven" }}
+      </h1>
+      {{ with $data.hero.tagline }}
+        <p class="text-ink mt-5 max-w-2xl font-typewriter text-base leading-relaxed">{{ . }}</p>
+      {{ end }}
+    </div>
+
+    <!-- Mission -->
+    {{ with $data.mission }}
+      <div class="rough-border-pink tilt-n1 bg-paper-2 relative mb-12 p-6">
+        <div class="text-pink mb-2 font-display text-xs tracking-[0.2em] uppercase">
+          § Our Mission
+        </div>
+        <p class="text-ink font-serif text-lg leading-relaxed">{{ . }}</p>
+      </div>
+    {{ end }}
+
+
+    <!-- Story -->
+    {{ with $data.story }}
+      <section class="mb-12">
+        <h2
+          class="text-ink rough-underline mb-3 inline-block font-display text-3xl tracking-wide uppercase">
+          Our Story
+        </h2>
+        <p class="text-ink mt-4 font-serif text-base leading-relaxed">{{ . }}</p>
+      </section>
+    {{ end }}
+
+
+    <hr class="cut-line" />
+
+    <!-- Focus Areas — vertical zine list -->
+    {{ with $data.focus_areas }}
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">Focus Areas</h2>
+        <div class="space-y-4">
+          {{ range $i, $f := . }}
+            {{ $stamps := slice "pink" "acid" "spot-cyan" "ink" }}
+            {{ $sc := index $stamps (mod $i 4) }}
+            {{ $tilt := index (slice "tilt-n1" "tilt-1" "tilt-n2" "tilt-2") (mod $i 4) }}
+            <div class="zine-card-bare {{ $tilt }} flex items-start gap-4">
+              <span class="text-{{ $sc }} font-display text-3xl" style="line-height:1;"
+                >{{ $f.icon }}</span
+              >
+              <div>
+                <div class="text-ink font-display text-lg tracking-wide uppercase">
+                  {{ $f.title }}
+                </div>
+                <p class="text-muted mt-1 font-typewriter text-sm">{{ $f.desc }}</p>
+              </div>
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+
+    <hr class="cut-line" />
+
+    <!-- Values — ransom note wall -->
+    {{ with $data.values }}
+      <section class="mb-12">
+        <h2 class="text-ink mb-6 font-display text-3xl tracking-wide uppercase">Our Values</h2>
+        <div class="flex flex-wrap items-start gap-4">
+          {{ $stamps := slice "pink" "spot-cyan" "acid" "ink" }}
+          {{ $tilts := slice "tilt-n2" "tilt-1" "tilt-n1" "tilt-2" "tilt-3" "tilt-n3" }}
+          {{ range $i, $v := . }}
+            {{ $sc := index $stamps (mod $i 4) }}
+            {{ $tilt := index $tilts (mod $i 6) }}
+            <div
+              class="rough-border-{{ if eq $sc "spot-cyan" }}
+                cyan
+              {{ else if eq $sc "ink" }}
+              {{ else }}
+                {{ $sc }}
+              {{ end }} {{ $tilt }} bg-paper-2 max-w-[18rem] px-4 py-3">
+              <div class="text-{{ $sc }} font-display text-sm tracking-wider uppercase">
+                {{ $v.v }}
+              </div>
+              <div class="text-muted mt-1 font-typewriter text-xs leading-snug">{{ $v.d }}</div>
+            </div>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+
+    <hr class="cut-line" />
+
+    <!-- Space + Governance — two scraps -->
+    <div class="mb-12 grid gap-6 md:grid-cols-2">
+      {{ with $data.space }}
+        <div class="rough-border-cyan tilt-n1 staple bg-paper-2 p-5">
+          <h3 class="text-spot-cyan mb-3 font-display text-lg tracking-wide uppercase">
+            § The Space
+          </h3>
+          <ul class="text-ink space-y-1.5 font-typewriter text-sm">
+            {{ range . }}
+              <li class="flex gap-2">
+                <span class="text-spot-cyan">★</span> <span>{{ . | safeHTML }}</span>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+      {{ with $data.governance }}
+        <div class="rough-border-acid tilt-1 staple bg-paper-2 p-5">
+          <h3 class="text-acid mb-3 font-display text-lg tracking-wide uppercase">§ Governance</h3>
+          <ul class="text-ink space-y-1.5 font-typewriter text-sm">
+            {{ range . }}
+              <li class="flex gap-2">
+                <span class="text-acid">✓</span> <span>{{ . | safeHTML }}</span>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+    </div>
+
+    {{ with .Content }}
+      <div class="prose-coven mb-12">{{ . }}</div>
+    {{ end }}
+
+
+    <!-- CTA -->
+    {{ with $data.cta }}
+      <div class="rough-border-thick tilt-n1 bg-paper-2 relative px-6 py-10 text-center">
+        <p class="text-ink font-display text-2xl tracking-wide uppercase">{{ .text }}</p>
+        <div class="mt-6"><a href="{{ .url }}" class="zine-btn zine-btn-pink">{{ .label }}</a></div>
+      </div>
+    {{ end }}
+  </div>
+{{ end }}
